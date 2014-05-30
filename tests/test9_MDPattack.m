@@ -34,12 +34,15 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
 FalseData.MDPBusVStateStep = 0.02;
-FalseData.Nstate = 18;
-FalseData.MDPBusFalseDataRatioStep = 0.2;
-FalseData.Naction = 7;
-FalseData.MDPDiscountFactor = 0.5;
+FalseData.Nstate = 18;  % total number of state
+FalseData.MDPBusFalseDataRatioStep = 0.2;  % Step for 
+FalseData.Naction = 7;   % total number of action
+FalseData.MDPDiscountFactor = 0.5;   % discount factor for value function of MDP
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
+
+% unable state estimation
+Config.seEnable = 0;
 
 
 Config.sampleRate  = 10;
