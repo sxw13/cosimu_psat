@@ -9,14 +9,15 @@ Config.simuEndTime = 6*3600;
 Config.basedir = [pwd, '\'];
 Config.debugdir = [pwd, '\debug\'];
 Config.caseFileDir = [pwd, '\psat\tests'];
-Config.caseName = 'd_014_dyn_cy.m';
+Config.caseName = 'd_009ieee.m';
 Config.sampleRate  = 1;
 Config.controlPeriod = 5*60;
-Config.opfCaseName = 'case14';
+Config.opfCaseName = 'case_ieee9';
 Config.limitControlled = 0;
 Config.loadShapeFile = 'loadshapeHour';
 Config.enableOPFCtrl = 1;
 Config.enableLoadShape = 1;
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;

@@ -1,5 +1,5 @@
 function [CurrentStatus] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
-
+    global MDPData
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -295,8 +295,49 @@ elseif Config.falseDataSchema == 2
                         CurrentStatus.ploadMeas(idxLoad) = pl * (1 + loadRandDir* fa.erroRatio);
                         ql = CurrentStatus.qloadMeas(idxLoad) ;
                         CurrentStatus.qloadMeas(idxLoad) = ql * (1 + loadRandDir * fa.erroRatio);
-                    end                    
-                otherwise
+                    end 
+                case 6    %MDP attack for false data injection on substations
+                    
+                    n = length(ResultData.t);
+                    %get state from simulation
+                    V = CurrentStatus.busVMeasPu(fa.toBus);
+                    MDPData.s_new = ceil((V-1+fa.MDPBusVStateStep*(fa.Nstate+2)/2)/fa.MDPBusVStateStep);
+                    if MDPData.s_new < 1 MDPData.s_new = 1;
+                    elseif MDPData.s_new > fa.Nstate  MDPData.s_new = fa.Nstate;
+                    end
+                    MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                    
+                    %initialization
+                    if n == 1
+                        MDPData.r = 0;
+                        MDPData.Q = zeros(fa.Nstate,fa.Naction);
+                        MDPData.s = MDPData.s_new;
+                        MDPData.a = ceil(fa.Naction);
+                    end
+                    
+                    % Updating the value of Q   
+                    % Decaying update coefficient (1/sqrt(n+2)) can be changed
+                    delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);
+                    dQ = (1/sqrt(n+2))*delta;
+                    MDPData.Q(MDPData.s,MDPData.a) = MDPData.Q(MDPData.s,MDPData.a) + dQ;
+
+                    % Current state is updated
+                    MDPData.s = MDPData.s_new;
+                    
+                    % Action choice : greedy with increasing probability
+                    % probability 1-(1/log(n+2)) can be changed
+                    pn = rand(1);
+                    if (pn < (1-(1/log(n+2))))
+                      [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
+                    else
+                      MDPData.a = randi([1,fa.Naction]);
+                    end
+                    
+                    %take action
+                    CurrentStatus.busVMeasPu(fa.toBus) = V * (1 + fa.MDPBusFalseDataRatioStep * ...
+                        floor(MDPData.a-fa.Naction/2) );
+                    
+                otherwise  
             end               
         end
     end
