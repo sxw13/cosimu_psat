@@ -155,7 +155,11 @@ while 1
     ibus = ibus + 1;
     bus(ibus, BUS_I) = str2num(line(1:4));          % bus number
     busnames(ibus,:) = line(6:17);                  % bus names
-    bus(ibus, BUS_TYPE) = str2num(line(25:26));
+    try
+        bus(ibus, BUS_TYPE) = str2num(line(25:26));
+    catch e
+        bus(ibus, BUS_TYPE) = 1;
+    end
     if bus(ibus, BUS_TYPE) == 0                     % bus type
         bus(ibus, BUS_TYPE) = 1;
     end
@@ -260,7 +264,11 @@ while 1
         warnings{end+1} = sprintf('***** MVA limit of branch %d - %d not given, set to %g', branch(k, [1, 2, 6]));
         fprintf('\n %s', warnings{end});
     end
-    branch(k, RATE_B) = str2num(line(57:61));   % RATE B
+    try
+        branch(k, RATE_B) = str2num(line(57:61));   % RATE B
+    catch e
+        disp('eee');
+    end
     branch(k, RATE_C) = str2num(line(63:67));   % RATE C
     branch(k, TAP)    = str2num(line(77:82));   % transformer turns ratio
     branch(k, SHIFT)  = 0;                      % phase shifter can not be modelled
