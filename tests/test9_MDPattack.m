@@ -45,6 +45,8 @@ Config.falseDataAttacks = {FalseData}; % target buses
 % unable state estimation
 Config.seEnable = 0;
 
+%Time 
+Config.simuEndTime = 24*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 1;
