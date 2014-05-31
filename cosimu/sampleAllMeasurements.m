@@ -296,7 +296,7 @@ elseif Config.falseDataSchema == 2
                         ql = CurrentStatus.qloadMeas(idxLoad) ;
                         CurrentStatus.qloadMeas(idxLoad) = ql * (1 + loadRandDir * fa.erroRatio);
                     end 
-                case 6    %MDP attack for false data injection on substations
+                case 6    %MDP attack for false data injection to substations
                     
                     n = length(ResultData.t);
                     %get state from simulation
@@ -310,9 +310,9 @@ elseif Config.falseDataSchema == 2
                     %initialization
                     if n == 1
                         MDPData.r = 0;
-                        MDPData.Q = zeros(fa.Nstate,fa.Naction);
+                        MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
                         MDPData.s = MDPData.s_new;
-                        MDPData.a = ceil(fa.Naction);
+                        MDPData.a = 1;
                     end
                     
                     % Updating the value of Q   
@@ -330,12 +330,16 @@ elseif Config.falseDataSchema == 2
                     if (pn < (1-(1/log(n+2))))
                       [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
                     else
-                      MDPData.a = randi([1,fa.Naction]);
+                      MDPData.a = randi([1,prod(fa.Naction)]);
                     end
                     
                     %take action
-                    CurrentStatus.busVMeasPu(fa.toBus) = V * (1 + fa.MDPBusFalseDataRatioStep * ...
-                        floor(MDPData.a-fa.Naction/2) );
+                    Ratios = action2Ratio(MDPData.a,fa.Naction,fa.MDPBusFalseDataRatioStep);
+                    
+                    for k = 1:length(Ratios)
+                        eval(['CurrentStatus.' fa.InjectionName{k}  ...
+                            ' = CurrentStatus.' fa.InjectionName{k} ' * Ratios(k);']);
+                    end
                     
                 otherwise  
             end               
