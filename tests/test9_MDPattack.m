@@ -35,8 +35,9 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
 FalseData.MDPBusVStateStep = 0.02;
 FalseData.Nstate = 18;  % total number of state
-FalseData.MDPBusFalseDataRatioStep = 0.2;  % Step for 
-FalseData.Naction = 7;   % total number of action
+FalseData.Naction = [5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [0.5 0.5 0.5];  % Step for false data ratio
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)'};
 FalseData.MDPDiscountFactor = 0.5;   % discount factor for value function of MDP
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
@@ -44,9 +45,9 @@ Config.falseDataAttacks = {FalseData}; % target buses
 % unable state estimation
 Config.seEnable = 0;
 
-
+Config.controlPeriod = 60;
 Config.sampleRate  = 10;
-Config.lfTStep = 10;
+Config.lfTStep = 1;
 
 if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);    
