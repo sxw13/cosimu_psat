@@ -13,6 +13,7 @@ addpath([pwd, '\loadshape']);
 pwdpath = pwd;
 
 Config = initialConfig;
+Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 
 
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
@@ -27,6 +28,9 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 
+%Time 
+Config.simuEndTime = 24*3600;
+Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 

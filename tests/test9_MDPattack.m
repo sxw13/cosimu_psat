@@ -35,9 +35,9 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
 FalseData.MDPBusVStateStep = 0.02;
 FalseData.Nstate = 18;  % total number of state
-FalseData.Naction = [5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [0.5 0.5 0.5];  % Step for false data ratio
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)'};
+FalseData.Naction = [3 3 3 3 3 3 3];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1 1];  % Step for false data ratio
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)','plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
 FalseData.MDPDiscountFactor = 0.5;   % discount factor for value function of MDP
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
@@ -49,7 +49,7 @@ Config.seEnable = 0;
 Config.simuEndTime = 24*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
-Config.lfTStep = 1;
+Config.lfTStep = 10;
 
 if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);    
@@ -70,5 +70,6 @@ ResultData = simplePSAT(Config);
 
 cd(pwdpath);
 
+ResultData.MDPData = MDPData;
 resultFile = [pwdpath, '/debug/',caseName,'_', startTime];
 save(resultFile, 'Config', 'ResultData');
