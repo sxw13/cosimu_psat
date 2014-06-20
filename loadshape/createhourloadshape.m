@@ -41,3 +41,9 @@ for iHour = 1 : 24
     hourDataNew = polyval(P, [tStep/origTStep : tStep/origTStep : nPoint]);
     save(['loadshapeHour',num2str(iHour)], 'hourDataNew');
 end
+for iHour = 1 : 24
+    hourDataOld = allDay(nPoint*(iHour-1) + 1 : nPoint*iHour);
+    P = polyfit([1:nPoint]', hourDataOld, 3);
+    hourDataNew = polyval(P, [tStep/origTStep : tStep/origTStep : nPoint]);
+    save(['loadshapeHour',num2str(iHour+24)], 'hourDataNew');
+end

@@ -33,21 +33,26 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
-FalseData.MDPBusVStateStep = 0.02;
-FalseData.Nstate = 18;  % total number of state
+FalseData.MDPBusVStateStep = 0.01;
+FalseData.Nstate = 100;  % total number of state
 FalseData.Naction = [5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [0.5 0.5 0.5];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = [1 1 1];  % Step for false data ratio
 FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)'};
-FalseData.MDPDiscountFactor = 0.5;   % discount factor for value function of MDP
+FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
+FalseData.RatioOffset = [2 2 2];
+FalseData.reward = 'pLoss';
+FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
 
-% unable state estimation
+% enable state estimation
 Config.seEnable = 0;
 
+%Time 
+Config.simuEndTime = 48*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
-Config.lfTStep = 1;
+Config.lfTStep = 10;
 
 if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);    
@@ -68,5 +73,6 @@ ResultData = simplePSAT(Config);
 
 cd(pwdpath);
 
+ResultData.MDPData = MDPData;
 resultFile = [pwdpath, '/debug/',caseName,'_', startTime];
 save(resultFile, 'Config', 'ResultData');

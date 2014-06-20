@@ -224,3 +224,4 @@ pip-log.txt
 /loadshape/dyn/*.mat
 /psat/tests/*.asv
 
+/tests/testIEEE39_FalseDataInjection.m
