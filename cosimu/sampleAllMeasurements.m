@@ -308,7 +308,7 @@ elseif Config.falseDataSchema == 2
                     
                     switch fa.reward
                         case 'voltage'
-                            MDPData.r = - norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                            MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
                         case 'pLoss'
                             MDPData.r = ResultData.pLossHis(end);
                     end
@@ -319,13 +319,16 @@ elseif Config.falseDataSchema == 2
                         MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
                         MDPData.s = MDPData.s_new;
                         MDPData.a = 1;
+                        MDPData.Iters = zeros(fa.Nstate,1);
                     end
                     
+                    Iter =  MDPData.Iters(MDPData.s);
+                    MDPData.Iters(MDPData.s) = Iter+1;
                     if fa.Qlearning
                         % Updating the value of Q   
-                        % Decaying update coefficient (1/sqrt(n+2)) can be changed
+                        % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);
-                        dQ = (1/sqrt(n+2))*delta;
+                        dQ = (1/sqrt(Iter+2))*delta;
                         MDPData.Q(MDPData.s,MDPData.a) = MDPData.Q(MDPData.s,MDPData.a) + dQ;
                     end
 
@@ -333,9 +336,9 @@ elseif Config.falseDataSchema == 2
                     MDPData.s = MDPData.s_new;
                     
                     % Action choice : greedy with increasing probability
-                    % probability 1-(1/log(n+2)) can be changed
+                    % probability 1-(1/log(Iter+2)) can be changed
                     pn = rand(1);
-                    if (pn < (1-(1/log(n+2)))) || fa.Qlearning == 0
+                    if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0
                       [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
                     else
                       MDPData.a = randi([1,prod(fa.Naction)]);
