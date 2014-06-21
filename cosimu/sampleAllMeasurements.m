@@ -299,13 +299,27 @@ elseif Config.falseDataSchema == 2
                 case 6    %MDP attack for false data injection to substations
                     
                     n = length(ResultData.t);
-                    %get state from simulation
-                    V = CurrentStatus.busVMeasPu(fa.toBus);
-                    MDPData.s_new = ceil((V-1+fa.MDPBusVStateStep*(fa.Nstate+2)/2)/fa.MDPBusVStateStep);
-                    if MDPData.s_new < 1 MDPData.s_new = 1;
-                    elseif MDPData.s_new > fa.Nstate  MDPData.s_new = fa.Nstate;
+                    %get new state from simulation
+                    states = ones(length(fa.MDPStateName),1);
+                    s_new = 0;
+                    for stateNameIndex = 1:length(fa.MDPStateName)
+                        eval(['S = CurrentStatus.' fa.MDPStateName{stateNameIndex} ';']);
+                        statemin = fa.MDPStateLimits(stateNameIndex,1);
+                        statemax = fa.MDPStateLimits(stateNameIndex,2);
+                        statestep = (statemax-statemin)/(fa.Nstate(stateNameIndex)-1);
+                        states(stateNameIndex) = ceil((S-statemin)/statestep);
+                            
+                        % consider the limits
+                        if states(stateNameIndex) < 1 states(stateNameIndex) = 1;
+                        elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) states(stateNameIndex) = fa.Nstate(stateNameIndex);
+                        end
+                        
+                        s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
                     end
+                    s_new = s_new + 1;
+                    MDPData.s_new = s_new;
                     
+                    %get reward
                     switch fa.reward
                         case 'voltage'
                             MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
@@ -314,7 +328,7 @@ elseif Config.falseDataSchema == 2
                     end
                     
                     %initialization
-                    if n == 1 && fa.Qlearning == 1
+                    if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
                         MDPData.r = 0;
                         MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
                         MDPData.s = MDPData.s_new;
