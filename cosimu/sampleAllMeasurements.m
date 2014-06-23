@@ -299,63 +299,65 @@ elseif Config.falseDataSchema == 2
                 case 6    %MDP attack for false data injection to substations
                     
                     n = length(ResultData.t);
-                    %get new state from simulation
-                    states = ones(length(fa.MDPStateName),1);
-                    s_new = 0;
-                    for stateNameIndex = 1:length(fa.MDPStateName)
-                        eval(['S = CurrentStatus.' fa.MDPStateName{stateNameIndex} ';']);
-                        statemin = fa.MDPStateLimits(stateNameIndex,1);
-                        statemax = fa.MDPStateLimits(stateNameIndex,2);
-                        statestep = (statemax-statemin)/(fa.Nstate(stateNameIndex)-1);
-                        states(stateNameIndex) = ceil((S-statemin)/statestep);
-                            
-                        % consider the limits
-                        if states(stateNameIndex) < 1 states(stateNameIndex) = 1;
-                        elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) states(stateNameIndex) = fa.Nstate(stateNameIndex);
-                        end
-                        
-                        s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
-                    end
-                    s_new = s_new + 1;
-                    MDPData.s_new = s_new;
-                    
-                    %get reward
-                    switch fa.reward
-                        case 'voltage'
-                            MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
-                        case 'pLoss'
-                            MDPData.r = ResultData.pLossHis(end);
-                    end
-                    
-                    %initialization
-                    if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
-                        MDPData.r = 0;
-                        MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
-                        MDPData.s = MDPData.s_new;
-                        MDPData.a = 1;
-                        MDPData.Iters = zeros(fa.Nstate,1);
-                    end
-                    
-                    Iter =  MDPData.Iters(MDPData.s);
-                    MDPData.Iters(MDPData.s) = Iter+1;
-                    if fa.Qlearning
-                        % Updating the value of Q   
-                        % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
-                        delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);
-                        dQ = (1/sqrt(Iter+2))*delta;
-                        MDPData.Q(MDPData.s,MDPData.a) = MDPData.Q(MDPData.s,MDPData.a) + dQ;
-                    end
+                    if mod(n,Config.controlPeriod/Config.lfTStep)==1
+                        %get new state from simulation
+                        states = ones(length(fa.MDPStateName),1);
+                        s_new = 0;
+                        for stateNameIndex = 1:length(fa.MDPStateName)
+                            eval(['S = CurrentStatus.' fa.MDPStateName{stateNameIndex} ';']);
+                            statemin = fa.MDPStateLimits(stateNameIndex,1);
+                            statemax = fa.MDPStateLimits(stateNameIndex,2);
+                            statestep = (statemax-statemin)/(fa.Nstate(stateNameIndex)-2);
+                            states(stateNameIndex) = ceil((S-statemin)/statestep)+1;
 
-                    % Current state is updated
-                    MDPData.s = MDPData.s_new;
-                    
-                    % Action choice : greedy with increasing probability
-                    % probability 1-(1/log(Iter+2)) can be changed
-                    pn = rand(1);
-                    if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0
-                      [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
-                    else
-                      MDPData.a = randi([1,prod(fa.Naction)]);
+                            % consider the limits
+                            if states(stateNameIndex) < 1 states(stateNameIndex) = 1;
+                            elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) states(stateNameIndex) = fa.Nstate(stateNameIndex);
+                            end
+
+                            s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
+                        end
+                        s_new = s_new + 1;
+                        MDPData.s_new = s_new;
+
+                        %get reward
+                        switch fa.reward
+                            case 'voltage'
+                                MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                            case 'pLoss'
+                                MDPData.r = ResultData.pLossHis(end);
+                        end
+
+                        %initialization
+                        if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
+                            MDPData.r = 0;
+                            MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
+                            MDPData.s = MDPData.s_new;
+                            MDPData.a = 1;
+                            MDPData.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
+                        end
+
+                        Iter =  MDPData.Iters(MDPData.s,MDPData.a);
+                        MDPData.Iters(MDPData.s,MDPData.a) = Iter+1;
+                        if fa.Qlearning
+                            % Updating the value of Q   
+                            % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
+                            delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);
+                            dQ = (1/sqrt(Iter+2))*delta;
+                            MDPData.Q(MDPData.s,MDPData.a) = MDPData.Q(MDPData.s,MDPData.a) + dQ;
+                        end
+
+                        % Current state is updated
+                        MDPData.s = MDPData.s_new;
+
+                        % Action choice : greedy with increasing probability
+                        % probability 1-(1/log(Iter+2)) can be changed
+                        pn = rand(1);
+                        if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0
+                          [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
+                        else
+                          MDPData.a = randi([1,prod(fa.Naction)]);
+                        end
                     end
                     
                     %take action

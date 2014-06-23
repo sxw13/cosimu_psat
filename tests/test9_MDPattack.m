@@ -27,7 +27,7 @@ Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl o
 Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 1;
+Config.enableLoadShape = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
@@ -37,12 +37,12 @@ FalseData.strategy = 6; % for MDP attack on ql;
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'busVMeasPu(5)'};
 FalseData.MDPStateLimits = [1.01 1.06];
-FalseData.Nstate = [100];  % total number of state
+FalseData.Nstate = [4];  % total number of state
 FalseData.Naction = [5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1 1];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = [1 1 0.05];  % Step for false data ratio
 FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 2 2];
+FalseData.RatioOffset = [2 2 1];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.Continouslearning = 0; % 0 for setting all state iteration to zero;
