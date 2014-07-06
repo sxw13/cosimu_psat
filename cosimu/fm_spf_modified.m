@@ -28,7 +28,7 @@ if Settings.show
 end
 nodyn = 0;
 
-
+Settings.init = 0;
 % these computations are needed only the first time the power flow is run
 if ~Settings.init
   % bus type initialization
@@ -39,8 +39,8 @@ if ~Settings.init
   % create the admittance matrix
   Line = build_y(Line);
   % create the FM_CALL FUNCTION
-  if Settings.show, fm_disp('Writing file "fm_call" ...',1), end
-%   fm_wcall;
+%  if Settings.show, fm_disp('Writing file "fm_call" ...',1), end
+%  fm_wcall;
   Settings.init = 1;
 end
 

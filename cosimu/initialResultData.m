@@ -31,6 +31,8 @@ ResultData.ctrlQueue = [];
 ResultData.nSample = 0;
 ResultData.nOpf = 0;
 
+ResultData.isOpfConverged = [];
+
 ResultData.allLoadIdx = [];
 busIdx = PQ.bus;
 for iBus = 1 : PQ.n

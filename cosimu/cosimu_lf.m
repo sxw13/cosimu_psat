@@ -75,6 +75,7 @@ while (t < Settings.tf)
             %         % make measurements for control center to do opf control
             CurrentStatus = sampleAllMeasurements(Config, ResultData, CurrentStatus);
             [ResultData, isOpfConverged] = obtainOpfControlCommand( CurrentStatus, ResultData, Config);
+            ResultData.isOpfConverged = [ResultData.isOpfConverged isOpfConverged];
             if (isOpfConverged)
                 disp(['opf converged for the time ', num2str(t)]);
                 ResultData = addCmd2CtrlOperationQueue(ResultData, Config);
@@ -89,6 +90,7 @@ while (t < Settings.tf)
             nOpt = length(opts);
             for i = 1 : nOpt
                 SW.con(:,4) = opts(i).vGen(ResultData.allGenIdx(1:SW.n));
+                SW.con(:,10) = opts(i).pGen(ResultData.allGenIdx(1:SW.n)) + 1e-5;
                 PV.con(:,5) = opts(i).vGen(ResultData.allGenIdx(SW.n + 1 : end));
                 PV.con(:,4) = opts(i).pGen(ResultData.allGenIdx(SW.n + 1 : end));
             end

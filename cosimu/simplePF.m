@@ -55,7 +55,9 @@ load([Config.loadShapeFile, '1']);
 loadshape = hourDataNew;
 initialLoadRate = loadshape(1);
 
-CurrentStatus.bus(:,[3,4]) = initialLoadRate * CurrentStatus.bus(:,[3,4]);
+if Config.enableLoadShape
+    CurrentStatus.bus(:,[3,4]) = initialLoadRate * CurrentStatus.bus(:,[3,4]);
+end
 optresult = runopf(CurrentStatus, Config.opt);
 
 if optresult.success == 1

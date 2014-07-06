@@ -28,6 +28,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 0;
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy

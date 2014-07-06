@@ -12,6 +12,11 @@ function [CurrentStatus] = sampleAllMeasurements(Config, ResultData, CurrentStat
     CurrentStatus.plineTailMeas = ResultData.allLineTailPHis(:, end);
     CurrentStatus.qlineTailMeas = ResultData.allLineTailQHis(:, end);
     
+    try
+        CurrentStatus.isOpfConverged = ResultData.isOpfConverged(:,end);
+    catch e
+        CurrentStatus.isOpfConverged = 1;
+    end
 %     
 if Config.measLagSchema == 2
     
@@ -323,7 +328,11 @@ elseif Config.falseDataSchema == 2
                         %get reward
                         switch fa.reward
                             case 'voltage'
-                                MDPData.r = norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                                MDPData.r = 2 - norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                                % penal for OPF not converged
+                                if ~CurrentStatus.isOpfConverged
+                                    MDPData.r = 0;
+                                end
                             case 'pLoss'
                                 MDPData.r = ResultData.pLossHis(end);
                         end
