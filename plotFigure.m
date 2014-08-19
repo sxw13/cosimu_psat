@@ -1,5 +1,6 @@
 close all;
 
+filter = 'genPMeas';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allPGenHis(1,:)' ...
@@ -23,7 +24,7 @@ for name=areanames
     title(areaname);
     for k=1:length(lists)
         file=lists(k);
-        if file.isdir==0
+        if file.isdir==0 && ~isempty(strfind(file.name,filter))
             S=load(['.\debug\' file.name],'ResultData');
             ResultData=S.ResultData;
             eval(['f=' areaname ';']);
