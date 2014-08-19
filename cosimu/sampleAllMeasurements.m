@@ -348,7 +348,7 @@ elseif Config.falseDataSchema == 2
 
                         Iter =  MDPData.Iters(MDPData.s,MDPData.a);
                         MDPData.Iters(MDPData.s,MDPData.a) = Iter+1;
-                        if fa.Qlearning
+                        if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
                             % Updating the value of Q   
                             % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                             delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);

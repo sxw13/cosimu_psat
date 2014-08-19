@@ -46,6 +46,7 @@ FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
 FalseData.RatioOffset = [2 2 1];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
+FalseData.LearningEndTime = 21 * 3600;
 FalseData.Continouslearning = 0; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
