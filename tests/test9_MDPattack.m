@@ -36,12 +36,12 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.MDPStateName = {'busVMeasPu(5)'};
-FalseData.MDPStateLimits = [1.01 1.06];
-FalseData.Nstate = [4];  % total number of state
+FalseData.MDPStateName = {'genPMeas(1)'};
+FalseData.MDPStateLimits = [0.6 1.0];
+FalseData.Nstate = [3];  % total number of state
 FalseData.Naction = [5 5 5];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 0.05];  % Step for false data ratio
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(1)'};
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(5)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
 FalseData.RatioOffset = [2 2 1];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss'
@@ -70,7 +70,7 @@ createhourloadshape(Config);
 
 cd(pwdpath);
 
-caseName = [Config.opfCaseName '_MDPattack_', num2str(Config.simuEndTime)];
+caseName = [Config.opfCaseName '_MDPattack_genPMeas_', num2str(Config.simuEndTime)];
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 disp([caseName, 'started at ', startTime]);
 
