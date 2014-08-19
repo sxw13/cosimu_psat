@@ -362,7 +362,7 @@ elseif Config.falseDataSchema == 2
                         % Action choice : greedy with increasing probability
                         % probability 1-(1/log(Iter+2)) can be changed
                         pn = rand(1);
-                        if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0
+                        if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
                           [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
                         else
                           MDPData.a = randi([1,prod(fa.Naction)]);

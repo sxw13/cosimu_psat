@@ -1,6 +1,6 @@
 close all;
 
-filter = 'genPMeas';
+filter = '00-02-48';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allPGenHis(1,:)' ...

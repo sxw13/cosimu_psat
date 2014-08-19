@@ -39,14 +39,14 @@ FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'genPMeas(1)'};
 FalseData.MDPStateLimits = [0.6 1.0];
 FalseData.Nstate = [3];  % total number of state
-FalseData.Naction = [5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1 0.05];  % Step for false data ratio
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','busVMeasPu(5)'};
+FalseData.Naction = [5 5 5 5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 2 1];
+FalseData.RatioOffset = [2 2 2 2 2 2];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 21 * 3600;
+FalseData.LearningEndTime = 94 * 3600;
 FalseData.Continouslearning = 0; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
@@ -55,7 +55,7 @@ Config.falseDataAttacks = {FalseData}; % target buses
 Config.seEnable = 0;
 
 %Time 
-Config.simuEndTime = 48*3600;
+Config.simuEndTime = 96 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
