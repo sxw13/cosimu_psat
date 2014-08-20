@@ -305,6 +305,8 @@ elseif Config.falseDataSchema == 2
                     
                     n = length(ResultData.t);
                     if mod(n,Config.controlPeriod/Config.lfTStep)==1
+                        MDPData_k = MDPData{iAttack};
+                        
                         %get new state from simulation
                         states = ones(length(fa.MDPStateName),1);
                         s_new = 0;
@@ -323,59 +325,61 @@ elseif Config.falseDataSchema == 2
                             s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
                         end
                         s_new = s_new + 1;
-                        MDPData.s_new = s_new;
+                        MDPData_k.s_new = s_new;
 
                         %get reward
                         switch fa.reward
                             case 'voltage'
-                                MDPData.r = 2 - norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
+                                MDPData_k.r = 2 - norm(CurrentStatus.busVMeasPu(fa.toBus)-1);
                                 % penal for OPF not converged
                                 if ~CurrentStatus.isOpfConverged
-                                    MDPData.r = 0;
+                                    MDPData_k.r = 0;
                                 end
                             case 'pLoss'
-                                MDPData.r = ResultData.pLossHis(end);
+                                MDPData_k.r = ResultData.pLossHis(end);
                         end
 
                         %initialization
                         if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
-                            MDPData.r = 0;
-                            MDPData.Q = zeros(fa.Nstate,prod(fa.Naction));
-                            MDPData.s = MDPData.s_new;
-                            MDPData.a = 1;
-                            MDPData.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
+                            MDPData_k.r = 0;
+                            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+                            MDPData_k.s = MDPData_k.s_new;
+                            MDPData_k.a = 1;
+                            MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
                         end
 
-                        Iter =  MDPData.Iters(MDPData.s,MDPData.a);
-                        MDPData.Iters(MDPData.s,MDPData.a) = Iter+1;
+                        Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
+                        MDPData_k.Iters(MDPData_k.s,MDPData_k.a) = Iter+1;
                         if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
                             % Updating the value of Q   
                             % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
-                            delta = MDPData.r + fa.MDPDiscountFactor*max(MDPData.Q(MDPData.s_new,:)) - MDPData.Q(MDPData.s,MDPData.a);
+                            delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
                             dQ = (1/sqrt(Iter+2))*delta;
-                            MDPData.Q(MDPData.s,MDPData.a) = MDPData.Q(MDPData.s,MDPData.a) + dQ;
+                            MDPData_k.Q(MDPData_k.s,MDPData_k.a) = MDPData_k.Q(MDPData_k.s,MDPData_k.a) + dQ;
                         end
 
                         % Current state is updated
-                        MDPData.s = MDPData.s_new;
+                        MDPData_k.s = MDPData_k.s_new;
 
                         % Action choice : greedy with increasing probability
                         % probability 1-(1/log(Iter+2)) can be changed
                         pn = rand(1);
                         if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
-                          [~,MDPData.a] = max(MDPData.Q(MDPData.s,:));
+                          [~,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
                         else
-                          MDPData.a = randi([1,prod(fa.Naction)]);
+                          MDPData_k.a = randi([1,prod(fa.Naction)]);
                         end
                     end
                     
                     %take action
-                    Ratios = action2Ratio(MDPData.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
+                    Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                     
                     for k = 1:length(Ratios)
                         eval(['CurrentStatus.' fa.InjectionName{k}  ...
                             ' = CurrentStatus.' fa.InjectionName{k} ' * Ratios(k);']);
                     end
+                    
+                    MDPData{iAttack} = MDPData_k;
                     
                 otherwise  
             end               
