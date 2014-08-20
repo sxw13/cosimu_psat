@@ -1,6 +1,6 @@
 close all;
 
-filter = '00-02-48';
+filter = 'case_ieee9_MDPattack_genPMeas_172800_20-Aug-2014-08-52-25';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allPGenHis(1,:)' ...
