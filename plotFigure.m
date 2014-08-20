@@ -1,6 +1,6 @@
 close all;
 
-filter = '01-29-14';
+filter = 'case_ieee9_MDPattack_genPMeas_172800_20-Aug-2014-09-29-39';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allPGenHis(1,:)' ...
@@ -25,8 +25,9 @@ for name=areanames
     for k=1:length(lists)
         file=lists(k);
         if file.isdir==0 && ~isempty(strfind(file.name,filter))
-            S=load(['.\debug\' file.name],'ResultData');
+            S=load(['.\debug\' file.name]);
             ResultData=S.ResultData;
+            Config=S.Config;
             eval(['f=' areaname ';']);
             if isempty(strfind(areaname,'Ctrl'))
                 t=ResultData.t;
@@ -39,4 +40,14 @@ for name=areanames
         end
     end
     legend(l);grid on;
-end 
+end
+
+for k=1:length(lists)
+    file=lists(k);
+    if file.isdir==0 && ~isempty(strfind(file.name,filter))
+        S=load(['.\debug\' file.name]);
+        ResultData=S.ResultData;
+        Config=S.Config;
+        recordStrategy(Config,ResultData);
+    end
+end

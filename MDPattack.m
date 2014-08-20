@@ -61,7 +61,7 @@ FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
 
 Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
 
-MDPData = cell(length(Config.falseDataAttacks));
+MDPData = cell(1,length(Config.falseDataAttacks));
 
 % enable state estimation
 Config.seEnable = 0;
