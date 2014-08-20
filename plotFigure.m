@@ -1,6 +1,6 @@
 close all;
 
-filter = '00-02-48';
+filter = '01-29-14';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allPGenHis(1,:)' ...
