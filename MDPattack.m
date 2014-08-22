@@ -1,4 +1,5 @@
-function MDPattack(commands)
+%state=1:初始化，state=0:不初始化
+function MDPattack(commands,state)
 
 global MDPData;
 
@@ -34,34 +35,37 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.MDPStateName = {'loadPMeas(1)'};
-FalseData.MDPStateLimits = [0.6 1.0];
+FalseData.MDPStateName = {'ploadMeas(1)'};
+FalseData.MDPStateLimits = [0.6 2];
 FalseData.Nstate = [3];  % total number of state
-FalseData.Naction = [5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1];  % Step for false data ratio
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)'};
+FalseData.Naction = [5 5 5 5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 2];
+FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 46 * 3600;
-FalseData.Continouslearning = 0; % 0 for setting all state iteration to zero;
+FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
-%%%%%%%%%%%%%define a false attack element
-FalseData2 = FalseData;
-FalseData2.InjectionName = {'ploadMeas(2)','qloadMeas(2)'};
-%%%%%%%%%%%%%put a false attack element into config structure
+% %%%%%%%%%%%%%define a false attack element
+% FalseData2 = FalseData;
+% FalseData2.InjectionName = {'ploadMeas(2)','qloadMeas(2)'};
+% %%%%%%%%%%%%%put a false attack element into config structure
+% 
+% %%%%%%%%%%%%%define a false attack element
+% FalseData3 = FalseData;
+% FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
+% %%%%%%%%%%%%%put a false attack element into config structure
 
-%%%%%%%%%%%%%define a false attack element
-FalseData3 = FalseData;
-FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
-%%%%%%%%%%%%%put a false attack element into config structure
 
+% Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
+Config.falseDataAttacks = {FalseData};
 
-Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
-
-MDPData = cell(1,length(Config.falseDataAttacks));
+if state
+    MDPData = cell(1,length(Config.falseDataAttacks));
+end
 
 % enable state estimation
 Config.seEnable = 0;
