@@ -1,7 +1,11 @@
 %state=1:初始化，state=0:不初始化
 function MDPattack(commands,state)
 
+% global MDPData TAction;
 global MDPData;
+
+% SSS = load('Action.mat');
+% TAction = SSS.Action;
 
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);

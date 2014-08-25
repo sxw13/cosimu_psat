@@ -1,5 +1,5 @@
 function [CurrentStatus] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
-    global MDPData
+    global MDPData  % TAction
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -347,16 +347,26 @@ elseif Config.falseDataSchema == 2
                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
                         MDPData_k.ActionHistory = [];
                         MDPData_k.StatesHistory = [];
+                        MDPData_k.rHistory = [];
+                        MDPData_k.VHistory = [];
+                        MDPData_k.id = 0;
                     end
 
                     Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
                     MDPData_k.Iters(MDPData_k.s,MDPData_k.a) = Iter+1;
+                    MDPData_k.ActionHistory = [MDPData_k.ActionHistory MDPData_k.a];
+                    MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
+                    MDPData_k.rHistory = [MDPData_k.rHistory MDPData_k.r];
+                    MDPData_k.VHistory = [MDPData_k.VHistory CurrentStatus.busVMeasPu(fa.toBus)];
                     if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
                         % Updating the value of Q   
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
                         % dQ = (1/sqrt(Iter+2))*delta;
                         dQ = delta;
+                        if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
+                            disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.id+1)]);
+                        end
                         MDPData_k.Q(MDPData_k.s,MDPData_k.a) = MDPData_k.Q(MDPData_k.s,MDPData_k.a) + dQ;
                     end
 
@@ -365,13 +375,14 @@ elseif Config.falseDataSchema == 2
 
                     % Action choice : greedy with increasing probability
                     % probability 1-(1/log(Iter+2)) can be changed
-                    pn = rand(1);
+                    pn = rand(1); 
                     if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
                       [~,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
                     else
                       MDPData_k.a = randi([1,prod(fa.Naction)]);
                     end
-                    
+%                     MDPData_k.id = MDPData_k.id + 1;
+                %    MDPData_k.a = 1626;
                     %take action
                     Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                     
@@ -379,9 +390,6 @@ elseif Config.falseDataSchema == 2
                         eval(['CurrentStatus.' fa.InjectionName{k}  ...
                             ' = CurrentStatus.' fa.InjectionName{k} ' * Ratios(k);']);
                     end
-                    
-                    MDPData_k.ActionHistory = [MDPData_k.ActionHistory MDPData_k.a];
-                    MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
                     
                     MDPData{iAttack} = MDPData_k;
                     
