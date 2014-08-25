@@ -336,6 +336,12 @@ elseif Config.falseDataSchema == 2
                             end
                         case 'pLoss'
                             MDPData_k.r = ResultData.pLossHis(end);
+                        case 'minEigValue'
+                            MDPData_k.r = ResultData.minEigValueHis(end);
+                            % penal for OPF not converged
+                            if ~CurrentStatus.isOpfConverged
+                                MDPData_k.r = 0;
+                            end
                     end
 
                     %initialization
