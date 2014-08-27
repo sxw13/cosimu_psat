@@ -16,7 +16,7 @@ function re = recordStrategy(Config,ResultData)
         [Qmax,Action]=max(md.Q');
         for s = 1:prod(fa.Nstate)
             
-            if Qmax(s)>0
+            if Qmax(s)>-0.99
                 Ratios = action2Ratio(Action(s),fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                 info = [];
                 for id = 1:length(fa.Nstate)

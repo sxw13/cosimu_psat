@@ -31,7 +31,8 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 0;
-Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
@@ -47,9 +48,9 @@ FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
 FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
 FalseData.RatioOffset = [2 0 2 0 2 0];
-FalseData.reward = 'minEigValue';  % 'voltage' or 'pLoss'
+FalseData.reward = 'minEigValue';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 46 * 3600;
+FalseData.LearningEndTime = 45 * 3600;
 FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
@@ -75,7 +76,7 @@ end
 Config.seEnable = 0;
 
 %Time 
-Config.simuEndTime = 48 * 3600;
+Config.simuEndTime =  48 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;

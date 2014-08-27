@@ -337,17 +337,17 @@ elseif Config.falseDataSchema == 2
                         case 'pLoss'
                             MDPData_k.r = ResultData.pLossHis(end);
                         case 'minEigValue'
-                            MDPData_k.r = ResultData.minEigValueHis(end);
+                            MDPData_k.r = - ResultData.minEigValueHis(end);
                             % penal for OPF not converged
                             if ~CurrentStatus.isOpfConverged
-                                MDPData_k.r = 0;
+                                MDPData_k.r = -1;
                             end
                     end
 
                     %initialization
                     if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
                         MDPData_k.r = 0;
-                        MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+                        MDPData_k.Q = - ones(fa.Nstate,prod(fa.Naction));
                         MDPData_k.s = MDPData_k.s_new;
                         MDPData_k.a = 1;
                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
@@ -368,8 +368,8 @@ elseif Config.falseDataSchema == 2
                         % Updating the value of Q   
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
-                        % dQ = (1/sqrt(Iter+2))*delta;
-                        dQ = delta;
+                        dQ = (2/(sqrt(Iter+1)+1))*delta;
+                        % dQ = delta;
                         if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
                             disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.id+1)]);
                         end
@@ -388,7 +388,11 @@ elseif Config.falseDataSchema == 2
                       MDPData_k.a = randi([1,prod(fa.Naction)]);
                     end
 %                     MDPData_k.id = MDPData_k.id + 1;
-                %    MDPData_k.a = 1626;
+%                     if mod(length(MDPData_k.rHistory),15)<5
+%                         MDPData_k.a = 8627;
+%                     else
+%                         MDPData_k.a = 1626;
+%                     end
                     %take action
                     Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                     

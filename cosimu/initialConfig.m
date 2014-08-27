@@ -18,6 +18,7 @@ Config.loadShapeFile = 'loadshapeHour';
 Config.enableOPFCtrl = 1;
 Config.enableLoadShape = 1;
 Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.calEigs = 0;
 
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;

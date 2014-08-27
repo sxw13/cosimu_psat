@@ -74,9 +74,16 @@ while (t < Settings.tf)
         %     %% do control according opf result
         if abs(t - ResultData.nOpf*Config.controlPeriod) <= Settings.tstep/2
             %         % make measurements for control center to do opf control
-            eigValues = eig(DAE.Gy);
-            minEigValue = min(abs(eigValues));
-            ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
+            if Config.calEigs
+                if Config.distrsw
+                    Jrow = sparse(1,DAE.n+SW.refbus,1,1,DAE.n+DAE.m+1);
+                    eigValues = eig(full([DAE.Fx,DAE.Fy,DAE.Fk;DAE.Gx,DAE.Gy,DAE.Gk;Jrow]));
+                else
+                    eigValues = eig(full([DAE.Fx, DAE.Fy; DAE.Gx, DAE.Gy]));
+                end
+                minEigValue = min(abs(eigValues));
+                ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
+            end
             CurrentStatus = sampleAllMeasurements(Config, ResultData, CurrentStatus);
             [ResultData, isOpfConverged] = obtainOpfControlCommand( CurrentStatus, ResultData, Config);
             ResultData.isOpfConverged = [ResultData.isOpfConverged isOpfConverged];
