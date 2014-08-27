@@ -347,7 +347,7 @@ elseif Config.falseDataSchema == 2
                     %initialization
                     if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
                         MDPData_k.r = 0;
-                        MDPData_k.Q = - ones(fa.Nstate,prod(fa.Naction));
+                        MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
                         MDPData_k.s = MDPData_k.s_new;
                         MDPData_k.a = 1;
                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
