@@ -317,8 +317,8 @@ elseif Config.falseDataSchema == 2
                         states(stateNameIndex) = ceil((S-statemin)/statestep)+1;
 
                         % consider the limits
-                        if states(stateNameIndex) < 1 states(stateNameIndex) = 1;
-                        elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) states(stateNameIndex) = fa.Nstate(stateNameIndex);
+                        if states(stateNameIndex) < 1 , states(stateNameIndex) = 1;
+                        elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) , states(stateNameIndex) = fa.Nstate(stateNameIndex);
                         end
 
                         s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
@@ -331,7 +331,7 @@ elseif Config.falseDataSchema == 2
                         case 'voltage'
                             MDPData_k.r = 3 - CurrentStatus.busVMeasPu(fa.toBus);
                             % penal for OPF not converged
-                            if ~CurrentStatus.isOpfConverged
+                            if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
                                 MDPData_k.r = 0;
                             end
                         case 'pLoss'
@@ -339,8 +339,8 @@ elseif Config.falseDataSchema == 2
                         case 'minEigValue'
                             MDPData_k.r = - ResultData.minEigValueHis(end);
                             % penal for OPF not converged
-                            if ~CurrentStatus.isOpfConverged
-                                MDPData_k.r = -1;
+                            if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
+                                MDPData_k.r = -5;
                             end
                     end
 
@@ -348,6 +348,14 @@ elseif Config.falseDataSchema == 2
                     if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
                         MDPData_k.r = 0;
                         MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+                        switch fa.reward
+                        case 'voltage'
+                            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+                        case 'pLoss'
+                            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+                        case 'minEigValue'
+                            MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+                        end
                         MDPData_k.s = MDPData_k.s_new;
                         MDPData_k.a = 1;
                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));

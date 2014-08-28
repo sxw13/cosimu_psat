@@ -39,6 +39,7 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on ql; 
+FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.6 2];

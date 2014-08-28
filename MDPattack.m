@@ -38,19 +38,20 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
-FalseData.strategy = 6; % for MDP attack on ql; 
+FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.6 2];
 FalseData.Nstate = [3];  % total number of state
 FalseData.Naction = [5 5 5 5 5 5];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
+FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
 FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 45 * 3600;
+FalseData.LearningEndTime = 46 * 3600;
 FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
