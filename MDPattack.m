@@ -1,8 +1,8 @@
 %state=1:初始化，state=0:不初始化
-function MDPattack(commands,state)
+function MDPattack(commands)
 
 % global MDPData TAction;
-global MDPData;
+% global MDPData;
 
 % SSS = load('Action.mat');
 % TAction = SSS.Action;
@@ -18,7 +18,6 @@ pwdpath = pwd;
 
 Config = initialConfig;
 
-
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize 
 Config.measLatencyChagePeriod = [0, Config.simuEndTime]; 
@@ -30,7 +29,7 @@ Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl o
 Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 0;
+Config.enableLoadShape = 1;
 Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
@@ -41,7 +40,7 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
-FalseData.MDPStateLimits = [0.6 2];
+FalseData.MDPStateLimits = [0.7 2];
 FalseData.Nstate = [3];  % total number of state
 FalseData.Naction = [5 5 5 5 5 5];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
@@ -51,8 +50,8 @@ FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
 FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 46 * 3600;
-FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
+FalseData.LearningEndTime = 24 * 3600;
+% FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 % %%%%%%%%%%%%%define a false attack element
@@ -69,15 +68,15 @@ FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to ze
 % Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
 Config.falseDataAttacks = {FalseData};
 
-if state
-    MDPData = cell(1,length(Config.falseDataAttacks));
-end
+% if state
+%     MDPData = cell(1,length(Config.falseDataAttacks));
+% end
 
 % enable state estimation
 Config.seEnable = 0;
 
 %Time 
-Config.simuEndTime =  48 * 3600;
+Config.simuEndTime =  24 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -105,7 +104,6 @@ ResultData = simplePSAT(Config);
 
 cd(pwdpath);
 
-ResultData.MDPData = MDPData;
 resultFile = [pwdpath, '/debug/',caseName,'_', startTime];
 save(resultFile, 'Config', 'ResultData');
 

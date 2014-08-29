@@ -1,6 +1,3 @@
-%state=1:初始化，state=0:不初始化
-function MDPattack_mult(commands)
-
 % global MDPData TAction;
 % global MDPData;
 
@@ -17,7 +14,6 @@ addpath([pwd, '\loadshape']);
 pwdpath = pwd;
 
 Config = initialConfig;
-
 
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize 
@@ -38,38 +34,36 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
-FalseData.strategy = 6; % for MDP attack on ql; 
-FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
+FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.6 2];
 FalseData.Nstate = [3];  % total number of state
-FalseData.Naction = [5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1];  % Step for false data ratio
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)'};
+FalseData.Naction = [5 5 5 5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
+FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
+FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 0];
+FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'minEigValue';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 45 * 3600;
+FalseData.LearningEndTime = 30 * 3600;
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
-%%%%%%%%%%%%%define a false attack element
-FalseData2 = FalseData;
-FalseData2.MDPStateName = {'ploadMeas(2)'};
-FalseData2.InjectionName = {'ploadMeas(2)','qloadMeas(2)'};
-%%%%%%%%%%%%%put a false attack element into config structure
+% %%%%%%%%%%%%%define a false attack element
+% FalseData2 = FalseData;
+% FalseData2.InjectionName = {'ploadMeas(2)','qloadMeas(2)'};
+% %%%%%%%%%%%%%put a false attack element into config structure
 % 
-%%%%%%%%%%%%%define a false attack element
-FalseData3 = FalseData;
-FalseData3.MDPStateName = {'ploadMeas(3)'};
-FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
-%%%%%%%%%%%%%put a false attack element into config structure
+% %%%%%%%%%%%%%define a false attack element
+% FalseData3 = FalseData;
+% FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
+% %%%%%%%%%%%%%put a false attack element into config structure
 
 
-Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
-% Config.falseDataAttacks = {FalseData};
+% Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
+Config.falseDataAttacks = {FalseData};
 
 % if state
 %     MDPData = cell(1,length(Config.falseDataAttacks));
@@ -79,14 +73,14 @@ Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
 Config.seEnable = 0;
 
 %Time 
-Config.simuEndTime =  48 * 3600;
+Config.simuEndTime = 32 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
-for k = 1:length(commands)
-    eval([commands{k} ';']);
-end
+dir =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
+mkdir([pwdpath, '/debug/', dir]);
+
 
 if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);    
@@ -97,17 +91,21 @@ Config.loadShapeFile = [pwd, '\loadshapeHour'];
 delete *.mat
 createhourloadshape(Config);
 
-cd(pwdpath);
 
-caseName = [Config.opfCaseName '_MDPattack_Mult_', num2str(Config.simuEndTime)];
-startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-disp([caseName, 'started at ', startTime]);
+for range = linspace(0.5,1.5,7)
+    for idx = 1:5
+        Config.falseDataAttacks{1}.Naction = range*ones(1,length(FalseData.MDPBusFalseDataRatioStep));
+        cd(pwdpath);
 
-ResultData = simplePSAT(Config);
+        caseName = [Config.opfCaseName '_MDPattack_genPMeas_', num2str(Config.simuEndTime)];
+        startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
+        disp([caseName, 'started at ', startTime]);
 
-cd(pwdpath);
+        ResultData = simplePSAT(Config);
 
-resultFile = [pwdpath, '/debug/',caseName,'_', startTime];
-save(resultFile, 'Config', 'ResultData');
+        cd(pwdpath);
 
+        resultFile = [pwdpath, '/debug/',dir,'/',caseName,'_', startTime];
+        save(resultFile, 'Config', 'ResultData');
+    end
 end

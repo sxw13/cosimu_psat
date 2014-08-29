@@ -1,5 +1,5 @@
-function [CurrentStatus] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
-    global MDPData  % TAction
+function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
+%     global MDPData  % TAction
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -304,7 +304,7 @@ elseif Config.falseDataSchema == 2
                 case 6    %MDP attack for false data injection to substations
                     
                     n = length(ResultData.t);
-                    MDPData_k = MDPData{iAttack};
+                    MDPData_k = ResultData.MDPData{iAttack};
 
                     %get new state from simulation
                     states = ones(length(fa.MDPStateName),1);
@@ -345,25 +345,24 @@ elseif Config.falseDataSchema == 2
                     end
 
                     %initialization
-                    if n == 1 && fa.Qlearning == 1 && fa.Continouslearning == 0
-                        MDPData_k.r = 0;
-                        MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
-                        switch fa.reward
-                        case 'voltage'
-                            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
-                        case 'pLoss'
-                            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
-                        case 'minEigValue'
-                            MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
-                        end
+                    if n == 1 && fa.Qlearning == 1 % && fa.Continouslearning == 0
+%                         MDPData_k.r = 0;
+%                         MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+%                         switch fa.reward
+%                         case 'voltage'
+%                             MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+%                         case 'pLoss'
+%                             MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+%                         case 'minEigValue'
+%                             MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+%                         end
                         MDPData_k.s = MDPData_k.s_new;
-                        MDPData_k.a = 1;
-                        MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
-                        MDPData_k.ActionHistory = [];
-                        MDPData_k.StatesHistory = [];
-                        MDPData_k.rHistory = [];
-                        MDPData_k.VHistory = [];
-                        MDPData_k.id = 0;
+%                         MDPData_k.a = 1;
+%                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
+%                         MDPData_k.ActionHistory = [];
+%                         MDPData_k.StatesHistory = [];
+%                         MDPData_k.rHistory = [];
+%                         MDPData_k.VHistory = [];
                     end
 
                     Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
@@ -378,9 +377,9 @@ elseif Config.falseDataSchema == 2
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
                         dQ = (2/(sqrt(Iter+1)+1))*delta;
                         % dQ = delta;
-                        if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
-                            disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.r) ' ' num2str(MDPData_k.id+1)]);
-                        end
+%                         if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
+%                             disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(length(MDPData_k.rHistory)+1)]);
+%                         end
                         MDPData_k.Q(MDPData_k.s,MDPData_k.a) = MDPData_k.Q(MDPData_k.s,MDPData_k.a) + dQ;
                     end
 
@@ -409,7 +408,7 @@ elseif Config.falseDataSchema == 2
                             ' = CurrentStatus.' fa.InjectionName{k} ' * Ratios(k);']);
                     end
                     
-                    MDPData{iAttack} = MDPData_k;
+                    ResultData.MDPData{iAttack} = MDPData_k;
                     
                 otherwise  
             end               

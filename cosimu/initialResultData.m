@@ -58,6 +58,7 @@ for iGen = 1 : length(synIdx)
     ResultData.allGenIdx = [ResultData.allGenIdx; idx];
 end
 
+
 ResultData.allLineIdx = [];
 ResultData.allLineHeadBusIdx = [];
 ResultData.allLineTailBusIdx = [];
@@ -74,7 +75,31 @@ for iLine = 1 : Line.n
     ResultData.allLineTailBusIdx = [ResultData.allLineTailBusIdx; find(CurrentStatus.bus(:,1)==endBus)];
 end
 
-
+if ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy==6
+    ResultData.MDPData = cell(length(Config.falseDataAttacks),1);
+    for id = 1:length(Config.falseDataAttacks)
+        fa = Config.falseDataAttacks{id};
+        
+        MDPData_k.r = 0;
+        MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+        switch fa.reward
+        case 'voltage'
+            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+        case 'pLoss'
+            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+        case 'minEigValue'
+            MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+        end
+%         MDPData_k.s = MDPData_k.s_new;
+        MDPData_k.a = 1;
+        MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
+        MDPData_k.ActionHistory = [];
+        MDPData_k.StatesHistory = [];
+        MDPData_k.rHistory = [];
+        MDPData_k.VHistory = [];
+        ResultData.MDPData{id} = MDPData_k;
+    end
+end
 
 
 

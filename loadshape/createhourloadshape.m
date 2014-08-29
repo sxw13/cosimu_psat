@@ -1,6 +1,6 @@
 function createhourloadshape(Config)
 %% Initialize variables.
-filename = 'LoadShape2.csv';
+filename = 'LoadShapeSimple.csv';
 delimiter = '';
 
 %% Format string for each line of text:
@@ -25,7 +25,7 @@ allDay = dataArray{:, 1};
 
 %% Clear temporary variables
 clearvars filename delimiter formatSpec fileID dataArray ans;
-origTStep  = 60*60*24 / length(allDay);
+
 nPoint = 0;
 tStep = 0;
 if Config.simuType == 0
@@ -33,17 +33,11 @@ if Config.simuType == 0
 else
     tStep = Config.dynTStep;
 end
-nPoint = length(allDay)/24;
+nHour = Config.simuEndTime/3600;
+allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'nearest');
+nData = length(allData);
 
-for iHour = 1 : 24
-    hourDataOld = allDay(nPoint*(iHour-1) + 1 : nPoint*iHour);
-    P = polyfit([1:nPoint]', hourDataOld, 3);
-    hourDataNew = polyval(P, [tStep/origTStep : tStep/origTStep : nPoint]);
+for iHour = 1 : nHour
+    hourDataNew = allData(1+(iHour-1)*nData/nHour:iHour*nData/nHour);
     save(['loadshapeHour',num2str(iHour)], 'hourDataNew');
-end
-for iHour = 1 : 24
-    hourDataOld = allDay(nPoint*(iHour-1) + 1 : nPoint*iHour);
-    P = polyfit([1:nPoint]', hourDataOld, 3);
-    hourDataNew = polyval(P, [tStep/origTStep : tStep/origTStep : nPoint]);
-    save(['loadshapeHour',num2str(iHour+24)], 'hourDataNew');
 end
