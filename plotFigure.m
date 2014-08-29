@@ -1,6 +1,6 @@
 close all;
 
-filter = 'case_ieee9_MDPattack_genPMeas_86400_29-Aug-2014-16-34-37';
+filter = 'case_ieee9_MDPattack_genPMeas_86400_29-Aug-2014-16-56-03';
 lists=dir('.\debug');
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...
@@ -31,7 +31,7 @@ for name=areanames
             S=load(['.\debug\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;
-            eval(['f=' areaname ';']);
+            eval(['f=' areaname '.*(' areaname '<10);']);
             if isempty(strfind(areaname,'Ctrl')) && ~strcmp(areaname,'ResultData.minEigValueHis')
                 t=ResultData.t;
             else
