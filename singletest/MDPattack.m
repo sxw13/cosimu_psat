@@ -1,9 +1,11 @@
+function MDPattack(commands,path,label)
+
 % global MDPData TAction;
 % global MDPData;
 
 % SSS = load('Action.mat');
 % TAction = SSS.Action;
-
+cd ..
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);
 addpath([pwd, '\psat\filters']);
@@ -44,10 +46,11 @@ FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 0 2 0 2 0];
-FalseData.reward = 'minEigValue';  % 'voltage' or 'pLoss' or 'minEigValue'
+FalseData.RatioOffset = [2 2 2 2 2 2];
+FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-FalseData.LearningEndTime = 30 * 3600;
+FalseData.LearningEndTime = 22 * 3600;
+FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
@@ -69,17 +72,19 @@ Config.falseDataAttacks = {FalseData};
 %     MDPData = cell(1,length(Config.falseDataAttacks));
 % end
 
+for id = 1:length(commands)
+    eval(commands{id});
+end
+
+
 % enable state estimation
 Config.seEnable = 0;
 
 %Time 
-Config.simuEndTime = 32 * 3600;
+Config.simuEndTime =  24 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
-
-dir =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-mkdir([pwdpath, '/debug/', dir]);
 
 
 if Config.simuType == 0
@@ -91,21 +96,19 @@ Config.loadShapeFile = [pwd, '\loadshapeHour'];
 delete *.mat
 createhourloadshape(Config);
 
+cd(pwdpath);
 
-for range = linspace(0.5,1.5,7)
-    for idx = 1:5
-        Config.falseDataAttacks{1}.MDPBusFalseDataRatioStep = range*ones(1,length(FalseData.MDPBusFalseDataRatioStep));
-        cd(pwdpath);
+caseName = [Config.opfCaseName '_MDPattack_' label '_', num2str(Config.simuEndTime)];
+startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
+disp([caseName, 'started at ', startTime]);
 
-        caseName = [Config.opfCaseName '_MDPattack_genPMeas_', num2str(Config.simuEndTime)];
-        startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-        disp([caseName, 'started at ', startTime]);
+ResultData = simplePSAT(Config);
 
-        ResultData = simplePSAT(Config);
+cd(pwdpath);
 
-        cd(pwdpath);
+resultFile = [pwdpath, '/debug/',path ,'/',caseName,'_', startTime];
+save(resultFile, 'Config', 'ResultData');
 
-        resultFile = [pwdpath, '/debug/',dir,'/',caseName,'_', startTime];
-        save(resultFile, 'Config', 'ResultData');
-    end
+cd singletest;
+
 end

@@ -1,7 +1,7 @@
 close all;
 
 filter = 'case';
-dataDir = '.\debug\28-Aug-2014-19-50-32';
+dataDir = '.\debug\29-Aug-2014-17-34-16';
 lists=dir(dataDir);
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...
@@ -45,5 +45,7 @@ end
 for id=1:length(ys)
     figure(id);
     plot(x,ys{id},'x');
+    xlabel('faultRatioRange');
+    ylabel('minimum modulus eigenvalue ');
     title(areanames{id});
 end

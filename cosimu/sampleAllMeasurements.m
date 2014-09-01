@@ -329,7 +329,14 @@ elseif Config.falseDataSchema == 2
                     %get reward
                     switch fa.reward
                         case 'voltage'
-                            MDPData_k.r = 3 - CurrentStatus.busVMeasPu(fa.toBus);
+                            v = CurrentStatus.busVMeasPu(fa.toBus);
+                            if abs(v-1)<0.1
+                                MDPData_k.r = abs(v-1) + 1;
+                            elseif v-1.1>=0
+                                MDPData_k.r = 3*(v-1.1) + 0.1 + 1;
+                            elseif v-0.9<=0
+                                MDPData_k.r = 3*(0.9-v) + 0.1 + 1;
+                            end
                             % penal for OPF not converged
                             if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
                                 MDPData_k.r = 0;
@@ -375,7 +382,7 @@ elseif Config.falseDataSchema == 2
                         % Updating the value of Q   
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
-                        dQ = (2/(sqrt(Iter+1)+1))*delta;
+                        dQ = eval(fa.learningRate)*delta;
                         % dQ = delta;
 %                         if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
 %                             disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(length(MDPData_k.rHistory)+1)]);

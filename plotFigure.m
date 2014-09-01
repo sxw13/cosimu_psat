@@ -1,7 +1,8 @@
 close all;
 
-filter = 'case_ieee9_MDPattack_genPMeas_86400_29-Aug-2014-16-56-03';
-lists=dir('.\debug');
+filter = 'highLearningRate';
+path = '.\debug\01-Sep-2014-13-06-56';
+lists=dir(path);
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...
     'ResultData.allQGenHis(2,:)' ...
@@ -16,7 +17,7 @@ areanames={'ResultData.allQGenHis(1,:)' ...
     'ResultData.allPLoadHis(2,:)' ...
     'ResultData.allPLoadHis(3,:)' ...
     'ResultData.pLossHis' ...
-  %  'ResultData.minEigValueHis'
+    'ResultData.minEigValueHis' ...
   };
 
 nfig=0;
@@ -25,15 +26,19 @@ for name=areanames
     areaname=name{1};
     nfig=nfig+1;figure(nfig);
     title(areaname);
+    xlabel('time/s');
+    ylabel(areaname);
     for k=1:length(lists)
         file=lists(k);
         if file.isdir==0 && ~isempty(strfind(file.name,filter))
-            S=load(['.\debug\' file.name]);
+            S=load([path '\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;
             eval(['f=' areaname '.*(' areaname '<10);']);
             if isempty(strfind(areaname,'Ctrl')) && ~strcmp(areaname,'ResultData.minEigValueHis')
                 t=ResultData.t;
+            elseif strcmp(areaname,'ResultData.minEigValueHis')
+                t=(0:length(f)-1)*Config.controlPeriod;
             else
                 t=ResultData.tCtrlHis;
             end
@@ -48,7 +53,7 @@ end
 for k=1:length(lists)
     file=lists(k);
     if file.isdir==0 && ~isempty(strfind(file.name,filter))
-        S=load(['.\debug\' file.name]);
+        S=load([path '\' file.name]);
         ResultData=S.ResultData;
         Config=S.Config;
         recordStrategy(Config,ResultData);
