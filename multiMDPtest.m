@@ -48,6 +48,7 @@ FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'minEigValue';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 30 * 3600;
+FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
@@ -92,7 +93,7 @@ delete *.mat
 createhourloadshape(Config);
 
 
-for range = linspace(0.5,1.5,7)
+for range = linspace(0.6,1.4,7)
     for idx = 1:5
         Config.falseDataAttacks{1}.MDPBusFalseDataRatioStep = range*ones(1,length(FalseData.MDPBusFalseDataRatioStep));
         cd(pwdpath);

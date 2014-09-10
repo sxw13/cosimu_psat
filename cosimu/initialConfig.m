@@ -15,6 +15,7 @@ Config.controlPeriod = 60;
 Config.opfCaseName = 'case_ieee9';
 Config.limitControlled = 0;
 Config.loadShapeFile = 'loadshapeHour';
+Config.loadShapeCsvFile = 'LoadShapeSimple.csv';
 Config.enableOPFCtrl = 1;
 Config.enableLoadShape = 1;
 Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.

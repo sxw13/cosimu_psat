@@ -1,7 +1,7 @@
 close all;
 
 filter = 'case';
-dataDir = '.\debug\29-Aug-2014-17-34-16';
+dataDir = '.\debug\01-Sep-2014-20-52-05';
 lists=dir(dataDir);
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...
@@ -20,10 +20,11 @@ areanames={'ResultData.allQGenHis(1,:)' ...
     'ResultData.minEigValueHis' ...
   };
 
-x = [];
+x = cell(length(areanames),1);
 ys = cell(length(areanames),1);
-for y=ys
-    y{1}=[];
+for id = 1:length(areanames)
+    x{id}=[];
+    ys{id}=[];
 end
 
 for k=1:length(lists)
@@ -32,20 +33,24 @@ for k=1:length(lists)
         S=load([dataDir '\' file.name]);
         ResultData=S.ResultData;
         Config=S.Config;
-        x = [x Config.falseDataAttacks{1}.Naction(1)*Config.falseDataAttacks{1}.MDPBusFalseDataRatioStep(1)];
+        
         for id=1:length(areanames)
             j=1;l=cell(0);
             areaname=areanames{id};
             temp = eval(areaname);
-            ys{id}=[ys{id} temp(end)];
+            if temp<10
+                x{id} = [x{id} (Config.falseDataAttacks{1}.Naction(1)-1)*Config.falseDataAttacks{1}.MDPBusFalseDataRatioStep(1)];
+                ys{id}=[ys{id} temp(end)];
+            end
         end
     end
 end
 
 for id=1:length(ys)
     figure(id);
-    plot(x,ys{id},'x');
+    plot(x{id},ys{id},'ro');
     xlabel('faultRatioRange');
     ylabel('minimum modulus eigenvalue ');
     title(areanames{id});
+    grid on;
 end

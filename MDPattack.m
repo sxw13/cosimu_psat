@@ -1,5 +1,5 @@
 %state=1:初始化，state=0:不初始化
-function MDPattack(commands)
+function MDPattack(commands,label)
 
 % global MDPData TAction;
 % global MDPData;
@@ -51,6 +51,7 @@ FalseData.RatioOffset = [2 0 2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 24 * 3600;
+FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 
@@ -104,7 +105,7 @@ ResultData = simplePSAT(Config);
 
 cd(pwdpath);
 
-resultFile = [pwdpath, '/debug/',caseName,'_', startTime];
+resultFile = [pwdpath, '/debug/',caseName,'_',label,'_', startTime];
 save(resultFile, 'Config', 'ResultData');
 
 end

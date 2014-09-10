@@ -1,6 +1,6 @@
 function createhourloadshape(Config)
 %% Initialize variables.
-filename = 'LoadShapeSimple.csv';
+filename = Config.loadShapeCsvFile;
 delimiter = '';
 
 %% Format string for each line of text:

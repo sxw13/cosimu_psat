@@ -1,7 +1,7 @@
 close all;
 
-filter = 'highLearningRate';
-path = '.\debug\01-Sep-2014-13-06-56';
+filter = 'noPenal';
+path = '.\debug\01-Sep-2014-16-03-10';
 lists=dir(path);
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...
