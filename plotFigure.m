@@ -1,7 +1,7 @@
 close all;
 
-filter = 'noPenal';
-path = '.\debug\01-Sep-2014-16-03-10';
+filter = 'LoadShapeConsequence';
+path = '.\debug';
 lists=dir(path);
 lines={'b-','r-','k-','y-'};
 areanames={'ResultData.allQGenHis(1,:)' ...

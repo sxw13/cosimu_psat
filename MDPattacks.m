@@ -1,3 +1,3 @@
 % MDPattack([],'LoadShapeSimple');
-MDPattack({'Config.LoadShapeCsvFile=''LoadShapeSimpleHigh.csv'''},'LoadShapeHigh');
-MDPattack({'Config.LoadShapeCsvFile=''LoadShapeSimpleConsequence.csv'''},'LoadShapeConsequence');
+MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleHigh.csv'''},'LoadShapeHigh');
+MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleConsequence.csv'''},'LoadShapeConsequence');
