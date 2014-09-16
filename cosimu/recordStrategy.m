@@ -6,13 +6,16 @@ function re = recordStrategy(Config,ResultData)
     for k = 1:length(Attacks)
         disp(['=======For attack ' num2str(k) ':']);
         
+        
+        
         fa = Attacks{k};  %攻击设置
         md = MDP{k};    %MDP计算结果
         states = zeros(1,length(fa.Nstate));
         statemin = fa.MDPStateLimits(:,1);
         statemax = fa.MDPStateLimits(:,2);
         statestep = (statemax-statemin)./(fa.Nstate-2);
-        
+        [x,y] = meshgrid(1:prod(fa.Nstate),1:length(fa.Naction));
+        z = zeros(length(fa.Naction),prod(fa.Nstate));
         [Qmax,Action]=max(md.Q');
         for s = 1:prod(fa.Nstate)
             
@@ -34,6 +37,7 @@ function re = recordStrategy(Config,ResultData)
                 info = [info '>>>>'];
                 for k = 1:length(Ratios)
                     info = [info fa.InjectionName{k} ':' num2str(Ratios(k)) ', '];
+                    z(k,s) = Ratios(k);
                 end
                 disp(info);
             end
@@ -46,6 +50,9 @@ function re = recordStrategy(Config,ResultData)
                 end
             end
         end
+        figure;
+        plot3(x,y,z);
+        xlabel('state');ylabel('action');zlabel('error ratio');
     end
     
 end

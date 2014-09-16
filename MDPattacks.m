@@ -1,3 +1,6 @@
+% MDPattack({'Config.falseDataSchema = 0'},'noAttack');
 % MDPattack([],'LoadShapeSimple');
-MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleHigh.csv'''},'LoadShapeHigh');
-MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleConsequence.csv'''},'LoadShapeConsequence');
+% MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleHigh.csv'''},'LoadShapeHigh');
+% MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleConsequence.csv'''},'LoadShapeConsequence');
+% MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimple2.csv''',...
+%     'Config.falseDataAttacks{1, 1}.LearningEndTime = 16 * 3600'}, 'smartAttack');

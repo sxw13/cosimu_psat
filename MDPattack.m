@@ -52,6 +52,7 @@ FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 24 * 3600;
 FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
+FalseData.fixedAction = [];  %-1 for a 
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
 

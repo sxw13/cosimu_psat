@@ -72,13 +72,15 @@ Config.falseDataAttacks = {FalseData};
 %     MDPData = cell(1,length(Config.falseDataAttacks));
 % end
 
+% enable state estimation
+Config.seEnable = 0;
+
 for id = 1:length(commands)
     eval(commands{id});
 end
 
 
-% enable state estimation
-Config.seEnable = 0;
+
 
 %Time 
 Config.simuEndTime =  24 * 3600;

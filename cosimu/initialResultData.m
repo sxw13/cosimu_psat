@@ -101,5 +101,5 @@ if ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy==6
     end
 end
 
-
+ResultData.messages = cell(0);
 

@@ -39,3 +39,5 @@ nData = length(allData);
 
 close all;
 plot(0:tStep:Config.simuEndTime-tStep,allData);
+grid on;
+xlabel('time/s');ylabel('loadRatio');

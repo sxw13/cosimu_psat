@@ -350,6 +350,7 @@ elseif Config.falseDataSchema == 2
                                 MDPData_k.r = -5;
                             end
                     end
+                    
 
                     %initialization
                     if n == 1 && fa.Qlearning == 1 % && fa.Continouslearning == 0
