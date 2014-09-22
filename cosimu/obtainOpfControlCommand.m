@@ -38,9 +38,9 @@ end
 if Config.seEnable == 1
     [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2);
     if se_success == 1
-        CurrentStatus.bus = bus;
-        CurrentStatus.branch = branch;
-        CurrentStatus.gen = gen;
+        CurrentStatus2.bus = bus;
+        CurrentStatus2.branch = branch;
+        CurrentStatus2.gen = gen;
     else
         disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> se failed']);
     end

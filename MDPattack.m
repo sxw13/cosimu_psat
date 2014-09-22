@@ -1,11 +1,12 @@
 %state=1:初始化，state=0:不初始化
-function MDPattack(commands,label)
+function [ResultData,Config]=MDPattack(commands,label,MDPData)
 
 % global MDPData TAction;
 % global MDPData;
 
 % SSS = load('Action.mat');
 % TAction = SSS.Action;
+
 
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);
@@ -18,6 +19,14 @@ pwdpath = pwd;
 
 Config = initialConfig;
 
+if nargin<3
+    Config.MDPData = [];
+else
+    Config.MDPData = MDPData;
+end
+
+Config.loadShapeCsvFile = 'LoadShape2.csv';
+Config.caseName = 'd_009ieee_edit.m';
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize 
 Config.measLatencyChagePeriod = [0, Config.simuEndTime]; 
@@ -40,8 +49,8 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
-FalseData.MDPStateLimits = [0.7 2];
-FalseData.Nstate = [3];  % total number of state
+FalseData.MDPStateLimits = [0.7 1.3];
+FalseData.Nstate = [5];  % total number of state
 FalseData.Naction = [5 5 5 5 5 5];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal

@@ -1,5 +1,5 @@
 % MDPattack({'Config.falseDataSchema = 0'},'noAttack');
-% MDPattack([],'LoadShapeSimple');
+ResultData = MDPattack([],'LoadShape2edit',ResultData.MDPData);
 % MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleHigh.csv'''},'LoadShapeHigh');
 % MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimpleConsequence.csv'''},'LoadShapeConsequence');
 % MDPattack({'Config.loadShapeCsvFile=''LoadShapeSimple2.csv''',...

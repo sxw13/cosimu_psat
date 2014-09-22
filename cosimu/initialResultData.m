@@ -75,7 +75,9 @@ for iLine = 1 : Line.n
     ResultData.allLineTailBusIdx = [ResultData.allLineTailBusIdx; find(CurrentStatus.bus(:,1)==endBus)];
 end
 
-if ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy==6
+if ~isempty(Config.MDPData)
+    ResultData.MDPData = Config.MDPData;
+elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy==6
     ResultData.MDPData = cell(length(Config.falseDataAttacks),1);
     for id = 1:length(Config.falseDataAttacks)
         fa = Config.falseDataAttacks{id};

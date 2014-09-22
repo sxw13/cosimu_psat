@@ -52,7 +52,8 @@ function re = recordStrategy(Config,ResultData)
         end
         figure;
         plot3(x,y,z);
-        xlabel('state');ylabel('action');zlabel('error ratio');
+        xlabel('state');ylabel('location');zlabel('error ratio');
+        grid on;
     end
     
 end
