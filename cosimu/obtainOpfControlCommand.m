@@ -41,27 +41,44 @@ if Config.seEnable == 1
         CurrentStatus2.bus = bus;
         CurrentStatus2.branch = branch;
         CurrentStatus2.gen = gen;
+        
+       %% run opf
+        optresult = runopf(CurrentStatus2, Config.opt);
+
+       %% set opf result back to PSAT as control set point
+        if optresult.success == 1
+            ResultData.pLForCtrlHis = [ResultData.pLForCtrlHis, CurrentStatus.ploadMeas];
+            ResultData.qLForCtrlHis = [ResultData.qLForCtrlHis, CurrentStatus.qloadMeas];
+            ResultData.pGenCtrlHis = [ResultData.pGenCtrlHis, optresult.gen(:, 2)/100];
+            ResultData.qGenCtrlHis = [ResultData.qGenCtrlHis, optresult.gen(:, 3)/100];
+            ResultData.vGenCtrlHis = [ResultData.vGenCtrlHis, optresult.gen(:, 6)];
+            ResultData.tCtrlHis = [ResultData.tCtrlHis, ResultData.t(end)];
+        else
+            disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> opf failed']);
+        end
+        isConverged = optresult.success;
     else
         disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> se failed']);
+        isConverged = 0;
     end
-end
-
-
-%% run opf
-optresult = runopf(CurrentStatus2, Config.opt);
-
-%% set opf result back to opendss as control set point
-if optresult.success == 1
-    ResultData.pLForCtrlHis = [ResultData.pLForCtrlHis, CurrentStatus.ploadMeas];
-    ResultData.qLForCtrlHis = [ResultData.qLForCtrlHis, CurrentStatus.qloadMeas];
-    ResultData.pGenCtrlHis = [ResultData.pGenCtrlHis, optresult.gen(:, 2)/100];
-    ResultData.qGenCtrlHis = [ResultData.qGenCtrlHis, optresult.gen(:, 3)/100];
-    ResultData.vGenCtrlHis = [ResultData.vGenCtrlHis, optresult.gen(:, 6)];
-    ResultData.tCtrlHis = [ResultData.tCtrlHis, ResultData.t(end)];
 else
-    disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> opf failed']);
+    %% run opf
+    optresult = runopf(CurrentStatus2, Config.opt);
+
+    %% set opf result back to PSAT as control set point
+    if optresult.success == 1
+        ResultData.pLForCtrlHis = [ResultData.pLForCtrlHis, CurrentStatus.ploadMeas];
+        ResultData.qLForCtrlHis = [ResultData.qLForCtrlHis, CurrentStatus.qloadMeas];
+        ResultData.pGenCtrlHis = [ResultData.pGenCtrlHis, optresult.gen(:, 2)/100];
+        ResultData.qGenCtrlHis = [ResultData.qGenCtrlHis, optresult.gen(:, 3)/100];
+        ResultData.vGenCtrlHis = [ResultData.vGenCtrlHis, optresult.gen(:, 6)];
+        ResultData.tCtrlHis = [ResultData.tCtrlHis, ResultData.t(end)];
+    else
+        disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> opf failed']);
+    end
+    isConverged = optresult.success;
 end
-isConverged = optresult.success;
+
 
 end
 

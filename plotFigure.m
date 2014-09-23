@@ -1,6 +1,6 @@
 close all;
 
-filter = 'case_ieee9_MDPattack_genPMeas_86400_LoadShape2edit_22-Sep-2014-15-54-46';
+filter = 'case_ieee9_MDPattack_genPMeas_86400_SEAttackMulti_23-Sep-2014-21-58-03';
 path = '.\debug';
 lists=dir(path);
 lines={'b-','r-','k-','y-'};

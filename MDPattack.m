@@ -38,7 +38,7 @@ Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl o
 Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 1;
+Config.enableLoadShape = 0;
 Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
@@ -51,12 +51,12 @@ FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.7 1.3];
 FalseData.Nstate = [5];  % total number of state
-FalseData.Naction = [5 5 5 5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 1 1];  % Step for false data ratio
+FalseData.Naction = [5 5 5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 0.05];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
-FalseData.InjectionName = {'ploadMeas(1)','qloadMeas(1)','ploadMeas(2)','qloadMeas(2)','ploadMeas(3)','qloadMeas(3)'};
+FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)','busVMeasPu(5)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 0 2 0 2 0];
+FalseData.RatioOffset = [2 0 2 0 1];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 24 * 3600;
@@ -64,27 +64,42 @@ FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
 FalseData.fixedAction = [];  %-1 for a 
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 %%%%%%%%%%%%%put a false attack element into config structure
+Config.falseDataAttacks = {FalseData};
 
-% %%%%%%%%%%%%%define a false attack element
-% FalseData2 = FalseData;
-% FalseData2.InjectionName = {'ploadMeas(2)','qloadMeas(2)'};
-% %%%%%%%%%%%%%put a false attack element into config structure
+%%%%%%%%%%%%%define a false attack element
+FalseData.InjectionName = {'plineHeadMeas(9)','qlineHeadMeas(9)','plineTailMeas(7)','qlineTailMeas(7)','busVMeasPu(6)'};
+Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
+%%%%%%%%%%%%%put a false attack element into config structure
 % 
-% %%%%%%%%%%%%%define a false attack element
-% FalseData3 = FalseData;
-% FalseData3.InjectionName = {'ploadMeas(3)','qloadMeas(3)'};
-% %%%%%%%%%%%%%put a false attack element into config structure
+%%%%%%%%%%%%%define a false attack element
+FalseData.InjectionName = {'plineTailMeas(5)','qlineTailMeas(5)','plineTailMeas(4)','qlineTailMeas(4)','busVMeasPu(8)'};
+Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
+%%%%%%%%%%%%%put a false attack element into config structure
+
+%%%%%%%%%%%%%define a false attack element
+FalseData.InjectionName = {'plineTailMeas(1)','qlineTailMeas(1)','genPMeas(1)','genQMeas(1)','busVMeasPu(1)'};
+Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
+%%%%%%%%%%%%%put a false attack element into config structure
+
+%%%%%%%%%%%%%define a false attack element
+FalseData.InjectionName = {'plineTailMeas(2)','qlineTailMeas(2)','genPMeas(2)','genQMeas(2)','busVMeasPu(2)'};
+Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
+%%%%%%%%%%%%%put a false attack element into config structure
+
+%%%%%%%%%%%%%define a false attack element
+FalseData.InjectionName = {'plineTailMeas(3)','qlineTailMeas(3)','genPMeas(3)','genQMeas(3)','busVMeasPu(3)'};
+Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
+%%%%%%%%%%%%%put a false attack element into config structure
 
 
 % Config.falseDataAttacks = {FalseData,FalseData2,FalseData3}; % target buses
-Config.falseDataAttacks = {FalseData};
 
 % if state
 %     MDPData = cell(1,length(Config.falseDataAttacks));
 % end
 
 % enable state estimation
-Config.seEnable = 0;
+Config.seEnable = 1;
 
 %Time 
 Config.simuEndTime =  24 * 3600;
