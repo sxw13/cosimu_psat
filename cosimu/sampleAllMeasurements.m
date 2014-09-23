@@ -17,6 +17,7 @@ function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, 
     catch e
         CurrentStatus.isOpfConverged = 1;
     end
+    CurrentStatus2 = CurrentStatus;
 %     
 if Config.measLagSchema == 2
     
@@ -413,7 +414,7 @@ elseif Config.falseDataSchema == 2
                     
                     for k = 1:length(Ratios)
                         eval(['CurrentStatus.' fa.InjectionName{k}  ...
-                            ' = CurrentStatus.' fa.InjectionName{k} ' * Ratios(k);']);
+                            ' = CurrentStatus2.' fa.InjectionName{k} ' * Ratios(k);']);
                     end
                     
                     ResultData.MDPData{iAttack} = MDPData_k;
