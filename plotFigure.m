@@ -1,9 +1,14 @@
 close all;
 
-filter = 'case_ieee9_MDPattack_genPMeas_86400_SEAttackMulti_23-Sep-2014-21-58-03';
+filter = {'SEAttack0','SEAttack1','SEAttack2','SEAttack3','SEAttack4','SEAttack5'};
 path = '.\debug';
 lists=dir(path);
-lines={'b-','r-','k-','y-'};
+lines=[1 0 0
+        0 1 0
+        0 0 1
+        1 1 0
+        1 0 1
+        0 1 1];
 areanames={'ResultData.allPGenHis(1,:)' ...
     'ResultData.allPGenHis(2,:)' ...
     'ResultData.allPGenHis(3,:)' ...
@@ -33,32 +38,44 @@ for name=areanames
     ylabel(areaname);
     for k=1:length(lists)
         file=lists(k);
-        if file.isdir==0 && ~isempty(strfind(file.name,filter))
-            S=load([path '\' file.name]);
-            ResultData=S.ResultData;
-            Config=S.Config;
-            eval(['f=' areaname '.*(' areaname '<10);']);
-            if isempty(strfind(areaname,'Ctrl')) && ~strcmp(areaname,'ResultData.minEigValueHis')
-                t=ResultData.t;
-            elseif strcmp(areaname,'ResultData.minEigValueHis')
-                t=(0:length(f)-1)*Config.controlPeriod;
-            else
-                t=ResultData.tCtrlHis;
+        if file.isdir==0
+            isShow = 0;
+            for idd = 1:length(filter)
+                if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
             end
-            hold on;plot(t,f,lines{j});
-            l{j}=strrep(file.name,'_','\_');   %in order to display '_' in the legend
-            j=j+1;
+            if isShow
+                S=load([path '\' file.name]);
+                ResultData=S.ResultData;
+                Config=S.Config;
+                eval(['f=' areaname '.*(' areaname '<10);']);
+                if isempty(strfind(areaname,'Ctrl')) && ~strcmp(areaname,'ResultData.minEigValueHis')
+                    t=ResultData.t;
+                elseif strcmp(areaname,'ResultData.minEigValueHis')
+                    t=(0:length(f)-1)*Config.controlPeriod;
+                else
+                    t=ResultData.tCtrlHis;
+                end
+                hold on;plot(t,f,'Color',lines(j,:));
+                l{j}=strrep(file.name,'_','\_');   %in order to display '_' in the legend
+                j=j+1;
+            end
         end
     end
     legend(l);grid on;
 end
 
-for k=1:length(lists)
-    file=lists(k);
-    if file.isdir==0 && ~isempty(strfind(file.name,filter))
-        S=load([path '\' file.name]);
-        ResultData=S.ResultData;
-        Config=S.Config;
-        recordStrategy(Config,ResultData);
-    end
-end
+% for k=1:length(lists)
+%     file=lists(k);
+%     if file.isdir==0
+%         isShow = 0;
+%             for idd = 1:length(filter)
+%                 if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
+%             end
+%         if isShow
+%             S=load([path '\' file.name]);
+%             ResultData=S.ResultData;
+%             Config=S.Config;
+%             recordStrategy(Config,ResultData);
+%         end
+%     end
+% end
