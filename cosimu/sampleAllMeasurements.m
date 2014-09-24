@@ -399,7 +399,7 @@ elseif Config.falseDataSchema == 2
                     % probability 1-(1/log(Iter+2)) can be changed
                     pn = rand(1); 
                     if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
-                      [~,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
+                      [TTemp,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
                     else
                       MDPData_k.a = randi([1,prod(fa.Naction)]);
                     end

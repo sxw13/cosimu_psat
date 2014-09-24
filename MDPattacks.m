@@ -4,7 +4,7 @@
 % SSS = load('Action.mat');
 % TAction = SSS.Action;
 
-
+startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);
 addpath([pwd, '\psat\filters']);
@@ -96,6 +96,6 @@ for ratio = linspace(0.3,1,5)
     for id = 1:length(Config.falseDataAttacks)
         Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * [1 1 1 1 0.05];
     end
-    ResultData = MDPattack(Config,['SEAttack' num2str(idd)]);
+    ResultData = MDPattack(Config,['SEAttack' num2str(idd)],[],startTime);
     idd = idd + 1;
 end

@@ -64,18 +64,18 @@ for name=areanames
     legend(l);grid on;
 end
 
-% for k=1:length(lists)
-%     file=lists(k);
-%     if file.isdir==0
-%         isShow = 0;
-%             for idd = 1:length(filter)
-%                 if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
-%             end
-%         if isShow
-%             S=load([path '\' file.name]);
-%             ResultData=S.ResultData;
-%             Config=S.Config;
-%             recordStrategy(Config,ResultData);
-%         end
-%     end
-% end
+for k=1:length(lists)
+    file=lists(k);
+    if file.isdir==0
+        isShow = 0;
+            for idd = 1:length(filter)
+                if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
+            end
+        if isShow
+            S=load([path '\' file.name]);
+            ResultData=S.ResultData;
+            Config=S.Config;
+            recordStrategy(Config,ResultData);
+        end
+    end
+end
