@@ -5,6 +5,7 @@
 % TAction = SSS.Action;
 
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
+mkdir(['debug\' startTime]);
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);
 addpath([pwd, '\psat\filters']);
