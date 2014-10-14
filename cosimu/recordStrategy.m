@@ -1,4 +1,4 @@
-function re = recordStrategy(Config,ResultData)
+function re = recordStrategy(Config,ResultData,pname)
     re = ResultData;
     Attacks = Config.falseDataAttacks;
     MDP = ResultData.MDPData;
@@ -29,15 +29,15 @@ function re = recordStrategy(Config,ResultData)
                     elseif states(id)==fa.Nstate(id)-1
                         lp=num2str(statemax(id));up='+inf';
                     else
-                        lp=num2str(statemin(id)-(states(id)-1)*statestep(id));
-                        up=num2str(statemin(id)-(states(id)-2)*statestep(id));
+                        lp=num2str(statemin(id)+(states(id)-1)*statestep(id));
+                        up=num2str(statemin(id)+states(id)*statestep(id));
                     end
                     info = [info fa.MDPStateName{id} '=[' lp ',' up '], '];
                 end
                 info = [info '>>>>'];
-                for k = 1:length(Ratios)
-                    info = [info fa.InjectionName{k} ':' num2str(Ratios(k)) ', '];
-                    z(k,s) = Ratios(k);
+                for kk = 1:length(Ratios)
+                    info = [info fa.InjectionName{kk} ':' num2str(Ratios(kk)) ', '];
+                    z(kk,s) = Ratios(kk);
                 end
                 disp(info);
             end
@@ -53,6 +53,7 @@ function re = recordStrategy(Config,ResultData)
         figure;
         plot3(x,y,z);
         xlabel('state');ylabel('location');zlabel('error ratio');
+        title([pname ' attackid=' int2str(k)]);
         grid on;
     end
     

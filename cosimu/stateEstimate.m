@@ -29,7 +29,7 @@ sigma.sigma_Va = 0.001;
 sigma.sigma_QF = 0.02;
 sigma.sigma_QT = 0.02;
 sigma.sigma_QG = 0.02;
-sigma.sigma_Vm = 0.01;
+sigma.sigma_Vm = 0.001;
 
 type_initialguess = 2; 
 
