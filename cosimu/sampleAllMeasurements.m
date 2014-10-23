@@ -1,5 +1,6 @@
 function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
 %     global MDPData  % TAction
+    global actionCheck
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -311,7 +312,7 @@ elseif Config.falseDataSchema == 2
                     states = ones(length(fa.MDPStateName),1);
                     s_new = 0;
                     for stateNameIndex = 1:length(fa.MDPStateName)
-                        eval(['S = CurrentStatus.' fa.MDPStateName{stateNameIndex} ';']);
+                        eval(['S = CurrentStatus2.' fa.MDPStateName{stateNameIndex} ';']);
                         statemin = fa.MDPStateLimits(stateNameIndex,1);
                         statemax = fa.MDPStateLimits(stateNameIndex,2);
                         statestep = (statemax-statemin)/(fa.Nstate(stateNameIndex)-2);
@@ -375,6 +376,8 @@ elseif Config.falseDataSchema == 2
                     end
 
                     Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
+                    
+                    % Record history
                     MDPData_k.Iters(MDPData_k.s,MDPData_k.a) = Iter+1;
                     MDPData_k.ActionHistory = [MDPData_k.ActionHistory MDPData_k.a];
                     MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
@@ -409,6 +412,8 @@ elseif Config.falseDataSchema == 2
 %                     else
 %                         MDPData_k.a = 1626;
 %                     end
+
+%                    MDPData_k.a = 5;
                     %take action
                     Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                     

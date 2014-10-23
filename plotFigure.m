@@ -1,14 +1,21 @@
 close all;
 
-filter = {'SEAttack0','SEAttack1','SEAttack2','SEAttack3','SEAttack4','SEAttack5'};
-path = '.\debug';
+filter = {'case'};
+path = '.\debug\22-Oct-2014-15-57-34';
+%path = '.\debug\15-Oct-2014-23-44-45';
 lists=dir(path);
 lines=[1 0 0
         0 1 0
         0 0 1
         1 1 0
         1 0 1
-        0 1 1];
+        0 1 1
+        1 0.5 0
+        1 0 0.5
+        0.5 1 0
+        0.5 0 1
+        0 1 0.5
+        0 0.5 1];
 areanames={'ResultData.allPGenHis(1,:)' ...
     'ResultData.allPGenHis(2,:)' ...
     'ResultData.allPGenHis(3,:)' ...
@@ -26,13 +33,14 @@ areanames={'ResultData.allPGenHis(1,:)' ...
     'ResultData.allPLoadHis(3,:)' ...
     'ResultData.pLossHis' ...
     'ResultData.minEigValueHis' ...
+    'ResultData.pLForCtrlHis(1,:)' ...
+    'ResultData.MDPData{1}.ActionHistory' ...
   };
 
-nfig=0;
 for name=areanames
     j=1;l=cell(0);
     areaname=name{1};
-    nfig=nfig+1;figure(nfig);
+    figure;
     title(areaname);
     xlabel('time/s');
     ylabel(areaname);
@@ -47,11 +55,13 @@ for name=areanames
                 S=load([path '\' file.name]);
                 ResultData=S.ResultData;
                 Config=S.Config;
-                eval(['f=' areaname '.*(' areaname '<10);']);
-                if isempty(strfind(areaname,'Ctrl')) && ~strcmp(areaname,'ResultData.minEigValueHis')
+                % ³¬¹ý10¾ÍÆÁ±Î
+                % eval(['f=' areaname '.*(' areaname '<10);']);
+                eval(['f=' areaname ';']);
+                if isempty(strfind(areaname,'Ctrl')) && isempty(strfind(areaname,'MDPData')) && ~strcmp(areaname,'ResultData.minEigValueHis')
                     t=ResultData.t;
-                elseif strcmp(areaname,'ResultData.minEigValueHis')
-                    t=(0:length(f)-1)*Config.controlPeriod;
+                elseif strcmp(areaname,'ResultData.minEigValueHis') || ~isempty(strfind(areaname,'MDPData'))
+                    t=(1:length(f))*Config.controlPeriod;
                 else
                     t=ResultData.tCtrlHis;
                 end
@@ -75,7 +85,7 @@ for k=1:length(lists)
             S=load([path '\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;
-            recordStrategy(Config,ResultData);
+            recordStrategy(Config,ResultData,strrep(file.name,'_','\_'));
         end
     end
 end

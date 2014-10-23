@@ -1,8 +1,3 @@
-% global MDPData TAction;
-% global MDPData;
-
-% SSS = load('Action.mat');
-% TAction = SSS.Action;
 
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 mkdir(['debug\' startTime]);
@@ -30,8 +25,8 @@ Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl o
 Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 0;
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.enableLoadShape = 1;
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -52,12 +47,12 @@ FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.7 1.3];
 FalseData.Nstate = [5];  % total number of state
-FalseData.Naction = [5 5 5 5 5];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [1 1 1 1 0.05];  % Step for false data ratio
+FalseData.Naction = [3 3 3 3];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [2 2 2 2];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
-FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)','busVMeasPu(5)'};
+FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
-FalseData.RatioOffset = [2 0 2 0 1];
+FalseData.RatioOffset = [2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = 24 * 3600;
@@ -68,35 +63,56 @@ FalseData.fixedAction = [];  %-1 for a
 Config.falseDataAttacks = {FalseData};
 
 %%%%%%%%%%%%%define a false attack element
-FalseData.InjectionName = {'plineHeadMeas(9)','qlineHeadMeas(9)','plineTailMeas(7)','qlineTailMeas(7)','busVMeasPu(6)'};
+FalseData.InjectionName = {'plineHeadMeas(9)','qlineHeadMeas(9)','plineTailMeas(7)','qlineTailMeas(7)'};
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 % 
 %%%%%%%%%%%%%define a false attack element
-FalseData.InjectionName = {'plineTailMeas(5)','qlineTailMeas(5)','plineTailMeas(4)','qlineTailMeas(4)','busVMeasPu(8)'};
+FalseData.InjectionName = {'plineTailMeas(5)','qlineTailMeas(5)','plineTailMeas(4)','qlineTailMeas(4)'};
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
-FalseData.InjectionName = {'plineTailMeas(1)','qlineTailMeas(1)','genPMeas(1)','genQMeas(1)','busVMeasPu(1)'};
+FalseData.InjectionName = {'plineTailMeas(1)','qlineTailMeas(1)','genPMeas(1)','genQMeas(1)'};
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
-FalseData.InjectionName = {'plineTailMeas(2)','qlineTailMeas(2)','genPMeas(2)','genQMeas(2)','busVMeasPu(2)'};
+FalseData.InjectionName = {'plineTailMeas(2)','qlineTailMeas(2)','genPMeas(2)','genQMeas(2)'};
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
-FalseData.InjectionName = {'plineTailMeas(3)','qlineTailMeas(3)','genPMeas(3)','genQMeas(3)','busVMeasPu(3)'};
+FalseData.InjectionName = {'plineTailMeas(3)','qlineTailMeas(3)','genPMeas(3)','genQMeas(3)'};
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
-idd = 0;
-for ratio = linspace(0.3,1,5)
-    for id = 1:length(Config.falseDataAttacks)
-        Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * [1 1 1 1 0.05];
+falseDataAttacks2 = Config.falseDataAttacks;
+
+tests = {[1 4],[1 2 4 5],[1 2 3 4 5 6]};
+for testid = 1:length(tests)
+    Config.falseDataAttacks = falseDataAttacks2(tests{testid});
+    idd = 0;
+    for ratio = 1
+        for id = 1:length(Config.falseDataAttacks)
+            Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * [2 2 2 2];
+        end
+        ResultData = MDPattack(Config,['SEAttack' num2str(idd) 'testid' num2str(testid)],[],startTime);
+        idd = idd + 1;
     end
-    ResultData = MDPattack(Config,['SEAttack' num2str(idd)],[],startTime);
-    idd = idd + 1;
 end
+
+% tests = [1 2];
+% Config.falseDataAttacks = falseDataAttacks2(tests);
+% idd = 0;
+% for ratio = linspace(0.3,1,5)
+%     for id = 1:length(Config.falseDataAttacks)
+%         Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * [1 1 1 1];
+%     end
+%     [ResultData,Config2] = MDPattack(Config,['SEAttack' num2str(idd)],[],startTime);
+%     for id = 1:length(Config2.falseDataAttacks)
+%         Config2.falseDataAttacks{id}.Qlearning = 0;
+%     end
+%     MDPattack(Config2,['SEAttack' num2str(idd) 'impl'],ResultData.MDPData,startTime);
+%     idd = idd + 1;
+% end

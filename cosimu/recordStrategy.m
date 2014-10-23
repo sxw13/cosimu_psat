@@ -17,11 +17,16 @@ function re = recordStrategy(Config,ResultData,pname)
         [x,y] = meshgrid(1:prod(fa.Nstate),1:length(fa.Naction));
         z = zeros(length(fa.Naction),prod(fa.Nstate));
         [Qmax,Action]=max(md.Q');
+        info = ',';
+        for kk = 1:length(fa.InjectionName)
+            info = [info fa.InjectionName{kk} ', '];
+        end
+        disp(info);
         for s = 1:prod(fa.Nstate)
             
             if Qmax(s)>-0.99
                 Ratios = action2Ratio(Action(s),fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
-                info = [];
+                info = '"';
                 for id = 1:length(fa.Nstate)
                     lp='';up='';
                     if states(id)==0
@@ -32,11 +37,11 @@ function re = recordStrategy(Config,ResultData,pname)
                         lp=num2str(statemin(id)+(states(id)-1)*statestep(id));
                         up=num2str(statemin(id)+states(id)*statestep(id));
                     end
-                    info = [info fa.MDPStateName{id} '=[' lp ',' up '], '];
+                    info = [info fa.MDPStateName{id} '=[' lp ',' up '],'];
                 end
-                info = [info '>>>>'];
+                info = [info '",'];
                 for kk = 1:length(Ratios)
-                    info = [info fa.InjectionName{kk} ':' num2str(Ratios(kk)) ', '];
+                    info = [info num2str(Ratios(kk)) ','];
                     z(kk,s) = Ratios(kk);
                 end
                 disp(info);
@@ -50,11 +55,11 @@ function re = recordStrategy(Config,ResultData,pname)
                 end
             end
         end
-        figure;
-        plot3(x,y,z);
-        xlabel('state');ylabel('location');zlabel('error ratio');
-        title([pname ' attackid=' int2str(k)]);
-        grid on;
+%         figure;
+%         plot3(x,y,z);
+%         xlabel('state');ylabel('location');zlabel('error ratio');
+%         title([pname ' attackid=' int2str(k)]);
+%         grid on;
     end
     
 end
