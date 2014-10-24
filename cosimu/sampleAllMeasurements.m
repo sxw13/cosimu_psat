@@ -1,6 +1,5 @@
 function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
 %     global MDPData  % TAction
-    global actionCheck
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -412,8 +411,12 @@ elseif Config.falseDataSchema == 2
 %                     else
 %                         MDPData_k.a = 1626;
 %                     end
-
 %                    MDPData_k.a = 5;
+                    try
+                        MDPData_k.a = fa.fixedAction(length(MDPData_k.ActionHistory)+1);
+                    catch e
+                    end
+
                     %take action
                     Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                     

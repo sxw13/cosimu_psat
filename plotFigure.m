@@ -1,7 +1,7 @@
 close all;
 
-filter = {'case'};
-path = '.\debug\22-Oct-2014-15-57-34';
+filter = {'impl'};
+path = '.\debug\24-Oct-2014-09-10-37';
 %path = '.\debug\15-Oct-2014-23-44-45';
 lists=dir(path);
 lines=[1 0 0

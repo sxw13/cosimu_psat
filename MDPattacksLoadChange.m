@@ -1,4 +1,4 @@
-
+% 改变负荷的情形下的攻击
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 mkdir(['debug\' startTime]);
 addpath([pwd, '\coSimu']);
@@ -33,7 +33,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.seEnable = 1;
 
 %Time 
-Config.simuEndTime =  14 * 3600;
+Config.simuEndTime =  12 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -46,9 +46,9 @@ FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.7 1.3];
-FalseData.Nstate = [5];  % total number of state
+FalseData.Nstate = [3];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [2 2 2 2];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = 0.5*[2 2 2 2];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
@@ -90,7 +90,7 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(1)','qlineHeadMeas(1)','plineTailMeas(8)','qlineTailMeas(8)','plineTailMeas(9)','qlineTailMeas(9)'};
 FalseData.Naction = [3 3 3 3 3 3];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = [2 2 2 2 2 2];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = 0.5*[2 2 2 2 2 2];  % Step for false data ratio
 FalseData.RatioOffset = [2 0 2 0 2 0];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
@@ -107,29 +107,29 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 
 falseDataAttacks2 = Config.falseDataAttacks;
 
-tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
-AttackBus = [5 6 8 1 2 3 4 7 9];
-for testid = 1:length(tests)
-    Config.falseDataAttacks = falseDataAttacks2(tests{testid});
-    for ratio = 1
-        for id = 1:length(Config.falseDataAttacks)
-            Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep));
+tests = [1 2 4 5];
+Config.falseDataAttacks = falseDataAttacks2(tests);
+idd = 0;
+for ratio = 1 % linspace(0.3,1,5)
+    for Busid = 5
+        Config.falseDataAttacks{1}.toBus = Busid;
+        [ResultData,Config2] = MDPattack(Config,'Learning',[],startTime);
+        
+        Config2.enableLoadShape = 1;
+        for id = 1:length(Config2.falseDataAttacks)
+            Config2.falseDataAttacks{id}.Qlearning = 0;
         end
-        ResultData = MDPattack(Config,['SEAttack_Busid' num2str(AttackBus(testid))],[],startTime);
+        MDPattack(Config2,['Optimal' num2str(idd) 'impl'],ResultData.MDPData,startTime);
+        
+        Config2.falseDataSchema = 2;
+        for id = 1:length(Config2.falseDataAttacks)
+            Config2.falseDataAttacks{id}.fixedAction = randi([1,prod(Config2.falseDataAttacks{id}.Naction)]) * ones(1,900);
+            Config2.falseDataAttacks{id}.Qlearning = 1;
+        end
+        MDPattack(Config2,['Random' num2str(idd) 'impl'],[],startTime);
+        
+        Config2.falseDataSchema = 0;
+        MDPattack(Config2,['NoAttack' num2str(idd) 'impl'],[],startTime);
     end
+    
 end
-
-% tests = [1 2];
-% Config.falseDataAttacks = falseDataAttacks2(tests);
-% idd = 0;
-% for ratio = linspace(0.3,1,5)
-%     for id = 1:length(Config.falseDataAttacks)
-%         Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * [1 1 1 1];
-%     end
-%     [ResultData,Config2] = MDPattack(Config,['SEAttack' num2str(idd)],[],startTime);
-%     for id = 1:length(Config2.falseDataAttacks)
-%         Config2.falseDataAttacks{id}.Qlearning = 0;
-%     end
-%     MDPattack(Config2,['SEAttack' num2str(idd) 'impl'],ResultData.MDPData,startTime);
-%     idd = idd + 1;
-% end
