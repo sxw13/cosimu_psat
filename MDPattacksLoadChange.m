@@ -33,7 +33,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.seEnable = 1;
 
 %Time 
-Config.simuEndTime =  12 * 3600;
+Config.simuEndTime =  18 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -48,7 +48,7 @@ FalseData.MDPStateName = {'ploadMeas(1)'};
 FalseData.MDPStateLimits = [0.7 1.3];
 FalseData.Nstate = [3];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = 0.5*[2 2 2 2];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = [2 2 2 2];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
 FalseData.MDPDiscountFactor = 0;   % discount factor for value function of MDP
@@ -90,7 +90,7 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(1)','qlineHeadMeas(1)','plineTailMeas(8)','qlineTailMeas(8)','plineTailMeas(9)','qlineTailMeas(9)'};
 FalseData.Naction = [3 3 3 3 3 3];   % total number of action
-FalseData.MDPBusFalseDataRatioStep = 0.5*[2 2 2 2 2 2];  % Step for false data ratio
+FalseData.MDPBusFalseDataRatioStep = [2 2 2 2 2 2];  % Step for false data ratio
 FalseData.RatioOffset = [2 0 2 0 2 0];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
@@ -107,29 +107,46 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 
 falseDataAttacks2 = Config.falseDataAttacks;
 
-tests = [1 2 4 5];
-Config.falseDataAttacks = falseDataAttacks2(tests);
-idd = 0;
-for ratio = 1 % linspace(0.3,1,5)
-    for Busid = 5
-        Config.falseDataAttacks{1}.toBus = Busid;
-        [ResultData,Config2] = MDPattack(Config,'Learning',[],startTime);
-        
-        Config2.enableLoadShape = 1;
-        for id = 1:length(Config2.falseDataAttacks)
-            Config2.falseDataAttacks{id}.Qlearning = 0;
-        end
-        MDPattack(Config2,['Optimal' num2str(idd) 'impl'],ResultData.MDPData,startTime);
-        
-        Config2.falseDataSchema = 2;
-        for id = 1:length(Config2.falseDataAttacks)
-            Config2.falseDataAttacks{id}.fixedAction = randi([1,prod(Config2.falseDataAttacks{id}.Naction)]) * ones(1,900);
-            Config2.falseDataAttacks{id}.Qlearning = 1;
-        end
-        MDPattack(Config2,['Random' num2str(idd) 'impl'],[],startTime);
-        
-        Config2.falseDataSchema = 0;
-        MDPattack(Config2,['NoAttack' num2str(idd) 'impl'],[],startTime);
-    end
-    
+tests = 1:9;
+
+if Config.simuType == 0
+    cd([pwd, '\loadshape\lf']);    
+else
+    cd([pwd, '\loadshape\dyn']);    
 end
+Config.loadShapeFile = [pwd, '\loadshapeHour'];
+delete *.mat
+createhourloadshape(Config);
+cd(pwdpath);
+
+busmap=[5 6 8 1 2 3 4 7 9];
+mps=6;
+matlabpool(mps);
+idd=0;
+spmd
+    for bus1=1:9
+        for bus2 =bus1+1:9
+            Config.falseDataAttacks = falseDataAttacks2([bus1 bus2]);
+            idd = idd+1;
+            if mod(idd,mps)+1~=labindex , continue;end
+            [ResultData,Config2] = MDPattack(Config,['Learning' num2str(busmap(bus1)) num2str(busmap(bus2))],[],startTime);
+
+            Config2.enableLoadShape = 1;
+            for id = 1:length(Config2.falseDataAttacks)
+                Config2.falseDataAttacks{id}.Qlearning = 0;
+            end
+            MDPattack(Config2,['Optimal' num2str(busmap(bus1)) num2str(busmap(bus2)) 'impl'],ResultData.MDPData,startTime);
+
+            Config2.falseDataSchema = 2;
+            for id = 1:length(Config2.falseDataAttacks)
+                Config2.falseDataAttacks{id}.fixedAction = randi([1,prod(Config2.falseDataAttacks{id}.Naction)]) * ones(1,900);
+                Config2.falseDataAttacks{id}.Qlearning = 1;
+            end
+            MDPattack(Config2,['Random' num2str(busmap(bus1)) num2str(busmap(bus2)) 'impl'],[],startTime);
+
+            Config2.falseDataSchema = 0;
+            MDPattack(Config2,['NoAttack' num2str(busmap(bus1)) num2str(busmap(bus2)) 'impl'],[],startTime);
+        end
+    end
+end
+matlabpool close;

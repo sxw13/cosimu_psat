@@ -19,16 +19,16 @@ else
     Config.MDPData = MDPData;
 end
 
-if Config.simuType == 0
-    cd([pwd, '\loadshape\lf']);    
-else
-    cd([pwd, '\loadshape\dyn']);    
-end
-Config.loadShapeFile = [pwd, '\loadshapeHour'];
-delete *.mat
-createhourloadshape(Config);
+% if Config.simuType == 0
+%     cd([pwd, '\loadshape\lf']);    
+% else
+%     cd([pwd, '\loadshape\dyn']);    
+% end
+% Config.loadShapeFile = [pwd, '\loadshapeHour'];
+% delete *.mat
+% createhourloadshape(Config);
 
-cd(pwdpath);
+% cd(pwdpath);
 
 caseName = [Config.opfCaseName '_MDPattack_genPMeas_', num2str(Config.simuEndTime)];
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
