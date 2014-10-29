@@ -36,7 +36,12 @@ end
 % %% run state estimation
 % % flat start
 if Config.seEnable == 1
-    [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2);
+    % deal with the possible exceptions during the state estimation
+    try
+        [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2);
+    catch e
+        se_success = 0;
+    end
     if se_success == 1
         CurrentStatus2.bus = bus;
         CurrentStatus2.branch = branch;
