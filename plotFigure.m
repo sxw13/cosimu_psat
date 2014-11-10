@@ -1,8 +1,10 @@
 close all;
 
-filter = {'impl'};
-path = '.\debug\27-Oct-2014-09-48-21';
-%path = '.\debug\15-Oct-2014-23-44-45';
+% cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_1_'')) &&'...
+%     ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
+cmdfilter = '~isempty(strfind(file.name,''Optimal__2''))';
+path = '.\debug\29-Oct-2014-17-47-52';
+%path = '.\debug\28-Oct-2014-00-27-30';
 lists=dir(path);
 lines=[1 0 0
         0 1 0
@@ -15,7 +17,13 @@ lines=[1 0 0
         0.5 1 0
         0.5 0 1
         0 1 0.5
-        0 0.5 1];
+        0 0.5 1
+        1 0.5 0.5
+        0.5 1 0.5
+        0.5 0.5 1
+        1 1 0.5
+        1 0.5 1
+        0.5 1 1];
 areanames={'ResultData.allPGenHis(1,:)' ...
     'ResultData.allPGenHis(2,:)' ...
     'ResultData.allPGenHis(3,:)' ...
@@ -34,7 +42,6 @@ areanames={'ResultData.allPGenHis(1,:)' ...
     'ResultData.pLossHis' ...
     'ResultData.minEigValueHis' ...
     'ResultData.pLForCtrlHis(1,:)' ...
-    'ResultData.MDPData{1}.ActionHistory' ...
   };
 
 for name=areanames
@@ -47,11 +54,7 @@ for name=areanames
     for k=1:length(lists)
         file=lists(k);
         if file.isdir==0
-            isShow = 0;
-            for idd = 1:length(filter)
-                if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
-            end
-            if isShow
+            if eval(cmdfilter)
                 S=load([path '\' file.name]);
                 ResultData=S.ResultData;
                 Config=S.Config;
@@ -77,14 +80,11 @@ end
 for k=1:length(lists)
     file=lists(k);
     if file.isdir==0
-        isShow = 0;
-            for idd = 1:length(filter)
-                if ~isempty(strfind(file.name,filter{idd})) isShow = 1;end
-            end
-        if isShow
+        if eval(cmdfilter)
             S=load([path '\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;
+            disp(file.name);
             recordStrategy(Config,ResultData,strrep(file.name,'_','\_'));
         end
     end
