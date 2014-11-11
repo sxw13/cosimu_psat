@@ -21,6 +21,7 @@ if Config.simuType == 0
 else
     Settings.tstep = Config.dynTStep;
 end
+
 Settings.tf = Config.simuEndTime;
 clpsat.pq2z = 0;
 ResultData = initialResultData(Config, CurrentStatus);

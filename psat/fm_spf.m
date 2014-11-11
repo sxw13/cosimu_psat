@@ -17,6 +17,11 @@ function fm_spf
 %
 % Copyright (C) 2002-2013 Federico Milano
 
+%
+%%
+% $\dot \tilde S_B  = diag{\rm{\{ }}\dot U_B {\rm{\} }}conj{\rm{\{ }}\dot \tilde I_B {\rm{\} }}$
+%%
+
 global DAE Pl Mn Lines Line SW PV PQ Bus
 global History Theme Fig Settings LIB Snapshot Path File
 

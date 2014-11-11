@@ -1,9 +1,9 @@
 close all;
 
-% cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_1_'')) &&'...
-%     ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
-cmdfilter = '~isempty(strfind(file.name,''Optimal__2''))';
-path = '.\debug\29-Oct-2014-17-47-52';
+cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_0_'')) &&'...
+    ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
+% cmdfilter = '~isempty(strfind(file.name,''Optimal__2''))';
+path = '.\debug\CompareBetweenSSBandDSB';
 %path = '.\debug\28-Oct-2014-00-27-30';
 lists=dir(path);
 lines=[1 0 0
@@ -68,7 +68,7 @@ for name=areanames
                 else
                     t=ResultData.tCtrlHis;
                 end
-                hold on;plot(t,f,'Color',lines(j,:));
+                hold on;plot(t,f,'Color',lines(j,:),'LineStyle','s');
                 l{j}=strrep(file.name,'_','\_');   %in order to display '_' in the legend
                 j=j+1;
             end

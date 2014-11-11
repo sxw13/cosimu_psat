@@ -21,6 +21,7 @@ Config.enableLoadShape = 1;
 Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 0;
 
+
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;
 
@@ -58,6 +59,10 @@ FalseData.erroRatioStep = 0.05;
 FalseData.augDir = 1;
 FalseData.highV = 1.05;
 FalseData.lowV = 0.98;
+
+% Configurations for WARD calulation
+FalseData.calWARD = 0;
+FalseData.internalBus = [5];
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData}; % target buses
 

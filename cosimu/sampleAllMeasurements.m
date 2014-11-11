@@ -1,5 +1,6 @@
 function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
 %     global MDPData  % TAction
+    global DAE Bus
 
     % perfect measurements without latency
     CurrentStatus.ploadMeas = ResultData.allPLoadHis(:, end);
@@ -382,6 +383,15 @@ elseif Config.falseDataSchema == 2
                     MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
                     MDPData_k.rHistory = [MDPData_k.rHistory MDPData_k.r];
                     MDPData_k.VHistory = [MDPData_k.VHistory CurrentStatus.busVMeasPu(fa.toBus)];
+                    
+                    %计算等值参数
+                    if fa.calWARD
+                        V = DAE.y(Bus.v);
+                        a = DAE.y(Bus.a);
+                        U = V.*exp(1i*a);
+                        SB = U(MDPData_k.BusB).*conj(MDPData_k.YBBp*U(MDPData_k.BusB) + MDPData_k.YBI*U(MDPData_k.BusI));
+                        MDPData_k.SBHistory = [MDPData_k.SBHistory SB];
+                    end
                     if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
                         % Updating the value of Q   
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed

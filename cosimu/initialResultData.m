@@ -31,6 +31,9 @@ ResultData.ctrlQueue = [];
 ResultData.nSample = 0;
 ResultData.nOpf = 0;
 
+
+
+
 ResultData.minEigValueHis = [];
 
 ResultData.isOpfConverged = [];
@@ -99,8 +102,50 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
         MDPData_k.StatesHistory = [];
         MDPData_k.rHistory = [];
         MDPData_k.VHistory = [];
+        
+        
+        % WARD caculation
+        if fa.calWARD
+            MDPData_k.SBHistory = [];
+            Y = Line.Y;
+            fr = Line.fr;
+            to = Line.to;
+            MDPData_k.BusI = fa.internalBus;
+            MDPData_k.BusB = [];
+            MDPData_k.BusE = [];
+            BMap = containers.Map;
+            allBus = Bus.int;
+            for busi = MDPData_k.BusI
+                for lineid = 1:length(fr)
+                    if busi==fr(lineid)
+                        BMap(to(lineid))=0;
+                    elseif busi==to(lineid)
+                        BMap(fr(lineid))=0;
+                    end
+                end
+            end
+            for bus = allBus
+                if isempty(find(MDPData_k.BusI==bus, 1))
+                    if isKey(BMap,bus)
+                        MDPData_k.BusB = [MDPData_k.BusB;bus];
+                    else
+                        MDPData_k.BusE = [MDPData_k.BusE;bus];
+                    end
+                end
+            end
+            YEE = Y(MDPData_k.BusE,MDPData_k.BusE);
+            YEB = Y(MDPData_k.BusE,MDPData_k.BusB);
+            YBE = Y(MDPData_k.BusB,MDPData_k.BusE);
+            YBB = Y(MDPData_k.BusB,MDPData_k.BusB);
+            MDPData_k.YBI = Y(MDPData_k.BusB,MDPData_k.BusI);
+            MDPData_k.YIB = Y(MDPData_k.BusI,MDPData_k.BusB);
+            MDPData_k.YII = Y(MDPData_k.BusI,MDPData_k.BusI);
+            MDPData_k.YBBp = YBB - YBE*YEE\YEB;
+        end
+        
         ResultData.MDPData{id} = MDPData_k;
     end
+    
 end
 
 ResultData.messages = cell(0);
