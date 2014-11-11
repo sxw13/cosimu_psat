@@ -113,7 +113,7 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
             MDPData_k.BusI = fa.internalBus;
             MDPData_k.BusB = [];
             MDPData_k.BusE = [];
-            BMap = containers.Map;
+            BMap = containers.Map('KeyType','int32','ValueType','int32');
             allBus = Bus.int;
             for busi = MDPData_k.BusI
                 for lineid = 1:length(fr)
@@ -124,7 +124,7 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
                     end
                 end
             end
-            for bus = allBus
+            for bus = allBus'
                 if isempty(find(MDPData_k.BusI==bus, 1))
                     if isKey(BMap,bus)
                         MDPData_k.BusB = [MDPData_k.BusB;bus];
@@ -140,7 +140,7 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
             MDPData_k.YBI = Y(MDPData_k.BusB,MDPData_k.BusI);
             MDPData_k.YIB = Y(MDPData_k.BusI,MDPData_k.BusB);
             MDPData_k.YII = Y(MDPData_k.BusI,MDPData_k.BusI);
-            MDPData_k.YBBp = YBB - YBE*YEE\YEB;
+            MDPData_k.YBBp = YBB - YBE*(YEE\YEB);
         end
         
         ResultData.MDPData{id} = MDPData_k;
