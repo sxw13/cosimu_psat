@@ -307,7 +307,15 @@ elseif Config.falseDataSchema == 2
                     
                     n = length(ResultData.t);
                     MDPData_k = ResultData.MDPData{iAttack};
-
+                    
+                    if fa.calWARD
+                        V = DAE.y(Bus.v);
+                        a = DAE.y(Bus.a);
+                        U = V.*exp(1i*a);
+                        CurrentStatus2.SB = U(MDPData_k.BusB).*conj(MDPData_k.YBBp*U(MDPData_k.BusB) + MDPData_k.YBI*U(MDPData_k.BusI));
+                        CurrentStatus2.PB = real(CurrentStatus2.SB);
+                        CurrentStatus2.QB = imag(CurrentStatus2.SB);
+                    end
                     %get new state from simulation
                     states = ones(length(fa.MDPStateName),1);
                     s_new = 0;
@@ -384,13 +392,9 @@ elseif Config.falseDataSchema == 2
                     MDPData_k.rHistory = [MDPData_k.rHistory MDPData_k.r];
                     MDPData_k.VHistory = [MDPData_k.VHistory CurrentStatus.busVMeasPu(fa.toBus)];
                     
-                    %计算等值参数
+                    % record S_B
                     if fa.calWARD
-                        V = DAE.y(Bus.v);
-                        a = DAE.y(Bus.a);
-                        U = V.*exp(1i*a);
-                        SB = U(MDPData_k.BusB).*conj(MDPData_k.YBBp*U(MDPData_k.BusB) + MDPData_k.YBI*U(MDPData_k.BusI));
-                        MDPData_k.SBHistory = [MDPData_k.SBHistory SB];
+                        MDPData_k.SBHistory = [MDPData_k.SBHistory CurrentStatus2.SB];
                     end
                     if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
                         % Updating the value of Q   

@@ -1,9 +1,10 @@
 close all;
 
-cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_0_'')) &&'...
-    ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
+% cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_0_'')) &&'...
+%     ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
 % cmdfilter = '~isempty(strfind(file.name,''Optimal__2''))';
-path = '.\debug\CompareBetweenSSBandDSB';
+cmdfilter = '1';
+path = '.\debug\WARD';
 %path = '.\debug\28-Oct-2014-00-27-30';
 lists=dir(path);
 lines=[1 0 0
@@ -68,7 +69,7 @@ for name=areanames
                 else
                     t=ResultData.tCtrlHis;
                 end
-                hold on;plot(t,f,'Color',lines(j,:),'LineStyle','s');
+                hold on;plot(t,f,'Color',lines(j,:));
                 l{j}=strrep(file.name,'_','\_');   %in order to display '_' in the legend
                 j=j+1;
             end
@@ -76,6 +77,7 @@ for name=areanames
     end
     legend(l);grid on;
 end
+fcsv = fopen('strategy.csv','wt');
 
 for k=1:length(lists)
     file=lists(k);
@@ -84,8 +86,9 @@ for k=1:length(lists)
             S=load([path '\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;
-            disp(file.name);
-            recordStrategy(Config,ResultData,strrep(file.name,'_','\_'));
+            fprintf(fcsv,[file.name '\n']);
+            recordStrategy(Config,ResultData,fcsv);
         end
     end
 end
+fclose(fcsv);

@@ -33,7 +33,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.seEnable = 1;
 
 %Time 
-Config.simuEndTime =  14 * 3600;
+Config.simuEndTime =  24 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -44,9 +44,9 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.MDPStateName = {'ploadMeas(1)'};
-FalseData.MDPStateLimits = [0.7 1.3];
-FalseData.Nstate = [5];  % total number of state
+FalseData.MDPStateName = {'ploadMeas(1)','PB(1)','PB(2)'};
+FalseData.MDPStateLimits = [0.7 1.3;0.8 1.2;0 0.4];
+FalseData.Nstate = [5 3 3];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [2 2 2 2];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
@@ -124,7 +124,7 @@ tests = {[1]};
 AttackBus = [5 6 8 1 2 3 4 7 9];
 for testid = 1:length(tests)
     Config.falseDataAttacks = falseDataAttacks2(tests{testid});
-    for ratio = 1
+    for ratio = 1:15
         for id = 1:length(Config.falseDataAttacks)
             Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep));
         end

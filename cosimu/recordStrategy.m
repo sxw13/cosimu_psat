@@ -1,11 +1,10 @@
-function re = recordStrategy(Config,ResultData,pname)
+function re = recordStrategy(Config,ResultData,fcsv)
     re = ResultData;
     Attacks = Config.falseDataAttacks;
     MDP = ResultData.MDPData;
     
     for k = 1:length(Attacks)
-        disp(['=======For attack ' num2str(k) ':']);
-        
+        fprintf(fcsv,['=======For attack ' num2str(k) ':\n']);
         
         
         fa = Attacks{k};  %¹¥»÷ÉèÖÃ
@@ -13,18 +12,17 @@ function re = recordStrategy(Config,ResultData,pname)
         states = zeros(1,length(fa.Nstate));
         statemin = fa.MDPStateLimits(:,1);
         statemax = fa.MDPStateLimits(:,2);
-        statestep = (statemax-statemin)./(fa.Nstate-2);
-        [x,y] = meshgrid(1:prod(fa.Nstate),1:length(fa.Naction));
+        statestep = (statemax-statemin)./(fa.Nstate-2)';
         z = zeros(length(fa.Naction),prod(fa.Nstate));
         [Qmax,Action]=max(md.Q');
         info = ',';
         for kk = 1:length(fa.InjectionName)
             info = [info fa.InjectionName{kk} ', '];
         end
-        disp(info);
+        fprintf(fcsv,[info '\n']);
         for s = 1:prod(fa.Nstate)
             
-            if Qmax(s)>-0.99
+            if Qmax(s)>0.001
                 Ratios = action2Ratio(Action(s),fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                 info = '"';
                 for id = 1:length(fa.Nstate)
@@ -44,7 +42,7 @@ function re = recordStrategy(Config,ResultData,pname)
                     info = [info num2str(Ratios(kk)) ','];
                     z(kk,s) = Ratios(kk);
                 end
-                disp(info);
+                fprintf(fcsv,[info '\n']);
             end
             
             states(end) = states(end) + 1;

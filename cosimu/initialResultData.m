@@ -86,14 +86,14 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
         fa = Config.falseDataAttacks{id};
         
         MDPData_k.r = 0;
-        MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+        MDPData_k.Q = - 5 * ones(prod(fa.Nstate),prod(fa.Naction));
         switch fa.reward
         case 'voltage'
-            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+            MDPData_k.Q = zeros(prod(fa.Nstate),prod(fa.Naction));
         case 'pLoss'
-            MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
+            MDPData_k.Q = zeros(prod(fa.Nstate),prod(fa.Naction));
         case 'minEigValue'
-            MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
+            MDPData_k.Q = - 5 * ones(prod(fa.Nstate),prod(fa.Naction));
         end
 %         MDPData_k.s = MDPData_k.s_new;
         MDPData_k.a = 1;
