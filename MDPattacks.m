@@ -68,37 +68,37 @@ Config.falseDataAttacks = {FalseData};
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(9)','qlineHeadMeas(9)','plineTailMeas(7)','qlineTailMeas(7)'};
-FalseData.internalBus = [6];
+%FalseData.internalBus = [6];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 % 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineTailMeas(5)','qlineTailMeas(5)','plineTailMeas(4)','qlineTailMeas(4)'};
-FalseData.internalBus = [8];
+%FalseData.internalBus = [8];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineTailMeas(1)','qlineTailMeas(1)','genPMeas(1)','genQMeas(1)'};
-FalseData.internalBus = [1];
+%FalseData.internalBus = [1];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineTailMeas(2)','qlineTailMeas(2)','genPMeas(2)','genQMeas(2)'};
-FalseData.internalBus = [2];
+%FalseData.internalBus = [2];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineTailMeas(3)','qlineTailMeas(3)','genPMeas(3)','genQMeas(3)'};
-FalseData.internalBus = [3];
+%FalseData.internalBus = [3];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(1)','qlineHeadMeas(1)','plineTailMeas(8)','qlineTailMeas(8)','plineTailMeas(9)','qlineTailMeas(9)'};
-FalseData.internalBus = [4];
+%FalseData.internalBus = [4];
 FalseData.Naction = [3 3 3 3 3 3];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [2 2 2 2 2 2];  % Step for false data ratio
 FalseData.RatioOffset = [2 0 2 0 2 0];
@@ -107,31 +107,39 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(2)','qlineHeadMeas(2)','plineHeadMeas(4)','qlineHeadMeas(4)','plineHeadMeas(6)','qlineHeadMeas(6)'};
-FalseData.internalBus = [7];
+%FalseData.internalBus = [7];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.InjectionName = {'plineHeadMeas(3)','qlineHeadMeas(3)','plineHeadMeas(5)','qlineHeadMeas(5)','plineHeadMeas(7)','qlineHeadMeas(7)'};
-FalseData.internalBus = [9];
+%FalseData.internalBus = [9];
 Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 %%%%%%%%%%%%%put a false attack element into config structure
 
 falseDataAttacks2 = Config.falseDataAttacks;
 
 % tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
-tests = {[1]};
+tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
 AttackBus = [5 6 8 1 2 3 4 7 9];
-for testid = 1:length(tests)
-    Config.falseDataAttacks = falseDataAttacks2(tests{testid});
-    for ratio = 1:15
-        for id = 1:length(Config.falseDataAttacks)
-            Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep));
+
+mps = 6;
+matlabpool(mps);
+id = 0;
+spmd
+    for testid = 1:length(tests)
+        Config.falseDataAttacks = falseDataAttacks2(tests{testid});
+        for ratio = 1:15
+            id = id + 1;
+            if mod(id,mps)+1~=labindex , continue;end
+            for id = 1:length(Config.falseDataAttacks)
+                Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep));
+            end
+            ResultData = MDPattack(Config,['SEAttack_Busid' num2str(AttackBus(testid))],[],startTime);
         end
-        ResultData = MDPattack(Config,['SEAttack_Busid' num2str(AttackBus(testid))],[],startTime);
     end
 end
-
+matlabpool close;
 % tests = [1 2];
 % Config.falseDataAttacks = falseDataAttacks2(tests);
 % idd = 0;
