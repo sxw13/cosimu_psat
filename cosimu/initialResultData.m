@@ -142,7 +142,6 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
             MDPData_k.YII = Y(MDPData_k.BusI,MDPData_k.BusI);
             MDPData_k.YBBp = YBB - YBE*(YEE\YEB);
         end
-        
         ResultData.MDPData{id} = MDPData_k;
     end
     

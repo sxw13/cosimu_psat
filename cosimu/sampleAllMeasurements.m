@@ -1,4 +1,4 @@
-function [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
+function [CurrentStatus, ResultData, Config] = sampleAllMeasurements(Config, ResultData, CurrentStatus)
 %     global MDPData  % TAction
     global DAE Bus
 
@@ -307,7 +307,6 @@ elseif Config.falseDataSchema == 2
                     
                     n = length(ResultData.t);
                     MDPData_k = ResultData.MDPData{iAttack};
-                    
                     if fa.calWARD
                         V = DAE.y(Bus.v);
                         a = DAE.y(Bus.a);
@@ -316,6 +315,18 @@ elseif Config.falseDataSchema == 2
                         CurrentStatus2.PB = real(CurrentStatus2.SB);
                         CurrentStatus2.QB = imag(CurrentStatus2.SB);
                     end
+                    %initialization
+                    if n == 1 && fa.Qlearning == 1  && fa.autoOffset
+                        for stateNameIndex = 1:length(fa.MDPStateName)
+                            offset = eval(['(fa.MDPStateLimits(stateNameIndex,2)+fa.MDPStateLimits(stateNameIndex,1))/2' ...
+                                '-CurrentStatus2.' fa.MDPStateName{stateNameIndex}]);
+                            fa.MDPStateLimits(stateNameIndex,2) = fa.MDPStateLimits(stateNameIndex,2) - offset;
+                            fa.MDPStateLimits(stateNameIndex,1) = fa.MDPStateLimits(stateNameIndex,1) - offset;
+                        end
+                        Config.falseDataAttacks{iAttack} = fa;
+                    end
+                    
+                    
                     %get new state from simulation
                     states = ones(length(fa.MDPStateName),1);
                     s_new = 0;
@@ -364,23 +375,7 @@ elseif Config.falseDataSchema == 2
 
                     %initialization
                     if n == 1 && fa.Qlearning == 1 % && fa.Continouslearning == 0
-%                         MDPData_k.r = 0;
-%                         MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
-%                         switch fa.reward
-%                         case 'voltage'
-%                             MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
-%                         case 'pLoss'
-%                             MDPData_k.Q = zeros(fa.Nstate,prod(fa.Naction));
-%                         case 'minEigValue'
-%                             MDPData_k.Q = - 5 * ones(fa.Nstate,prod(fa.Naction));
-%                         end
                         MDPData_k.s = MDPData_k.s_new;
-%                         MDPData_k.a = 1;
-%                         MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
-%                         MDPData_k.ActionHistory = [];
-%                         MDPData_k.StatesHistory = [];
-%                         MDPData_k.rHistory = [];
-%                         MDPData_k.VHistory = [];
                     end
 
                     Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);

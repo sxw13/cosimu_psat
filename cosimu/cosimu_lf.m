@@ -84,7 +84,7 @@ while (t < Settings.tf)
                 minEigValue = min(abs(eigValues));
                 ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
             end
-            [CurrentStatus,ResultData] = sampleAllMeasurements(Config, ResultData, CurrentStatus);
+            [CurrentStatus,ResultData,Config] = sampleAllMeasurements(Config, ResultData, CurrentStatus);
             [ResultData, isOpfConverged] = obtainOpfControlCommand( CurrentStatus, ResultData, Config);
             ResultData.isOpfConverged = [ResultData.isOpfConverged isOpfConverged];
             if (isOpfConverged)
