@@ -15,16 +15,20 @@ function re = recordStrategy(Config,ResultData,fcsv)
         statestep = (statemax-statemin)./(fa.Nstate-2)';
         z = zeros(length(fa.Naction),prod(fa.Nstate));
         [Qmax,Action]=max(md.Q');
-        info = ',';
+        info = '';
+        for kk = 1:length(fa.MDPStateName)
+            info = [info fa.MDPStateName{kk} ', '];
+        end
         for kk = 1:length(fa.InjectionName)
             info = [info fa.InjectionName{kk} ', '];
         end
+        
         fprintf(fcsv,[info '\n']);
         for s = 1:prod(fa.Nstate)
             
             if Qmax(s)>0.001
                 Ratios = action2Ratio(Action(s),fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
-                info = '"';
+                info = '';
                 for id = 1:length(fa.Nstate)
                     lp='';up='';
                     if states(id)==0
@@ -35,9 +39,8 @@ function re = recordStrategy(Config,ResultData,fcsv)
                         lp=num2str(statemin(id)+(states(id)-1)*statestep(id));
                         up=num2str(statemin(id)+states(id)*statestep(id));
                     end
-                    info = [info fa.MDPStateName{id} '=[' lp ',' up '],'];
+                    info = [info '"[' lp ',' up ']",'];
                 end
-                info = [info '",'];
                 for kk = 1:length(Ratios)
                     info = [info num2str(Ratios(kk)) ','];
                     z(kk,s) = Ratios(kk);
