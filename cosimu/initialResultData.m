@@ -80,6 +80,15 @@ end
 
 if ~isempty(Config.MDPData)
     ResultData.MDPData = Config.MDPData;
+    for id = 1:length(Config.falseDataAttacks)
+        MDPData_k.ActionHistory = [];
+        MDPData_k.StatesHistory = [];
+        MDPData_k.rHistory = [];
+        MDPData_k.VHistory = [];
+        if Config.falseDataAttacks{id}.calWARD
+            MDPData_k.SBHistory = [];
+        end
+    end
 elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy==6
     ResultData.MDPData = cell(length(Config.falseDataAttacks),1);
     for id = 1:length(Config.falseDataAttacks)

@@ -44,9 +44,10 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.MDPStateName = {'ploadMeas(1)','PB(1)','PB(2)'};
-FalseData.MDPStateLimits = [0.7 1.3;0.8 1.2;0 0.4];
-FalseData.Nstate = [5 3 3];  % total number of state
+FalseData.MDPStateName = {'ploadMeas(1)','PB(1)','PB(2)','QB(1)','QB(2)'};
+FalseData.autoOffset = 1;
+FalseData.MDPStateLimits = [0.7 1.3;0.8 1.2;0 0.4;0 0.4;0 0.4];
+FalseData.Nstate = [5 3 3 3 3];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [2 2 2 2];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
@@ -120,22 +121,28 @@ Config.falseDataAttacks{length(Config.falseDataAttacks)+1} = FalseData;
 falseDataAttacks2 = Config.falseDataAttacks;
 
 % tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
-tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
+tests = {[1]};
 AttackBus = [5 6 8 1 2 3 4 7 9];
 
 mps = 6;
 matlabpool(mps);
-id = 0;
+taskId = 0;
 spmd
     for testid = 1:length(tests)
         Config.falseDataAttacks = falseDataAttacks2(tests{testid});
-        for ratio = 1:15
-            id = id + 1;
-            if mod(id,mps)+1~=labindex , continue;end
-            for id = 1:length(Config.falseDataAttacks)
-                Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{id}.MDPBusFalseDataRatioStep));
+        for ratio = 1:6
+            taskId = taskId + 1;
+            if mod(taskId,mps)+1~=labindex , continue;end
+            for idd = 1:length(Config.falseDataAttacks)
+                Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep));
             end
-            ResultData = MDPattack(Config,['SEAttack_Busid' num2str(AttackBus(testid))],[],startTime);
+            [ResultData, Config2] = MDPattack(Config,['SEAttack_Busid_' num2str(AttackBus(testid)) 'ratio_' num2str(ratio)],[],startTime);
+%             disp(['SEAttack_Busid' num2str(AttackBus(testid)) 'ratio_' num2str(ratio) '    id=' num2str(taskId)]);
+
+            for idd = 1:length(Config2.falseDataAttacks)
+                Config2.falseDataAttacks{idd}.Qlearning = 0;
+            end
+            MDPattack(Config2,['Optimal_Busid_' num2str(AttackBus(testid)) 'ratio_' num2str(ratio)],ResultData.MDPData,startTime);
         end
     end
 end

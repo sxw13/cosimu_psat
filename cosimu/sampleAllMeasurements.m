@@ -316,14 +316,17 @@ elseif Config.falseDataSchema == 2
                         CurrentStatus2.QB = imag(CurrentStatus2.SB);
                     end
                     %initialization
-                    if n == 1 && fa.Qlearning == 1  && fa.autoOffset
-                        for stateNameIndex = 1:length(fa.MDPStateName)
-                            offset = eval(['(fa.MDPStateLimits(stateNameIndex,2)+fa.MDPStateLimits(stateNameIndex,1))/2' ...
-                                '-CurrentStatus2.' fa.MDPStateName{stateNameIndex}]);
-                            fa.MDPStateLimits(stateNameIndex,2) = fa.MDPStateLimits(stateNameIndex,2) - offset;
-                            fa.MDPStateLimits(stateNameIndex,1) = fa.MDPStateLimits(stateNameIndex,1) - offset;
+                    if n == 1 && fa.Qlearning == 1
+                        if fa.autoOffset
+                            MDPData_k.stateOffset = [];
+                            for stateNameIndex = 1:length(fa.MDPStateName)
+                                offset = eval(['(fa.MDPStateLimits(stateNameIndex,2)+fa.MDPStateLimits(stateNameIndex,1))/2' ...
+                                    '-CurrentStatus2.' fa.MDPStateName{stateNameIndex}]);
+                                MDPData_k.stateOffset = [MDPData_k.stateOffset;offset];
+                            end
+                        else
+                            MDPData_k.stateOffset = zeros(length(fa.MDPStateName),1);
                         end
-                        Config.falseDataAttacks{iAttack} = fa;
                     end
                     
                     
@@ -332,16 +335,14 @@ elseif Config.falseDataSchema == 2
                     s_new = 0;
                     for stateNameIndex = 1:length(fa.MDPStateName)
                         eval(['S = CurrentStatus2.' fa.MDPStateName{stateNameIndex} ';']);
-                        statemin = fa.MDPStateLimits(stateNameIndex,1);
-                        statemax = fa.MDPStateLimits(stateNameIndex,2);
+                        statemin = fa.MDPStateLimits(stateNameIndex,1) - MDPData_k.stateOffset(stateNameIndex);
+                        statemax = fa.MDPStateLimits(stateNameIndex,2) - MDPData_k.stateOffset(stateNameIndex);
                         statestep = (statemax-statemin)/(fa.Nstate(stateNameIndex)-2);
                         states(stateNameIndex) = ceil((S-statemin)/statestep)+1;
-
                         % consider the limits
                         if states(stateNameIndex) < 1 , states(stateNameIndex) = 1;
                         elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) , states(stateNameIndex) = fa.Nstate(stateNameIndex);
                         end
-
                         s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
                     end
                     s_new = s_new + 1;
