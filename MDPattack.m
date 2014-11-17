@@ -25,8 +25,8 @@ else
     cd([pwd, '\loadshape\dyn']);    
 end
 Config.loadShapeFile = [pwd, '\loadshapeHour'];
-delete *.mat
-createhourloadshape(Config);
+% delete *.mat
+% createhourloadshape(Config);
 
 cd(pwdpath);
 

@@ -1,10 +1,10 @@
 close all;
 
-% cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_0_'')) &&'...
-%     ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_distr'')))'];
+cmdfilter = ['( ~isempty(strfind(file.name,''ratio__1_'')) && ~isempty(strfind(file.name,''distr_0_'')) &&'...
+    ' isempty(strfind(file.name,''Learning'')) ) || (~isempty(strfind(file.name,''NoAttack_impl'')))'];
 % cmdfilter = '~isempty(strfind(file.name,''Optimal__2''))';
-cmdfilter = '1';
-path = '.\debug\WARD';
+% cmdfilter = '1';
+path = '.\debug\CompareBetweenSSBandDSB';
 %path = '.\debug\28-Oct-2014-00-27-30';
 lists=dir(path);
 lines=[1 0 0
@@ -55,7 +55,7 @@ for name=areanames
     for k=1:length(lists)
         file=lists(k);
         if file.isdir==0
-            if eval(cmdfilter)
+            if length(file.name)>4 && strcmp(file.name(end-3:end),'.mat') && eval(cmdfilter)
                 S=load([path '\' file.name]);
                 ResultData=S.ResultData;
                 Config=S.Config;
@@ -82,7 +82,7 @@ fcsv = fopen('strategy.csv','wt');
 for k=1:length(lists)
     file=lists(k);
     if file.isdir==0
-        if eval(cmdfilter)
+        if length(file.name)>4 && strcmp(file.name(end-3:end),'.mat') && eval(cmdfilter)
             S=load([path '\' file.name]);
             ResultData=S.ResultData;
             Config=S.Config;

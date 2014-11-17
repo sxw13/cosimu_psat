@@ -22,7 +22,7 @@ lines=[1 0 0
         1 0.5 1
         0.5 1 1];
 ynames={
-    'ResultData.minEigValueHis(960)' ...
+    'min(ResultData.minEigValueHis)' ...
 };
 cmdfilters={'~isempty(strfind(file.name,''Optimal__1'')) && ~isempty(strfind(file.name,''distr_0_''))',...
     '~isempty(strfind(file.name,''Optimal__2'')) && ~isempty(strfind(file.name,''distr_0_''))',...
@@ -39,13 +39,23 @@ legends = {
     '3-bus attack' ...
     '4-bus attack' ...
 };
+titles={
+    'minimal Eigenvalue' ...
+    };
+Xtrick = {
+    '2-bus' ...
+    '3-bus' ...
+    '4-bus' ...
+};
+
 
 for yid=1:length(ynames)
     yname=ynames{yid};
     xname=xnames{yid};
-    figure;
-    title(yname);
+    figure('Color',[1 1 1]);
+    title(titles{yid});
     xlabel(xlabels{yid});
+    bardata = [];
     for ff=1:length(cmdfilters)
         cmdfilter=cmdfilters{ff};
         y=[];
@@ -53,7 +63,7 @@ for yid=1:length(ynames)
         for k=1:length(lists)
             file=lists(k);
             if file.isdir==0
-                if eval(cmdfilter)
+                if length(file.name)>4 && strcmp(file.name(end-3:end),'.mat') && eval(cmdfilter)
                     S=load([path '\' file.name]);
                     ResultData=S.ResultData;
                     Config=S.Config;
@@ -63,8 +73,20 @@ for yid=1:length(ynames)
             end
         end
         hold on;
-        plot(x,y,'Color',lines(ff,:),'LineStyle','o');
+        XY = [x' y'];
+        XY = sortrows(XY,1);
+        plot(XY(:,1),XY(:,2),'Color',lines(ff,:),'Marker','v');
+            %'Marker','v'
+        bardata = [bardata min(y')];
+        
     end
     legend(legends);
+    grid on;
+    
+    figure('Color',[1 1 1]);
+    b = bar(bardata);
+    get(b,'children');
+    set(gca,'XTickLabel',Xtrick);
+    ylabel(titles{yid});
     grid on;
 end

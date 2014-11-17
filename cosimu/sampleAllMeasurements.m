@@ -333,6 +333,7 @@ elseif Config.falseDataSchema == 2
                     %get new state from simulation
                     states = ones(length(fa.MDPStateName),1);
                     s_new = 0;
+                    ds_new = zeros(1,length(fa.MDPStateName));
                     for stateNameIndex = 1:length(fa.MDPStateName)
                         eval(['S = CurrentStatus2.' fa.MDPStateName{stateNameIndex} ';']);
                         statemin = fa.MDPStateLimits(stateNameIndex,1) - MDPData_k.stateOffset(stateNameIndex);
@@ -343,10 +344,18 @@ elseif Config.falseDataSchema == 2
                         if states(stateNameIndex) < 1 , states(stateNameIndex) = 1;
                         elseif states(stateNameIndex) > fa.Nstate(stateNameIndex) , states(stateNameIndex) = fa.Nstate(stateNameIndex);
                         end
+                        ds_new(stateNameIndex) = states(stateNameIndex)-1;
                         s_new = s_new*fa.Nstate(stateNameIndex)+states(stateNameIndex)-1;
                     end
                     s_new = s_new + 1;
                     MDPData_k.s_new = s_new;
+                    MDPData_k.ds_new = ds_new;
+                    
+                    %initialization
+                    if n == 1 && fa.Qlearning == 1 % && fa.Continouslearning == 0
+                        MDPData_k.s = MDPData_k.s_new;
+                        MDPData_k.ds = MDPData_k.ds_new;
+                    end
 
                     %get reward
                     switch fa.reward
@@ -371,13 +380,16 @@ elseif Config.falseDataSchema == 2
                             if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
                                 MDPData_k.r = -5;
                             end
+                        case 'discrate'
+                            MDPData_k.r = abs(MDPData_k.ds(1)-(fa.Nstate(1)-1)/2)+1;
+                            % penal for OPF not converged
+                            if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
+                                MDPData_k.r = 0;
+                            end
                     end
                     
 
-                    %initialization
-                    if n == 1 && fa.Qlearning == 1 % && fa.Continouslearning == 0
-                        MDPData_k.s = MDPData_k.s_new;
-                    end
+                    
 
                     Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
                     
@@ -397,21 +409,18 @@ elseif Config.falseDataSchema == 2
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
                         dQ = eval(fa.learningRate)*delta;
-                        % dQ = delta;
-%                         if MDPData_k.Q(MDPData_k.s,MDPData_k.a)>0.2 && abs(dQ)>0.00001 
-%                             disp([num2str(MDPData_k.s) ' ' num2str(MDPData_k.a) ' ' num2str(MDPData_k.r) ' ' num2str(length(MDPData_k.rHistory)+1)]);
-%                         end
                         MDPData_k.Q(MDPData_k.s,MDPData_k.a) = MDPData_k.Q(MDPData_k.s,MDPData_k.a) + dQ;
                     end
 
                     % Current state is updated
                     MDPData_k.s = MDPData_k.s_new;
+                    MDPData_k.ds = MDPData_k.ds_new;
 
                     % Action choice : greedy with increasing probability
                     % probability 1-(1/log(Iter+2)) can be changed
                     pn = rand(1); 
                     if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
-                      [TTemp,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
+                      [~,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
                     else
                       MDPData_k.a = randi([1,prod(fa.Naction)]);
                     end

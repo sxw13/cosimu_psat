@@ -9,7 +9,8 @@ function re = recordStrategy(Config,ResultData,fcsv)
         
         fa = Attacks{k};  %攻击设置
         md = MDP{k};    %MDP计算结果
-        states = zeros(1,length(fa.Nstate));
+        fa.Nstate = fa.Nstate(1:length(fa.MDPStateName));
+        states = zeros(1,length(fa.MDPStateName));
         if isfield(md,'stateOffset')
             statemin = fa.MDPStateLimits(:,1)-md.stateOffset;
             statemax = fa.MDPStateLimits(:,2)-md.stateOffset;
@@ -18,7 +19,7 @@ function re = recordStrategy(Config,ResultData,fcsv)
             statemax = fa.MDPStateLimits(:,2);
         end
         
-        statestep = (statemax-statemin)./(fa.Nstate-2)';
+        statestep = (statemax-statemin)./(fa.Nstate(1:length(fa.MDPStateName))-2)';
         z = zeros(length(fa.Naction),prod(fa.Nstate));
         [Qmax,Action]=max(md.Q');
         info = '';
