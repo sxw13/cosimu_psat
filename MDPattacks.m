@@ -147,7 +147,7 @@ spmd
                     Config.falseDataAttacks{idd}.MDPStateName = falseDataAttacks2{idd}.MDPStateName(tests{testid});
                     Config.falseDataAttacks{idd}.MDPStateLimits = falseDataAttacks2{idd}.MDPStateLimits(tests{testid},:);
                     Config.falseDataAttacks{idd}.Nstate = falseDataAttacks2{idd}.Nstate(tests{testid});%/5*nstate;
-                    Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep));
+                    Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep = ratio * ones(1,length(Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep));
                 end
                 [ResultData, Config2] = MDPattack(Config,['StateTestChangeLoad_testId_' num2str(testid) 'ratio_' num2str(ratio)],[],startTime);
     %             disp(['SEAttack_Busid' num2str(AttackBus(testid)) 'ratio_' num2str(ratio) '    id=' num2str(taskId)]);
