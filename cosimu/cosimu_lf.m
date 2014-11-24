@@ -51,6 +51,9 @@ while (t < Settings.tf)
         
         if nPointOfLoadShape > sizeOfLoadShape
             nHour = nHour + 1;
+            % modified by sxw
+            nHour = mod(nHour-1,24)+1;
+            % end of modification
             load([Config.loadShapeFile, num2str(nHour)]);
             loadshape = hourDataNew;
             nPointOfLoadShape = 1;

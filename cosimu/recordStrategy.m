@@ -33,7 +33,7 @@ function re = recordStrategy(Config,ResultData,fcsv)
         fprintf(fcsv,[info '\n']);
         for s = 1:prod(fa.Nstate)
             
-            if Qmax(s)>0.001
+            if Qmax(s)>fa.minAttackValue % && nnz(md.Q(s,:))>=fa.maxLearnedAction
                 Ratios = action2Ratio(Action(s),fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
                 info = '';
                 for id = 1:length(fa.Nstate)
