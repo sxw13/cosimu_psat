@@ -47,7 +47,7 @@ FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateName = {'busVMeasPu(5)','ploadMeas(1)','plineTailMeas(6)','qlineTailMeas(6)','plineHeadMeas(8)','qlineHeadMeas(8)'};
 FalseData.autoOffset = 1;
 FalseData.MDPStateLimits = [0.8 1.2;0.7 1.3;0 0.6;0 0.6;0 0.6;0 0.6];
-FalseData.Nstate = [17 5 5 5 5 5];  % total number of state
+FalseData.Nstate = [23 5 5 5 5 5];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 1 1];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
@@ -59,7 +59,7 @@ FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
 FalseData.LearningEndTime = Config.simuEndTime;
 FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
 FalseData.fixedAction = [];  %-1 for a 
-FalseData.maxLearnedAction = 17;
+FalseData.maxLearnedAction = 100;
 FalseData.minAttackValue = 2.2;
 % FalseData.Continouslearning = 1-state; % 0 for setting all state iteration to zero;
 % Configurations for WARD calulation
@@ -128,7 +128,7 @@ falseDataAttacks2 = Config.falseDataAttacks;
 
 % tests = {[1],[2],[3],[4],[5],[6],[7],[8],[9]};
 % tests =  {[1],[1 2],[1 3 4],[1 5 6],[1 2 3 4],[1 2 5 6],[1 2 3 4 5 6]};
-tests =  {[1 2 3 4 5]};
+tests =  {[1],[1 2],[1 2 3],[1 2 3 4]};
 
 % if Config.simuType == 0
 %     cd([pwd, '\loadshape\lf']);    
@@ -143,25 +143,26 @@ tests =  {[1 2 3 4 5]};
 mps = 6;
 matlabpool(mps);
 taskId = 0;
-Config.falseDataAttacks = falseDataAttacks2(9);
+
 spmd
-    for testid = 1:100
-        for Iteration = [3 5 9 13 17 21 25]
-            for ratio = 2
+    for testid = 1:4
+        for Iteration = 1:6
+            for ratio = [0.3 0.5 0.7 0.8 0.9 1]
                 for nstate = 1
                     taskId = taskId + 1;
                     if mod(taskId,mps)+1~=labindex , continue;end
+                    Config.falseDataAttacks = falseDataAttacks2(tests{testid});
                     for idd = 1:length(Config.falseDataAttacks)
     %                     Config.falseDataAttacks{idd}.MDPStateName = falseDataAttacks2{idd}.MDPStateName(tests{testid});
     %                     Config.falseDataAttacks{idd}.MDPStateLimits = falseDataAttacks2{idd}.MDPStateLimits(tests{testid},:);
     %                     Config.falseDataAttacks{idd}.Nstate = falseDataAttacks2{idd}.Nstate(tests{testid});%/5*nstate;
                         Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep = ratio * 2 * ones(1,length(Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep));
-                        Config.falseDataAttacks{idd}.RatioOffset = ratio * 2 * [1 0 1 0 1 0];
-                        Config.falseDataAttacks{idd}.maxLearnedAction = Iteration;
+                        Config.falseDataAttacks{idd}.RatioOffset = ratio * 2 * [1 0 1 0];
+%                         Config.falseDataAttacks{idd}.maxLearnedAction = Iteration;
                     end
     %                 [ResultData, Config2] = MDPattack(Config,['StateTestChangeLoad_testId_' num2str(taskId) 'ratio_' num2str(ratio)],[],startTime);
         %             disp(['SEAttack_Busid' num2str(AttackBus(testid)) 'ratio_' num2str(ratio) '    id=' num2str(taskId)]);
-                    MDPattack(Config,['StateTestChangeLoad_testId_' num2str(testid) 'Iter_' num2str(Iteration)],[],startTime);
+                    MDPattack(Config,['StateTestChangeLoad_testId_' num2str(testid) 'Iter_' num2str(Iteration) '_ratio_' num2str(ratio)],[],startTime);
                 end
             end
         end

@@ -73,6 +73,13 @@ mpc.busnames = [
 	'BUS-9   100'
 ];
 
+nBus = size(mpc.bus,1);
+nGen = size(mpc.gen,1);
+nVar = 2*nBus + 2*nGen;
+mpc.N = sparse(2*nBus+nGen+1:nVar,2*nBus+nGen+1:nVar,ones(1,nGen));
+mpc.Cw = sparse(nVar,1);
+mpc.H = speye(nVar,nVar);
+
 % Warnings from cdf2matp conversion:
 %
 % ***** check the title format in the first line of the cdf file.

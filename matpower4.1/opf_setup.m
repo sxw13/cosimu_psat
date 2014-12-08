@@ -171,6 +171,7 @@ else                %% AC model
   [Apqh, ubpqh, Apql, ubpql, Apqdata] = makeApq(baseMVA, gen);
 
   user_vars = {'Va', 'Vm', 'Pg', 'Qg'};
+%   user_vars = {'Va', 'Vm', 'Pg', 'Qg', 'dQg'};
   ycon_vars = {'Pg', 'Qg', 'y'};
 end
 
@@ -236,6 +237,7 @@ else
   om = add_vars(om, 'Vm', nb, Vm, bus(:, VMIN), bus(:, VMAX));
   om = add_vars(om, 'Pg', ng, Pg, Pmin, Pmax);
   om = add_vars(om, 'Qg', ng, Qg, Qmin, Qmax);
+%   om = add_vars(om, 'dQg', ng, zeros(1,length(Qg)));
   om = add_constraints(om, 'Pmis', nb, 'nonlinear');
   om = add_constraints(om, 'Qmis', nb, 'nonlinear');
   om = add_constraints(om, 'Sf', nl, 'nonlinear');
@@ -244,6 +246,8 @@ else
   om = add_constraints(om, 'PQl', Apql, [], ubpql, {'Pg', 'Qg'});   %% npql
   om = add_constraints(om, 'vl',  Avl, lvl, uvl,   {'Pg', 'Qg'});   %% nvl
   om = add_constraints(om, 'ang', Aang, lang, uang, {'Va'});        %% nang
+%   om = add_constraints(om, 'dQgf',  [speye(length(Qg)) -speye(length(Qg))], Qg, Qg,   {'Qg', 'dQg'});   %% dQgf
+  
 end
 
 %% y vars, constraints for piece-wise linear gen costs
@@ -263,6 +267,7 @@ end
 if nw
   user_cost.N = mpc.N;
   user_cost.Cw = Cw;
+  user_cost.rh = [zeros(nb+nv + ng,1);Qg];
   if ~isempty(fparm)
     user_cost.dd = fparm(:, 1);
     user_cost.rh = fparm(:, 2);

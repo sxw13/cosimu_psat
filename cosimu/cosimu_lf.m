@@ -60,6 +60,9 @@ while (t < Settings.tf)
             sizeOfLoadShape = length(loadshape);
         end
         PQ.con(:, [4, 5]) = loadshape(nPointOfLoadShape) * ResultData.loadBase;
+        if isfield(Config,'LoadShapeRatio')
+            PQ.con(:, [4, 5]) = PQ.con(:, [4, 5])*Config.LoadShapeRatio;
+        end
     end
     
     fm_spf_modified(Config);
