@@ -106,7 +106,7 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
         end
 %         MDPData_k.s = MDPData_k.s_new;
         MDPData_k.a = 1;
-        MDPData_k.Iters = zeros(prod(fa.Nstate),prod(fa.Naction));
+        MDPData_k.Iters = sparse(prod(fa.Nstate),prod(fa.Naction));
         MDPData_k.ActionHistory = [];
         MDPData_k.StatesHistory = [];
         MDPData_k.rHistory = [];

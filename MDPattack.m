@@ -39,6 +39,6 @@ ResultData = simplePSAT(Config);
 cd(pwdpath);
 
 resultFile = [pwdpath, '/debug/',folder,'/',caseName,'_',label,'_', startTime];
-save(resultFile, 'Config', 'ResultData');
+save([resultFile '.mat'], 'Config', 'ResultData');
 
 end

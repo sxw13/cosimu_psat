@@ -34,8 +34,12 @@ else
     tStep = Config.dynTStep;
 end
 nHour = Config.simuEndTime/3600;
-allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'nearest');
+allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'spline');
 nData = length(allData);
+
+if isfield(Config,'LoadShapeRatio')
+    allData = allData/max(abs(allData))*Config.LoadShapeRatio;
+end
 
 close all;
 plot(0:tStep:Config.simuEndTime-tStep,allData);

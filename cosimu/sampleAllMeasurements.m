@@ -369,7 +369,7 @@ elseif Config.falseDataSchema == 2
                                 MDPData_k.r = 3*(0.9-v) + 0.1 + 1;
                             end
                             % penal for OPF not converged
-                            if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
+                            if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged && MDPData_k.r<2.3
                                 MDPData_k.r = 0;
                             end
                         case 'pLoss'
@@ -390,11 +390,16 @@ elseif Config.falseDataSchema == 2
                     
 
                     
-
-                    Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
+                    if MDPData_k.a>0
+                        Iter =  MDPData_k.Iters(MDPData_k.s,MDPData_k.a);
+                    else
+                        Iter = 0;
+                    end
                     
                     % Record history
-                    MDPData_k.Iters(MDPData_k.s,MDPData_k.a) = Iter+1;
+                    if MDPData_k.a>0
+                        MDPData_k.Iters(MDPData_k.s,MDPData_k.a) = Iter+1;
+                    end
                     MDPData_k.ActionHistory = [MDPData_k.ActionHistory MDPData_k.a];
                     MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
                     MDPData_k.rHistory = [MDPData_k.rHistory MDPData_k.r];
@@ -404,7 +409,7 @@ elseif Config.falseDataSchema == 2
                     if fa.calWARD
                         MDPData_k.SBHistory = [MDPData_k.SBHistory CurrentStatus2.SB];
                     end
-                    if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime
+                    if fa.Qlearning && ResultData.t(end)<=fa.LearningEndTime && MDPData_k.a>0
                         % Updating the value of Q   
                         % Decaying update coefficient (1/sqrt(Iter+2)) can be changed
                         delta = MDPData_k.r + fa.MDPDiscountFactor*max(MDPData_k.Q(MDPData_k.s_new,:)) - MDPData_k.Q(MDPData_k.s,MDPData_k.a);
@@ -418,9 +423,12 @@ elseif Config.falseDataSchema == 2
 
                     % Action choice : greedy with increasing probability
                     % probability 1-(1/log(Iter+2)) can be changed
-                    pn = rand(1); 
-                    if (pn < (1-(1/log(Iter+2)))) || fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime
-                      [~,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
+                    % pn = rand(1); %(pn < (1-(1/log(Iter+2))))
+                    if  fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime || nnz(MDPData_k.Q(MDPData_k.s,:))>=fa.maxLearnedAction
+                      [Value,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
+                      if isfield(fa,'minAttackValue') && Value<fa.minAttackValue
+                        MDPData_k.a = -1;
+                      end
                     else
                       MDPData_k.a = randi([1,prod(fa.Naction)]);
                     end
@@ -437,15 +445,17 @@ elseif Config.falseDataSchema == 2
                     end
 
                     %take action
-                    Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
-                    
-                    for k = 1:length(Ratios)
-                        eval(['CurrentStatus.' fa.InjectionName{k}  ...
-                            ' = CurrentStatus2.' fa.InjectionName{k} ' * Ratios(k);']);
+                    if MDPData_k.a > -0.5
+                        Ratios = action2Ratio(MDPData_k.a,fa.Naction,fa.MDPBusFalseDataRatioStep,fa.RatioOffset);
+
+                        for k = 1:length(Ratios)
+                            eval(['CurrentStatus.' fa.InjectionName{k}  ...
+                                ' = CurrentStatus2.' fa.InjectionName{k} ' * Ratios(k);']);
+                        end
                     end
                     
+                    %record MDP data
                     ResultData.MDPData{iAttack} = MDPData_k;
-                    
                 otherwise  
             end               
         end
