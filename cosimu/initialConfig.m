@@ -18,7 +18,7 @@ Config.loadShapeFile = 'loadshapeHour';
 Config.loadShapeCsvFile = 'LoadShapeSimple.csv';
 Config.enableOPFCtrl = 1;
 Config.enableLoadShape = 1;
-Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 0;
 
 
@@ -83,4 +83,8 @@ Config.vRecoverSample = 4;
 Config.normalEPrice = 0.5;
 Config.badQosPenaltyPrice = 0.8;
 Config.loadShedPenaltyPrice = 2.5;
+
+%% for MDP studies
+Config.MDPData = [];
+
 

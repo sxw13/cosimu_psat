@@ -245,6 +245,9 @@ else
   om = add_constraints(om, 'PQh', Apqh, [], ubpqh, {'Pg', 'Qg'});   %% npqh
   om = add_constraints(om, 'PQl', Apql, [], ubpql, {'Pg', 'Qg'});   %% npql
   om = add_constraints(om, 'vl',  Avl, lvl, uvl,   {'Pg', 'Qg'});   %% nvl
+  if isfield(mpc,'dQg')
+    om = add_constraints(om, 'dQgf',  speye(length(Qg)), Qg-mpc.dQg/baseMVA, Qg+mpc.dQg/baseMVA, {'Qg'});   %% dQg
+  end
   om = add_constraints(om, 'ang', Aang, lang, uang, {'Va'});        %% nang
 %   om = add_constraints(om, 'dQgf',  [speye(length(Qg)) -speye(length(Qg))], Qg, Qg,   {'Qg', 'dQg'});   %% dQgf
   

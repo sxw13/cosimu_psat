@@ -44,7 +44,18 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql; 
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.MDPStateName = {'busVMeasPu(5)','ploadMeas(1)','plineTailMeas(6)','qlineTailMeas(6)','plineHeadMeas(8)','qlineHeadMeas(8)'};
+measureNamePattern = {'busVMeasPu','ploadMeas','plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
+FalseData.MDPStateName = cell();
+cellid=0;
+for i = 1 : length(measureNamePattern )
+    addIdxOn = findMeas4Bus(Config, measureNamePattern{i}, FalseData.toBus);
+    for ii = 1:length(addIdxOn)
+        cellid = cellid+1;
+        FalseData.MDPStateName{cellid} = [measureNamePattern{i}, '(', int2str(idxAddOn(ii)), ')'];
+    end
+end
+% FalseData.MDPStateName = {'busVMeasPu(5)','ploadMeas(1)','plineTailMeas(6)','qlineTailMeas(6)','plineHeadMeas(8)','qlineHeadMeas(8)'};
+
 FalseData.autoOffset = 1;
 FalseData.MDPStateLimits = [0.8 1.2;0.7 1.3;0 0.6;0 0.6;0 0.6;0 0.6];
 FalseData.Nstate = [23 5 5 5 5 5];  % total number of state
@@ -183,3 +194,7 @@ matlabpool close;
 %     MDPattack(Config2,['SEAttack' num2str(idd) 'impl'],ResultData.MDPData,startTime);
 %     idd = idd + 1;
 % end
+
+
+
+
