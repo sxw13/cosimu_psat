@@ -58,12 +58,21 @@ end
 
 FalseData.autoOffset = 1;
 FalseData.MDPStateLimits = [0.8 1.2;0.7 1.3;0 0.6;0 0.6;0 0.6;0 0.6];
+<<<<<<< HEAD
+FalseData.Nstate = [17 5 5 5 5 5];  % total number of state
+FalseData.Naction = [5 5 5 5];   % total number of action
+FalseData.MDPBusFalseDataRatioStep = [1 1 1 1];  % Step for false data ratio
+FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
+FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
+FalseData.MDPDiscountFactor = 0.8;   % discount factor for value function of MDP
+=======
 FalseData.Nstate = [23 5 5 5 5 5];  % total number of state
 FalseData.Naction = [3 3 3 3];   % total number of action
 FalseData.MDPBusFalseDataRatioStep = [1 1 1 1];  % Step for false data ratio
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
 FalseData.MDPDiscountFactor = 0.2;   % discount factor for value function of MDP
+>>>>>>> d17c5686cc955eba14889efe96ba58b6421669a1
 FalseData.RatioOffset = [2 0 2 0];
 FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
 FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
@@ -151,9 +160,27 @@ tests =  {[1],[1 2],[1 2 3],[1 2 3 4]};
 % createhourloadshape(Config);
 % cd(pwdpath);
 
-mps = 6;
+mps = 2;
 matlabpool(mps);
 taskId = 0;
+<<<<<<< HEAD
+Config.falseDataAttacks = falseDataAttacks2(1);
+spmd
+    for testid = 5
+        for ratio = 1
+            for nstate = 1
+                taskId = taskId + 1;
+                if mod(taskId,mps)+1~=labindex , continue;end
+                for idd = 1:length(Config.falseDataAttacks)
+                    Config.falseDataAttacks{idd}.MDPStateName = falseDataAttacks2{idd}.MDPStateName(tests{testid});
+                    Config.falseDataAttacks{idd}.MDPStateLimits = falseDataAttacks2{idd}.MDPStateLimits(tests{testid},:);
+                    Config.falseDataAttacks{idd}.Nstate = falseDataAttacks2{idd}.Nstate(tests{testid});%/5*nstate;
+                    Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep = ratio * ones(1,length(Config.falseDataAttacks{idd}.MDPBusFalseDataRatioStep));
+                end
+                [ResultData, Config2] = MDPattack(Config,['StateTestChangeLoad_testId_' num2str(testid) 'ratio_' num2str(ratio)],[],startTime);
+    %             disp(['SEAttack_Busid' num2str(AttackBus(testid)) 'ratio_' num2str(ratio) '    id=' num2str(taskId)]);
+=======
+>>>>>>> d17c5686cc955eba14889efe96ba58b6421669a1
 
 spmd
     for testid = 1:4
