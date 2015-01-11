@@ -46,7 +46,7 @@ if Config.seEnable == 1
         CurrentStatus2.bus = bus;
         CurrentStatus2.branch = branch;
         CurrentStatus2.gen = gen;
-        
+        ResultData.bus = bus;
        %% run opf
         optresult = runopf(CurrentStatus2, Config.opt);
 
@@ -54,6 +54,8 @@ if Config.seEnable == 1
         if optresult.success == 1
             ResultData.pLForCtrlHis = [ResultData.pLForCtrlHis, CurrentStatus.ploadMeas];
             ResultData.qLForCtrlHis = [ResultData.qLForCtrlHis, CurrentStatus.qloadMeas];
+            ResultData.pLForOPF = [ResultData.pLForOPF, bus(ResultData.allLoadIdx,3)];
+            ResultData.qLForOPF = [ResultData.qLForOPF, bus(ResultData.allLoadIdx,4)];
             ResultData.pGenCtrlHis = [ResultData.pGenCtrlHis, optresult.gen(:, 2)/100];
             ResultData.qGenCtrlHis = [ResultData.qGenCtrlHis, optresult.gen(:, 3)/100];
             ResultData.vGenCtrlHis = [ResultData.vGenCtrlHis, optresult.gen(:, 6)];
