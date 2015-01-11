@@ -36,6 +36,12 @@ mpc.gen = [
 	3	85	0	9999	-9999	1.025	100	1	1850	0	0	0	0	0	0	0	0	0	0	0	0;
 ];
 
+mpc.dQg = [
+    5
+    5
+    5
+];
+
 %% branch data
 %	fbus	tbus	r	x	b	rateA	rateB	rateC	ratio	angle	status	angmin	angmax
 mpc.branch = [
@@ -72,6 +78,13 @@ mpc.busnames = [
 	'BUS-8   100'
 	'BUS-9   100'
 ];
+
+% nBus = size(mpc.bus,1);
+% nGen = size(mpc.gen,1);
+% nVar = 2*nBus + 2*nGen;
+% mpc.N = sparse(2*nBus+nGen+1:nVar,2*nBus+nGen+1:nVar,ones(1,nGen));
+% mpc.Cw = sparse(nVar,1);
+% mpc.H = speye(nVar,nVar);
 
 % Warnings from cdf2matp conversion:
 %

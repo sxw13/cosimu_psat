@@ -33,9 +33,13 @@ if Config.simuType == 0
 else
     tStep = Config.dynTStep;
 end
-nHour = Config.simuEndTime/3600;
-allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'nearest');
+nHour = 24;%Config.simuEndTime/3600;
+allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'spline');
 nData = length(allData);
+
+if isfield(Config,'LoadShapeRatio')
+    allData = allData/max(abs(allData));
+end
 
 for iHour = 1 : nHour
     hourDataNew = allData(1+(iHour-1)*nData/nHour:iHour*nData/nHour);
