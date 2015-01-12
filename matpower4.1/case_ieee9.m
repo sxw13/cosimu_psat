@@ -36,11 +36,11 @@ mpc.gen = [
 	3	85	0	9999	-9999	1.025	100	1	1850	0	0	0	0	0	0	0	0	0	0	0	0;
 ];
 
-mpc.dQg = [
-    5
-    5
-    5
-];
+% mpc.dQg = [
+%     5
+%     5
+%     5
+% ];
 
 %% branch data
 %	fbus	tbus	r	x	b	rateA	rateB	rateC	ratio	angle	status	angmin	angmax

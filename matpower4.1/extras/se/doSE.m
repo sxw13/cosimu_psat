@@ -42,7 +42,7 @@ function [V, converged, iterNum, z, z_est, error_sqrsum] = doSE(baseMVA, bus, ge
     GEN_STATUS, PMAX, PMIN, MU_PMAX, MU_PMIN, MU_QMAX, MU_QMIN] = idx_gen;
 
 %% options
-tol     = 1e-5; % mpopt(2);
+tol     = 1e-6; % mpopt(2);
 max_it  = 100;  % mpopt(3);
 verbose = 0;    % mpopt(31);
 
@@ -98,7 +98,8 @@ sigma_square = sigma_vector.^2;
 R_inv = diag(1./sigma_square);
 
 %% do Newton iterations
-while (~converged & i < max_it)
+% while (~converged & i < max_it)
+while  i < max_it
     %% update iteration counter
     i = i + 1;
     
@@ -120,6 +121,9 @@ while (~converged & i < max_it)
         imag(Sgen(idx_zQG));
         abs(V(idx_zVm));
     ];
+    if converged 
+        break;
+    end
 
     %% --- get H matrix ---
     [dSbus_dVm, dSbus_dVa] = dSbus_dV(Ybus, V);

@@ -1,7 +1,7 @@
 clear all;
 
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-mkdir(['debug\' startTime]);
+% mkdir(['debug\' 'single']);
 addpath([pwd, '\coSimu']);
 addpath([pwd, '\psat']);
 addpath([pwd, '\psat\filters']);
@@ -13,10 +13,12 @@ pwdpath = pwd;
 
 Config = initialConfig;
 
-Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 1;
+Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
+% Config.loadShapeCsvFile = 'LoadShape2.csv';
+Config.LoadShapeRatio = 0.6094;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
+Config.enableLoadShape = 1;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -28,7 +30,7 @@ Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl o
 Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 1;
+
 Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
@@ -117,7 +119,7 @@ cd(pwdpath);
 % end
 % 
 % matlabpool close;
-MDPattack(Config,'singleTest',[],startTime);
+ResultData = MDPattack(Config,['singleTest' startTime],[],'single');
 % save(['debug\' startTime '\MultiRunConfig.mat'],'MultiRunConfig');
 
 
