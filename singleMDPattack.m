@@ -7,9 +7,9 @@ pwdpath = pwd;
 
 Config = initialConfig;
 
-Config.loadShapeCsvFile = 'LoadShapeSimple1.csv';
+Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 % Config.loadShapeCsvFile = 'LoadShape2.csv';
-Config.LoadShapeRatio = 1;
+Config.LoadShapeRatio = 0.609;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.enableLoadShape = 1;

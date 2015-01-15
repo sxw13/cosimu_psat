@@ -15,7 +15,7 @@ for k = 1:n
     mpc.bus(:,12) = ones(m,1)*1.06;  % vmax
     mpc.bus(:,13) = ones(m,1)*0.94;  % vmin
     disp(['load ratio = ' num2str(loadRatio)]);
-    [ResultData, success] = opf(mpc,opt);
+    [ResultData, success] = opf(mpc);
     sh(k)=success;
 end
 
@@ -32,7 +32,7 @@ end
     mpc.bus(:,13) = ones(m,1)*0.9;  % vmin
     mpc.gen(:,2) = mpc.gen(:,2)*loadRatio;
     disp(['load ratio = ' num2str(loadRatio)]);
-    Result = opf(mpc);
+    [Result, success] = opf(mpc,opt);
 %%
     pfr = runpf(mpc);
     mpc.bus(:,8) = pfr.bus(:,8);
