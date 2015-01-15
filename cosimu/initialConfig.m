@@ -25,8 +25,8 @@ Config.calEigs = 0;
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;
 
-Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
-% Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
+% Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
+Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
 
 
 %% for state estimation

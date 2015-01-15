@@ -2,7 +2,9 @@
 ratios = linspace(0,1,1001);
 n = length(ratios);
 sh = zeros(1,n);
+mpc = case_ieee39;
 m = size(mpc.bus,1);
+opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
 for k = 1:n
     loadRatio = ratios(k);
     mpc = case_ieee39;
@@ -13,7 +15,7 @@ for k = 1:n
     mpc.bus(:,12) = ones(m,1)*1.06;  % vmax
     mpc.bus(:,13) = ones(m,1)*0.94;  % vmin
     disp(['load ratio = ' num2str(loadRatio)]);
-    [ResultData, success] = opf(mpc);
+    [ResultData, success] = opf(mpc,opt);
     sh(k)=success;
 end
 

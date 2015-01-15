@@ -2,20 +2,14 @@ clear all;
 
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 % mkdir(['debug\' 'single']);
-addpath([pwd, '\coSimu']);
-addpath([pwd, '\psat']);
-addpath([pwd, '\psat\filters']);
-addpath([pwd, '\matpower4.1']);
-addpath([pwd, '\matpower4.1\extras\se']);
-addpath([pwd, '\debug']);
-addpath([pwd, '\loadshape']);
+initialPath;
 pwdpath = pwd;
 
 Config = initialConfig;
 
-Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
+Config.loadShapeCsvFile = 'LoadShapeSimple1.csv';
 % Config.loadShapeCsvFile = 'LoadShape2.csv';
-Config.LoadShapeRatio = 0.6094;
+Config.LoadShapeRatio = 1;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.enableLoadShape = 1;

@@ -1,13 +1,7 @@
 
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 mkdir(['debug\' startTime]);
-addpath([pwd, '\coSimu']);
-addpath([pwd, '\psat']);
-addpath([pwd, '\psat\filters']);
-addpath([pwd, '\matpower4.1']);
-addpath([pwd, '\matpower4.1\extras\se']);
-addpath([pwd, '\debug']);
-addpath([pwd, '\loadshape']);
+initialPath;
 pwdpath = pwd;
 
 Config = initialConfig;
@@ -28,6 +22,8 @@ Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 1;
 Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
+
+Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580); %using IPOPT for opf
 
 % enable state estimation
 Config.seEnable = 1;
