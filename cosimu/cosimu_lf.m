@@ -63,11 +63,7 @@ while (t < Settings.tf)
         if isfield(Config,'LoadShapeRatio')
             PQtemp = PQ.con(:, [4, 5]);ratiotemp = Config.LoadShapeRatio;
             PQ.con(:, [4, 5]) = ratiotemp * PQtemp;
-            disp(['load ratio = ' num2str(loadshape(nPointOfLoadShape)*Config.LoadShapeRatio)]);
-        else
-            disp(['load ratio = ' num2str(loadshape(nPointOfLoadShape))]);
         end
-        
     end
     
     fm_spf_modified(Config);
