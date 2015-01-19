@@ -6,3 +6,4 @@ addpath([pwd, '\matpower5.0\extras\se']);
 addpath([pwd, '\debug']);
 addpath([pwd, '\loadshape']);
 addpath([pwd, '\Ipopt']);
+addpath([pwd, '\resultAnalysis']);

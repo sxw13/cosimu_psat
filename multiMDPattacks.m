@@ -112,7 +112,6 @@ spmd
                     FalseData2.toBus = td;
                     FalseData2 = defaultFalseData(Config,FalseData2);
                     Config.falseDataAttacks{2} = FalseData2;
-                    
                 case 'errorRatio'
                     for k = 1:length(Config.falseDataAttacks)
                         FalseData = Config.falseDataAttacks{k};
@@ -121,7 +120,6 @@ spmd
                     end
                 otherwise
                     Config.(MultiRunConfig.ConfigName{j}) = value;
-                    %                     eval(['Config.', MultiRunConfig.ConfigName{j}, '=',value]);
             end
             fileName = [fileName,MultiRunConfig.ConfigName{j},'_',num2str(value),'_'];
         end
@@ -132,6 +130,7 @@ end
 
 matlabpool close;
 
+statTable(['debug\' startTime]);
 save(['debug\' startTime '\MultiRunConfig.mat'],'MultiRunConfig');
 
 
