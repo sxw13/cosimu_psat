@@ -1,5 +1,7 @@
 % this is a part of multi-run mdp attack
+function runSingleCase(Config,MultiRunConfig,startTime,allM,cs,i)
 fileName='';
+c = size(allM,2);
 for j = 1 : c
     value = allM(i,j);
     switch MultiRunConfig.ConfigName{j}
@@ -31,4 +33,7 @@ for j = 1 : c
             Config.(MultiRunConfig.ConfigName{j}) = value;
     end
     fileName = [fileName,MultiRunConfig.ConfigName{j},'_',num2str(value),'_'];
+end
+MDPattack(Config,fileName,[],startTime);
+disp(fileName);
 end

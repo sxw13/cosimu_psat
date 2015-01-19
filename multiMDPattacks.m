@@ -38,17 +38,13 @@ if isParalell
         for i = 1 : r
             %     fileName = dstFilePath;
             if mod(i-1,mps)+1~=labindex continue;end
-            runSingleCase;
-            MDPattack(Config,fileName,[],startTime);
-            disp(fileName);
+            runSingleCase(Config,MultiRunConfig,startTime,allM,cs,i);
         end
     end
     matlabpool close;
 else
     for i = 1 : r
-        runSingleCase;
-        MDPattack(Config,fileName,[],startTime);
-        disp(fileName);
+        runSingleCase(Config,MultiRunConfig,startTime,allM,cs,i);
     end
 end
 
