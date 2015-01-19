@@ -1,73 +1,21 @@
 clear all;
-
+%% initial path
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 mkdir(['debug\' startTime]);
 initialPath;
 pwdpath = pwd;
-Config = initialConfig;
 
-Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 1;
-Config.caseName = 'd_039ieee_edit.m';
-Config.opfCaseName = 'case_ieee39';
-Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
-Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
-Config.measLatencyChagePeriod = [0, Config.simuEndTime];
-Config.measLaggedTunnel = 1 : 1 : 30;
-Config.measTunnelLatency = zeros(size(Config.measLaggedTunnel));
-Config.ctrlLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
-Config.ctrlAllLatency = 1; % for latency of Config.ctrlAllLatency
-Config.ctrlTGap = 0.1; % control time within current time +/- ctrlTGap => ctrl operation
-Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lost after attacks
-Config.attackedBus = []; % bus list been attacked
-Config.attackTime = [];  % attacked time in seconds
-Config.enableLoadShape = 1;
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
-Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
+%% Import Test case
+[Config, MultiRunConfig, cs] = IEEE39LineAttack;
 
-% enable state estimation
-Config.seEnable = 1;
-
-% Time
-Config.simuEndTime =  36 * 3600;
-Config.controlPeriod = 60;
-Config.sampleRate  = 10;
-Config.lfTStep = 10;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
-%%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 5;
-FalseData.strategy = 6; % for MDP attack on pl and ql;
-% FalseData = defaultFalseData(Config,FalseData);
-%%%%%%%%%%%%%put a false attack element into config structure
-Config.falseDataAttacks = {FalseData};
-
-%%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 5;
-FalseData.strategy = 6; % for MDP attack on pl and ql;
-% FalseData = defaultFalseData(Config,FalseData);
-%%%%%%%%%%%%%put a false attack element into config structure
-Config.falseDataAttacks{2} = FalseData;
-
-falseDataAttacks2 = Config.falseDataAttacks;
-
-cs = eval(Config.opfCaseName);
-
-
-
-MultiRunConfig.ConfigName = {'LoadShapeRatio','Branch','errorRatio'};
-MultiRunConfig.ConfigValue = {[0.5 0.75 1],1:size(cs.branch,1),linspace(0.5,2,6)};
-% MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
-% MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
-
-
+%% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
 [allM{1:n}] = ndgrid(MultiRunConfig.ConfigValue{:});
 allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
 [r, c] = size(allM);
 
 
+%% creat load shape file
 if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);
 else
@@ -78,6 +26,8 @@ delete *.mat
 createhourloadshape(Config);
 cd(pwdpath);
 
+
+%% Run Parallel Test
 mps = 6;
 matlabpool size;
 if ans>0 matlabpool close;end
@@ -118,6 +68,7 @@ spmd
                         FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
                         Config.falseDataAttacks{k} = FalseData;
                     end
+                % default edit way of Config structure
                 otherwise
                     Config.(MultiRunConfig.ConfigName{j}) = value;
             end
@@ -130,15 +81,13 @@ end
 
 matlabpool close;
 
-statTable(['debug\' startTime]);
+%% deal result and save
+opt.path = ['debug\' startTime];
+stateFunc(opt);
 save(['debug\' startTime '\MultiRunConfig.mat'],'MultiRunConfig');
 
 
 
-% mps = 6;
-% matlabpool(mps);
-%
-% matlabpool close;
 
 
 

@@ -1,19 +1,23 @@
 function stateFunc(path)
-if nargin<1
+if nargin<1 || ~isfield(opt,'path')
     path = '.';
 end
 
-
-%统计速度非常慢。。。待改进
-areaNames={
-    'minimalBusVolt' ...
-    'minEigValue' ...
-    };
-areaExp={
-    'min(min(ResultData.allBusVHis(:,4:end))'')' ...
-    'min(ResultData.minEigValueHis)' ...
-    };
-cmdfilter = '~isempty(strfind(file.name,''Load''))';
+if nargin<1 || ~isfield(opt,'areaNames')
+    areaNames={
+        'minimalBusVolt' ...
+        'minEigValue' ...
+        };
+end
+if nargin<1 || ~isfield(opt,'areaExp')
+    areaExp={
+        'min(min(ResultData.allBusVHis(:,4:end))'')' ...
+        'min(ResultData.minEigValueHis)' ...
+        };
+end
+if nargin<1 || ~isfield(opt,'cmdfilter')
+    cmdfilter = '~isempty(strfind(file.name,''Load''))';
+end
 
 
 statTable = [{'caseName'},areaNames];

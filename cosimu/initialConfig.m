@@ -87,4 +87,12 @@ Config.loadShedPenaltyPrice = 2.5;
 %% for MDP studies
 Config.MDPData = [];
 
+%% for the load shape data location
+if Config.simuType == 0
+    Config.loadShapeFile = [pwd, '\loadshape\lf\loadshapeHour'];    
+else
+    Config.loadShapeFile = [pwd, '\loadshape\dyn\loadshapeHour'];
+end
+
+
 

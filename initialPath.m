@@ -7,3 +7,4 @@ addpath([pwd, '\debug']);
 addpath([pwd, '\loadshape']);
 addpath([pwd, '\Ipopt']);
 addpath([pwd, '\resultAnalysis']);
+addpath([pwd, '\testCaseScript']);
