@@ -1,6 +1,8 @@
-function stateFunc(path)
+function stateFunc(opt)
 if nargin<1 || ~isfield(opt,'path')
     path = '.';
+else
+    path = opt.path;
 end
 
 if nargin<1 || ~isfield(opt,'areaNames')
@@ -8,16 +10,23 @@ if nargin<1 || ~isfield(opt,'areaNames')
         'minimalBusVolt' ...
         'minEigValue' ...
         };
+else
+    areaNames = opt.areaNames;
 end
 if nargin<1 || ~isfield(opt,'areaExp')
     areaExp={
         'min(min(ResultData.allBusVHis(:,4:end))'')' ...
         'min(ResultData.minEigValueHis)' ...
         };
+else
+    areaExp = opt.areaExp;
 end
 if nargin<1 || ~isfield(opt,'cmdfilter')
     cmdfilter = '~isempty(strfind(file.name,''Load''))';
+else
+    cmdfilter = opt.cmdfilter;
 end
+
 
 
 statTable = [{'caseName'},areaNames];
@@ -38,6 +47,6 @@ for k=1:length(lists)
         end
     end
 end
-save([path '\statTable.mat'],statTable);
+save([path '\statTable.mat'],'statTable');
 
 end

@@ -1,7 +1,10 @@
 clear all;
 %% initial path
-startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-mkdir(['debug\' startTime]);
+% startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
+startTime = 'IEEE39LineRare';
+if ~exist(['debug\' startTime],'dir')
+    mkdir(['debug\' startTime]);
+end
 initialPath;
 pwdpath = pwd;
 
@@ -28,7 +31,7 @@ cd(pwdpath);
 
 
 %% Run Test
-isParalell = 1;
+isParalell = 0;
 if isParalell
     mps = 6;
     matlabpool size;

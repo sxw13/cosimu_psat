@@ -19,7 +19,10 @@ for i = 1 : length(injectionNameParttern )
         FalseData.InjectionName{cellid} = [injectionNameParttern{i}, '(', int2str(addIdxOn(ii)), ')'];
     end
 end
-FalseData.LearningEndTime = Config.simuEndTime;
+
+if ~isfield(FalseData,'LearningEndTime')
+    FalseData.LearningEndTime = Config.simuEndTime;
+end
 
 
 
@@ -89,15 +92,25 @@ end
 
 FalseData.PenalForNotConvergence = 1;  % 1 for penal ; 0 for not penal
 %     FalseData.InjectionName = {'plineHeadMeas(8)','qlineHeadMeas(8)','plineTailMeas(6)','qlineTailMeas(6)'};
-FalseData.MDPDiscountFactor = 0.2;   % discount factor for value function of MDP
-
-FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
-FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
-
-FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
+if ~isfield(FalseData,'MDPDiscountFactor')
+    FalseData.MDPDiscountFactor = 0.2;   % discount factor for value function of MDP
+end
+if ~isfield(FalseData, 'reward')
+    FalseData.reward = 'voltage';  % 'voltage' or 'pLoss' or 'minEigValue'
+end
+if ~isfield(FalseData,'Qlearning')
+    FalseData.Qlearning = 1; % 1 for learning; 0 for not learning
+end
+if ~isfield(FalseData, 'learningRate')
+    FalseData.learningRate = '2/(sqrt(Iter+1)+1)';
+end
 FalseData.fixedAction = [];  %-1 for a
-FalseData.maxLearnedAction = 300;
-FalseData.minAttackValue = 2.2;
+if ~isfield(FalseData,'maxLearnedAction')
+    FalseData.maxLearnedAction = 300;
+end
+if ~isfield(FalseData,'minAttackValue')
+    FalseData.minAttackValue = 2.2;
+end
 FalseData.calWARD = 0;
 fd = FalseData;
 end

@@ -35,6 +35,7 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
+FalseData.maxLearnedAction = 30;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
@@ -42,6 +43,7 @@ Config.falseDataAttacks = {FalseData};
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
+FalseData.maxLearnedAction = 30;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks{2} = FalseData;
 
