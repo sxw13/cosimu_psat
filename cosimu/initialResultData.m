@@ -22,6 +22,8 @@ ResultData.pLossHis = [];
 
 ResultData.pLForCtrlHis = [];
 ResultData.qLForCtrlHis = [];
+ResultData.pLForOPF = [];
+ResultData.qLForOPF = [];
 ResultData.pGenCtrlHis = [];
 ResultData.qGenCtrlHis = [];
 ResultData.vGenCtrlHis = [];

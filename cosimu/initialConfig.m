@@ -25,8 +25,8 @@ Config.calEigs = 0;
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;
 
-Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
-% Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
+% Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
+Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
 
 
 %% for state estimation
@@ -86,5 +86,13 @@ Config.loadShedPenaltyPrice = 2.5;
 
 %% for MDP studies
 Config.MDPData = [];
+
+%% for the load shape data location
+if Config.simuType == 0
+    Config.loadShapeFile = [pwd, '\loadshape\lf\loadshapeHour'];    
+else
+    Config.loadShapeFile = [pwd, '\loadshape\dyn\loadshapeHour'];
+end
+
 
 
