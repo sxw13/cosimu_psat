@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE9BussRare';
+startTime = 'IEEE9LineRare';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE9BusAttack;
+[Config, MultiRunConfig, cs] = IEEE9LineAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
