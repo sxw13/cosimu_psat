@@ -361,12 +361,12 @@ elseif Config.falseDataSchema == 2
                     switch fa.reward
                         case 'voltage'
                             v = CurrentStatus.busVMeasPu(fa.toBus);
-                            if abs(v-1)<0.1
-                                MDPData_k.r = abs(v-1) + 1;
-                            elseif v-1.1>=0
-                                MDPData_k.r = 3*(v-1.1) + 0.1 + 1;
-                            elseif v-0.9<=0
-                                MDPData_k.r = 3*(0.9-v) + 0.1 + 1;
+                            if abs(v-MDPData_k.stateOffset(1))<0.1
+                                MDPData_k.r = 0.1 + 1;
+                            elseif v-MDPData_k.stateOffset(1)-0.1>=0
+                                MDPData_k.r = 0.1 + 1;
+                            elseif v-MDPData_k.stateOffset(1)+0.1<=0
+                                MDPData_k.r = -3*(v-MDPData_k.stateOffset(1)+0.1) + 0.1 + 1;
                             end
                             % penal for OPF not converged
                             if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged && MDPData_k.r<2.3

@@ -1,4 +1,4 @@
-function [Config, MultiRunConfig, cs] = IEEE39LineAttack
+function [Config, MultiRunConfig, cs] = IEEE9LineAttack
 Config = initialConfig;
 
 Config.loadShapeCsvFile = 'LoadShape3.csv';

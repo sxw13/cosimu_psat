@@ -10,8 +10,8 @@ Config = initialConfig;
 Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 % Config.loadShapeCsvFile = 'LoadShape2.csv';
 Config.LoadShapeRatio = 0.609;
-Config.caseName = 'd_039ieee_edit.m';
-Config.opfCaseName = 'case_ieee39';
+Config.caseName = 'd_009ieee_edit.m';
+Config.opfCaseName = 'case_ieee9';
 Config.enableLoadShape = 1;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
@@ -40,7 +40,7 @@ Config.lfTStep = 10;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 5;
+FalseData.toBus = 1;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData = defaultFalseData(Config,FalseData);
 %%%%%%%%%%%%%put a false attack element into config structure
