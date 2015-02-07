@@ -17,7 +17,7 @@ for jj = 5
     xx = 1:9;
     M = [];
     for x_value = xx
-        idx = find(x==x_value & AA(1,:)==0.5 & AA(3,:)==0.5 & AA(4,:)==1);
+        idx = find(x==x_value & AA(1,:)==1 & AA(3,:)==2 & AA(4,:)==1);
         M = [M y(:,idx)];
     end
     imagesc(M);
