@@ -12,10 +12,14 @@ for jj = 2:4
     end
     figure('Color',[1 1 1]);
     xx = unique(x);
+    xx = sort(xx);
     for x_value = xx
         idx = find(x==x_value);
-        plot(x(idx),y(idx),'MarkerSize',4,'Marker','square','LineWidth',2);
+        plot(x(idx),y(idx),'MarkerSize',4,'Marker','square','MarkerSize',6,'LineWidth',2);
         hold on;
     end
-    title(statTable{1,jj});
+    title(statTable{1,jj});xlabel('Bus Number');
+    set(gca,'XTick',[0 xx xx(end)+1]);
+    xlim(gca,[0 xx(end)+1]);
+    grid on;
 end
