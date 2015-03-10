@@ -1,5 +1,5 @@
 close all;
-TestCaseNumber = 9;   %需要针对不同的结果重新设定
+TestCaseNumber = 46;   %需要针对不同的结果重新设定
 [m,n] = size(statTable);
 ActionNum = length(statTable{2,5});
 for jj = 5
@@ -11,6 +11,8 @@ for jj = 5
 %         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
 %         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
             A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_duplicate_%d_.mat');
+        elseif ~isempty(strfind(statTable{ii,1},'toBus'))
+            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
         elseif ~isempty(strfind(statTable{ii,1},'Branch'))
             A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
         end

@@ -12,7 +12,7 @@ Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.LoadShapeRatio = 0.609;
 Config.caseName = 'd_009ieee_edit.m';
 Config.opfCaseName = 'case_ieee9';
-Config.enableLoadShape = 1;
+Config.enableLoadShape = 0;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -32,7 +32,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.seEnable = 1;
 
 % Time
-Config.simuEndTime =  1 * 3600;
+Config.simuEndTime =  60;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
