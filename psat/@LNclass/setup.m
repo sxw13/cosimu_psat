@@ -76,36 +76,36 @@ end
 % c) This input method is not reccomended as several features of the
 %    Line class will not work properly.
 % --------------------------------------------------------------------
-if ~isempty(a.Y)
-
-  a.no_build_y = 1;
-  
-  % assign the full admittance matrix
-  ytriu = triu(full(a.Y));
-  y0 = diag(ytriu);
-  ytril = ytriu - diag(y0);
-  ybus = ytriu + ytril.';
-  a.Y = ybus;
-  
-  % approximate series impedances
-  yij = zeros(a.n,1);
-  for i = 1:a.n, yij(i) = ybus(a.fr(i),a.to(i)); end
-  zij = -1./yij;
-  a.con(:,8) = real(zij);
-  a.con(:,9) = imag(zij);
-  
-  % approximate shunts
-  % the resulting system is typicall under-determined
-  nb = length(a.p);
-  incmat = zeros(nb,a.n);
-  for i = 1:nb
-    idx_h = find(a.fr == i);
-    idx_k = find(a.to == i);
-    if ~isempty(idx_h), incmat(i,idx_h) = 1; end
-    if ~isempty(idx_k), incmat(i,idx_k) = 1; end    
-  end
-  %a.con(:,10) = 2*(incmat\imag(y0));
-end
+% if ~isempty(a.Y)
+% 
+%   a.no_build_y = 1;
+%   
+%   % assign the full admittance matrix
+%   ytriu = triu(full(a.Y));
+%   y0 = diag(ytriu);
+%   ytril = ytriu - diag(y0);
+%   ybus = ytriu + ytril.';
+%   a.Y = ybus;
+%   
+%   % approximate series impedances
+%   yij = zeros(a.n,1);
+%   for i = 1:a.n, yij(i) = ybus(a.fr(i),a.to(i)); end
+%   zij = -1./yij;
+%   a.con(:,8) = real(zij);
+%   a.con(:,9) = imag(zij);
+%   
+%   % approximate shunts
+%   % the resulting system is typicall under-determined
+%   nb = length(a.p);
+%   incmat = zeros(nb,a.n);
+%   for i = 1:nb
+%     idx_h = find(a.fr == i);
+%     idx_k = find(a.to == i);
+%     if ~isempty(idx_h), incmat(i,idx_h) = 1; end
+%     if ~isempty(idx_k), incmat(i,idx_k) = 1; end    
+%   end
+%   %a.con(:,10) = 2*(incmat\imag(y0));
+% end
 % --------------------------------------------------------------------
 
 Settings.nseries = Settings.nseries + a.n;

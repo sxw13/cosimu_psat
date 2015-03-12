@@ -43,6 +43,7 @@ end
 plineloss = plineHead + plineTail;
 lossesPQ= sum(plineloss);
 ResultData.allBusVHis = [ResultData.allBusVHis, DAE.y(Bus.v)];
+ResultData.allBusAHis = [ResultData.allBusAHis, DAE.y(Bus.a)];
 ResultData.pLossHis = [ResultData.pLossHis; lossesPQ];
 
 ResultData.t = [ResultData.t, t];

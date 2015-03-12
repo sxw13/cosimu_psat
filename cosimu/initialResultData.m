@@ -18,6 +18,7 @@ ResultData.allQGenHis = [];
 
 % p loss & all bus V
 ResultData.allBusVHis = [];
+ResultData.allBusAHis = [];
 ResultData.pLossHis = [];
 
 ResultData.pLForCtrlHis = [];

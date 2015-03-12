@@ -58,8 +58,8 @@ mpc.bus = [
 	39	2	1104	250	0	0	1	1.03	-11.1	100	1	1.06	0.94;
 ];
 
-mpc.bus(:,12) = 1.1*ones(39,1);
-mpc.bus(:,13) = 0.9*ones(39,1);
+% mpc.bus(:,12) = 1.1*ones(39,1);
+% mpc.bus(:,13) = 0.9*ones(39,1);
 
 %% generator data
 %	bus	Pg	Qg	Qmax	Qmin	Vg	mBase	status	Pmax	Pmin	Pc1	Pc2	Qc1min	Qc1max	Qc2min	Qc2max	ramp_agc	ramp_10	ramp_30	ramp_q	apf
