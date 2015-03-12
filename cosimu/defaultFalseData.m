@@ -1,5 +1,5 @@
 function fd = defaultFalseData(Config,FalseData)
-measureNamePattern = {'busVMeasPu','ploadMeas','plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
+measureNamePattern = {'busVMeasPu','ploadMeas','genPMeas','genQMeas','plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
 FalseData.MDPStateName = cell(0);
 cellid=0;
 for i = 1 : length(measureNamePattern )
@@ -9,7 +9,7 @@ for i = 1 : length(measureNamePattern )
         FalseData.MDPStateName{cellid} = [measureNamePattern{i}, '(', int2str(addIdxOn(ii)), ')'];
     end
 end
-injectionNameParttern = {'plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
+injectionNameParttern = {'genPMeas','genQMeas','plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
 FalseData.InjectionName = cell(0);
 cellid=0;
 for i = 1 : length(injectionNameParttern )
@@ -29,7 +29,6 @@ end
 stateNum = length(FalseData.MDPStateName);
 actionNum = length(FalseData.InjectionName);
 FalseData.MDPBusVStateStep = 0.01;
-FalseData.autoOffset = 1;
 FalseData.MDPStateLimits = zeros(stateNum,2);
 FalseData.Nstate = zeros(1,stateNum);
 for idx = 1:stateNum
@@ -38,6 +37,12 @@ for idx = 1:stateNum
         FalseData.Nstate(idx)=23;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'ploadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0.7 1.3];
+        FalseData.Nstate(idx)=5;
+    elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genPMeas'))
+        FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        FalseData.Nstate(idx)=5;
+    elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genQMeas'))
+        FalseData.MDPStateLimits(idx,:)=[0 0.6];
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'plineTailMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
@@ -68,6 +73,14 @@ for idx = 1:actionNum
         FalseData.Naction(idx) = 3;
         FalseData.MDPBusFalseDataRatioStep(idx) = 2;
         FalseData.RatioOffset(idx) = 2;
+    elseif ~isempty(strfind(FalseData.InjectionName{idx},'genPMeas'))
+        FalseData.Naction(idx) = 3;
+        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
+        FalseData.RatioOffset(idx) = 2;
+    elseif ~isempty(strfind(FalseData.InjectionName{idx},'genQMeas'))
+        FalseData.Naction(idx) = 3;
+        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
+        FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'plineTailMeas'))
         FalseData.Naction(idx) = 3;
         FalseData.MDPBusFalseDataRatioStep(idx) = 2;
@@ -111,6 +124,11 @@ end
 if ~isfield(FalseData,'minAttackValue')
     FalseData.minAttackValue = 2.2;
 end
+if ~isfield(FalseData,'autoOffset')
+    FalseData.autoOffset = 1;
+end
+
+
 FalseData.calWARD = 0;
 fd = FalseData;
 end

@@ -28,6 +28,7 @@ for j = 1 : c
                 FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
                 Config.falseDataAttacks{k} = FalseData;
             end
+        case 'duplicate'
             % default edit way of Config structure
         otherwise
             Config.(MultiRunConfig.ConfigName{j}) = value;

@@ -1,10 +1,10 @@
-function [Config, MultiRunConfig, cs] = IEEE39BusAttack
+function [Config, MultiRunConfig, cs] = IEEE9BusAttack
 Config = initialConfig;
 
 Config.loadShapeCsvFile = 'LoadShape3.csv';
 Config.LoadShapeRatio = 1;
-Config.caseName = 'd_039ieee_edit.m';
-Config.opfCaseName = 'case_ieee39';
+Config.caseName = 'd_009ieee_edit.m';
+Config.opfCaseName = 'case_ieee9';
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -35,15 +35,17 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-%%%%%%%%%%%%%put a false attack element into config structure
 FalseData.maxLearnedAction = 30;
+
+%%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {[0.5 0.75 1],1:39,linspace(0.5,2,6)};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio','duplicate'};
+% MultiRunConfig.ConfigValue = {[0.5 0.75 1],1:9,linspace(0.5,2,6),1:3};
+MultiRunConfig.ConfigValue = {[0.5 0.75 1],1:9,linspace(0.5,2,6),1:2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 

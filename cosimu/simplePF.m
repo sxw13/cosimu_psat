@@ -9,22 +9,22 @@ end
 if clpsat.readfile || Settings.init == 0
     fm_inilf
     filedata = [File.data,'  '];
-    filedata = strrep(filedata,'@ ','');   
+    filedata = strrep(filedata,'@ ','');
     
     if ~isempty(findstr(filedata,'(mdl)')) && clpsat.refreshsim
-      filedata1 = File.data(1:end-5);
-      open_sys = find_system('type','block_diagram');
-      OpenModel = sum(strcmp(open_sys,filedata1));
-      if OpenModel
-        if strcmp(get_param(filedata1,'Dirty'),'on') || ...
-              str2num(get_param(filedata1,'ModelVersion')) > Settings.mv
-          check = sim2psat;
-          if ~check, return, end
+        filedata1 = File.data(1:end-5);
+        open_sys = find_system('type','block_diagram');
+        OpenModel = sum(strcmp(open_sys,filedata1));
+        if OpenModel
+            if strcmp(get_param(filedata1,'Dirty'),'on') || ...
+                    str2num(get_param(filedata1,'ModelVersion')) > Settings.mv
+                check = sim2psat;
+                if ~check, return, end
+            end
         end
-      end
     end
     
-    cd(Path.data)    
+    cd(Path.data)
     filedata = deblank(strrep(filedata,'(mdl)','_mdl'));
     a = exist(filedata);
     clear(filedata)
@@ -49,11 +49,15 @@ if clpsat.readfile || Settings.init == 0
     Settings.init = 0;
 end
 
-%% create an opf based initial snapshot 
+%% create an opf based initial snapshot
 
 load([Config.loadShapeFile, '1']);
 loadshape = hourDataNew;
-initialLoadRate = loadshape(1);
+if numel(loadshape)==0
+    initialLoadRate = 1;
+else
+    initialLoadRate = loadshape(1);
+end
 
 if Config.enableLoadShape
     CurrentStatus.bus(:,[3,4]) = initialLoadRate * CurrentStatus.bus(:,[3,4]);
@@ -64,7 +68,7 @@ if optresult.success == 1
     for iPQ = 1 : length(PQ.con(:,1))
         idxPQ = find(optresult.bus(:,1) == PQ.con(iPQ, 1));
         PQ.con(iPQ,[4,5]) = (optresult.bus(idxPQ,[3,4]))/100;
-    end  
+    end
     
     for iPV = 1 : length(PV.con(:,1))
         idxPV = find(optresult.bus(:,1) == PV.con(iPV, 1));
@@ -82,7 +86,7 @@ if Settings.init
     fm_restore
     if Settings.conv, fm_base, end
     Line = build_y(Line);
-%     fm_wcall;
+    %     fm_wcall;
     fm_dynlf;
 end
 
@@ -120,21 +124,21 @@ if Config.subAttackSchema == 2
     nT = length(Config.attackTime);
     if nBus > 0 & nT > 0 & nBus==nT
         for iBus = 1 : nBus
-           bus = Config.attackedBus(iBus);
-           t = Config.attackTime(iBus);
-           iFLine = find(Line.con(:, 1) == bus);
-           iTLine = find(Line.con(:, 2) == bus);
-           iLine = [iFLine; iTLine];
-           conTmp = [iLine, ones(size(iLine))* bus, ...
-               ones(size(iLine))* 100, ones(size(iLine))* 100, ...
-               ones(size(iLine))* 60, ...
-               ones(size(iLine)), ones(size(iLine))*t, ...
-               ones(size(iLine))*9999, ones(size(iLine)), ...
-               ones(size(iLine))];  
-           con = [con; conTmp];
-        end        
+            bus = Config.attackedBus(iBus);
+            t = Config.attackTime(iBus);
+            iFLine = find(Line.con(:, 1) == bus);
+            iTLine = find(Line.con(:, 2) == bus);
+            iLine = [iFLine; iTLine];
+            conTmp = [iLine, ones(size(iLine))* bus, ...
+                ones(size(iLine))* 100, ones(size(iLine))* 100, ...
+                ones(size(iLine))* 60, ...
+                ones(size(iLine)), ones(size(iLine))*t, ...
+                ones(size(iLine))*9999, ones(size(iLine)), ...
+                ones(size(iLine))];
+            con = [con; conTmp];
+        end
     end
-        
+    
     Breaker.con = con;
     
 end

@@ -99,6 +99,7 @@ R_inv = diag(1./sigma_square);
 
 %% do Newton iterations
 while (~converged & i < max_it)
+    
     %% update iteration counter
     i = i + 1;
     
