@@ -81,6 +81,7 @@ while (t < Settings.tf)
         %     %% do control according opf result
         if abs(t - ResultData.nOpf*Config.controlPeriod) <= Settings.tstep/2
             %         % make measurements for control center to do opf control
+            % ===================== cal eigenvalue
             if Config.calEigs
                 if Config.distrsw
                     Jrow = sparse(1,DAE.n+SW.refbus,1,1,DAE.n+DAE.m+1);
@@ -91,6 +92,7 @@ while (t < Settings.tf)
                 minEigValue = min(abs(eigValues));
                 ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
             end
+            %    ============cal eigenvalue
             [CurrentStatus,ResultData,Config] = sampleAllMeasurements(Config, ResultData, CurrentStatus);
             [ResultData, isOpfConverged] = obtainOpfControlCommand( CurrentStatus, ResultData, Config);
             ResultData.isOpfConverged = [ResultData.isOpfConverged isOpfConverged];

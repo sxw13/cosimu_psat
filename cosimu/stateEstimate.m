@@ -25,11 +25,11 @@ measure.Vm = CurrentStatus.busVMeasPu;
 sigma.sigma_PF = 0.02;
 sigma.sigma_PT = 0.02;
 sigma.sigma_PG = 0.015;
-sigma.sigma_Va = 0.001;
+sigma.sigma_Va = 2;
 sigma.sigma_QF = 0.02;
 sigma.sigma_QT = 0.02;
 sigma.sigma_QG = 0.02;
-sigma.sigma_Vm = 0.001;
+sigma.sigma_Vm = 0.1;
 
 type_initialguess = 2; 
 
