@@ -1,2 +1,2 @@
 initialPath;
-[baseMVA, bus, gen, branch, success] = stateEstimate(ResultData, CurrentStatus)
+[baseMVA, bus, gen, branch, success] = stateEstimate(ResultData, CurrentStatus) 
