@@ -1,4 +1,4 @@
-function [V, converged, iterNum, z, z_est, error_sqrsum] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma)
+function [V, converged, iterNum, z, z_est, error_sqrsum] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config)
 %DOSE  Do state estimation.
 %   created by Rui Bo on 2007/11/12
 
@@ -94,97 +94,107 @@ sigma_vector = [
     sigma.sigma_QG*ones(size(idx_zQG, 1), 1)
     sigma.sigma_Vm*ones(size(idx_zVm, 1), 1)
     ]; % NOTE: zero-valued elements of simga are skipped
-sigma_square = sigma_vector.^2;
-R_inv = diag(1./sigma_square);
 
-%% do Newton iterations
-while (~converged & i < max_it)
-    
-    %% update iteration counter
-    i = i + 1;
-    
-    %% --- compute estimated measurement ---
-    Sfe = V(f) .* conj(Yf * V);
-    Ste = V(t) .* conj(Yt * V);
-    %% compute net injection at generator buses
-    gbus = gen(:, GEN_BUS);
-    Sgbus = V(gbus) .* conj(Ybus(gbus, :) * V);
-    Sgen = Sgbus * baseMVA + (bus(gbus, PD) + j*bus(gbus, QD));   %% inj S + local Sd
-    Sgen = Sgen/baseMVA;
-    z_est = [ % NOTE: all are p.u. values
-        real(Sfe(idx_zPF));
-        real(Ste(idx_zPT));
-        real(Sgen(idx_zPG));
-        angle(V(idx_zVa));
-        imag(Sfe(idx_zQF));
-        imag(Ste(idx_zQT));
-        imag(Sgen(idx_zQG));
-        abs(V(idx_zVm));
-    ];
+for seIter = 1:Config.maxSEIter
+    sigma_square = sigma_vector.^2;
+    R_inv = diag(1./sigma_square);
 
-    %% --- get H matrix ---
-    [dSbus_dVm, dSbus_dVa] = dSbus_dV(Ybus, V);
-    [dSf_dVa, dSf_dVm, dSt_dVa, dSt_dVm, Sf, St] = dSbr_dV(branch, Yf, Yt, V);
-%     genbus_row = findBusRowByIdx(bus, gbus);
-    genbus_row = gbus;  %% rdz, this should be fine if using internal bus numbering
+    %% do Newton iterations
+    while (~converged & i < max_it)
 
-    %% get sub-matrix of H relating to line flow
-    dPF_dVa = real(dSf_dVa); % from end
-    dQF_dVa = imag(dSf_dVa);   
-    dPF_dVm = real(dSf_dVm);
-    dQF_dVm = imag(dSf_dVm);
-    dPT_dVa = real(dSt_dVa);% to end
-    dQT_dVa = imag(dSt_dVa);   
-    dPT_dVm = real(dSt_dVm);
-    dQT_dVm = imag(dSt_dVm);   
-    %% get sub-matrix of H relating to generator output
-    dPG_dVa = real(dSbus_dVa(genbus_row, :));
-    dQG_dVa = imag(dSbus_dVa(genbus_row, :));
-    dPG_dVm = real(dSbus_dVm(genbus_row, :));
-    dQG_dVm = imag(dSbus_dVm(genbus_row, :));
-    %% get sub-matrix of H relating to voltage angle
-    dVa_dVa = eye(nb);
-    dVa_dVm = zeros(nb, nb);
-    %% get sub-matrix of H relating to voltage magnitude
-    dVm_dVa = zeros(nb, nb);
-    dVm_dVm = eye(nb);
-    H = [
-        dPF_dVa(idx_zPF, nonref)   dPF_dVm(idx_zPF, nonref);
-        dPT_dVa(idx_zPT, nonref)   dPT_dVm(idx_zPT, nonref);
-        dPG_dVa(idx_zPG, nonref)   dPG_dVm(idx_zPG, nonref);
-        dVa_dVa(idx_zVa, nonref)   dVa_dVm(idx_zVa, nonref);
-        dQF_dVa(idx_zQF, nonref)   dQF_dVm(idx_zQF, nonref);
-        dQT_dVa(idx_zQT, nonref)   dQT_dVm(idx_zQT, nonref);
-        dQG_dVa(idx_zQG, nonref)   dQG_dVm(idx_zQG, nonref);
-        dVm_dVa(idx_zVm, nonref)   dVm_dVm(idx_zVm, nonref);
+        %% update iteration counter
+        i = i + 1;
+
+        %% --- compute estimated measurement ---
+        Sfe = V(f) .* conj(Yf * V);
+        Ste = V(t) .* conj(Yt * V);
+        %% compute net injection at generator buses
+        gbus = gen(:, GEN_BUS);
+        Sgbus = V(gbus) .* conj(Ybus(gbus, :) * V);
+        Sgen = Sgbus * baseMVA + (bus(gbus, PD) + j*bus(gbus, QD));   %% inj S + local Sd
+        Sgen = Sgen/baseMVA;
+        z_est = [ % NOTE: all are p.u. values
+            real(Sfe(idx_zPF));
+            real(Ste(idx_zPT));
+            real(Sgen(idx_zPG));
+            angle(V(idx_zVa));
+            imag(Sfe(idx_zQF));
+            imag(Ste(idx_zQT));
+            imag(Sgen(idx_zQG));
+            abs(V(idx_zVm));
         ];
-    
-    %% compute update step
-    J = H'*R_inv*H;
-    F = H'*R_inv*(z-z_est); % evalute F(x)
-    if ~isobservable(H, pv, pq)
-        error('doSE: system is not observable');
-    end
-    dx = (J \ F);
 
-    %% check for convergence
-    normF = norm(F, inf);
-    if verbose > 1
-        fprintf('\niteration [%3d]\t\tnorm of mismatch: %10.3e', i, normF);
+        %% --- get H matrix ---
+        [dSbus_dVm, dSbus_dVa] = dSbus_dV(Ybus, V);
+        [dSf_dVa, dSf_dVm, dSt_dVa, dSt_dVm, Sf, St] = dSbr_dV(branch, Yf, Yt, V);
+    %     genbus_row = findBusRowByIdx(bus, gbus);
+        genbus_row = gbus;  %% rdz, this should be fine if using internal bus numbering
+
+        %% get sub-matrix of H relating to line flow
+        dPF_dVa = real(dSf_dVa); % from end
+        dQF_dVa = imag(dSf_dVa);   
+        dPF_dVm = real(dSf_dVm);
+        dQF_dVm = imag(dSf_dVm);
+        dPT_dVa = real(dSt_dVa);% to end
+        dQT_dVa = imag(dSt_dVa);   
+        dPT_dVm = real(dSt_dVm);
+        dQT_dVm = imag(dSt_dVm);   
+        %% get sub-matrix of H relating to generator output
+        dPG_dVa = real(dSbus_dVa(genbus_row, :));
+        dQG_dVa = imag(dSbus_dVa(genbus_row, :));
+        dPG_dVm = real(dSbus_dVm(genbus_row, :));
+        dQG_dVm = imag(dSbus_dVm(genbus_row, :));
+        %% get sub-matrix of H relating to voltage angle
+        dVa_dVa = eye(nb);
+        dVa_dVm = zeros(nb, nb);
+        %% get sub-matrix of H relating to voltage magnitude
+        dVm_dVa = zeros(nb, nb);
+        dVm_dVm = eye(nb);
+        H = [
+            dPF_dVa(idx_zPF, nonref)   dPF_dVm(idx_zPF, nonref);
+            dPT_dVa(idx_zPT, nonref)   dPT_dVm(idx_zPT, nonref);
+            dPG_dVa(idx_zPG, nonref)   dPG_dVm(idx_zPG, nonref);
+            dVa_dVa(idx_zVa, nonref)   dVa_dVm(idx_zVa, nonref);
+            dQF_dVa(idx_zQF, nonref)   dQF_dVm(idx_zQF, nonref);
+            dQT_dVa(idx_zQT, nonref)   dQT_dVm(idx_zQT, nonref);
+            dQG_dVa(idx_zQG, nonref)   dQG_dVm(idx_zQG, nonref);
+            dVm_dVa(idx_zVm, nonref)   dVm_dVm(idx_zVm, nonref);
+            ];
+
+        %% compute update step
+        J = H'*R_inv*H;
+        F = H'*R_inv*(z-z_est); % evalute F(x)
+        if ~isobservable(H, pv, pq)
+            error('doSE: system is not observable');
+        end
+        dx = (J \ F);
+
+        %% check for convergence
+        normF = norm(F, inf);
+        if verbose > 1
+            fprintf('\niteration [%3d]\t\tnorm of mismatch: %10.3e', i, normF);
+        end
+        if normF < tol
+            converged = 1;
+        end
+
+        %% update voltage
+        Va(nonref) = Va(nonref) + dx(1:size(nonref, 1));
+        Vm(nonref) = Vm(nonref) + dx(size(nonref, 1)+1:2*size(nonref, 1));
+        V = Vm .* exp(j * Va); % NOTE: angle is in radians in pf solver, but in degree in case data
+        Vm = abs(V);            %% update Vm and Va again in case
+        Va = angle(V);          %% we wrapped around with a negative Vm
     end
-    if normF < tol
-        converged = 1;
-    end
+
+    iterNum = i;
+
+    %% get weighted sum of squared errors
+    error_sqrsum = sum((z - z_est).^2./sigma_square);
     
-    %% update voltage
-    Va(nonref) = Va(nonref) + dx(1:size(nonref, 1));
-    Vm(nonref) = Vm(nonref) + dx(size(nonref, 1)+1:2*size(nonref, 1));
-    V = Vm .* exp(j * Va); % NOTE: angle is in radians in pf solver, but in degree in case data
-    Vm = abs(V);            %% update Vm and Va again in case
-    Va = angle(V);          %% we wrapped around with a negative Vm
+    SG = (z-z_est)./sigma_vector;
+    if norm(SG,inf)<Config.fDthreshold break;end
+    [~,fDidx] = max(abs(SG));
+    sigma_vector(fDidx) = sigma_vector(fDidx)*100;
+    i = 1;
+    converged = 0;
 end
-
-iterNum = i;
-
-%% get weighted sum of squared errors
-error_sqrsum = sum((z - z_est).^2./sigma_square);
