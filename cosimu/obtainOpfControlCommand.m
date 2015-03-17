@@ -38,7 +38,7 @@ end
 if Config.seEnable == 1
     % deal with the possible exceptions during the state estimation
     try
-        [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2);
+        [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2, Config);
     catch e
         se_success = 0;
     end

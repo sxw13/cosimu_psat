@@ -31,6 +31,8 @@ Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
 
 %% for state estimation
 Config.seEnable = 1;
+Config.maxSEIter = 1;  % the maximum number of se iteration to repair false data
+Config.fDthreshold = 20; % the threshold for false data detection
 
 %% for communications and controls
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
