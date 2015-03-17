@@ -197,4 +197,5 @@ for seIter = 1:Config.maxSEIter
     sigma_vector(fDidx) = sigma_vector(fDidx)*100;
     i = 1;
     converged = 0;
+	if Config.maxSEIter == 1   converged = 1; end
 end
