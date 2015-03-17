@@ -188,12 +188,14 @@ for seIter = 1:Config.maxSEIter
 
     iterNum = i;
 
+	
     %% get weighted sum of squared errors
     error_sqrsum = sum((z - z_est).^2./sigma_square);
-    
+    if converged == 0  break; end 
+	
     SG = (z-z_est)./sigma_vector;
     if norm(SG,inf)<Config.fDthreshold break; end
-	if converged == 0  break; end 
+	
     [~,fDidx] = max(abs(SG));
     sigma_vector(fDidx) = sigma_vector(fDidx)*100;
     i = 1;
