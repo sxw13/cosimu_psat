@@ -10,8 +10,8 @@ Config = initialConfig;
 % Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.loadShapeCsvFile = 'LoadShape3.csv';
 Config.LoadShapeRatio = 1;
-Config.caseName = 'd_009ieee_edit.m';
-Config.opfCaseName = 'case_ieee9';
+Config.caseName = 'd_039ieee_edit.m';
+Config.opfCaseName = 'case_ieee39';
 Config.enableLoadShape = 1;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
@@ -34,7 +34,7 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 20; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  24*3600;
+Config.simuEndTime =  36*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -42,12 +42,19 @@ Config.lfTStep = 10;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 9;
+FalseData.toBus = 29;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData = defaultFalseData(Config,FalseData);
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
+
+%%%%%%%%%%%%define a false attack element
+FalseData.toBus = 38;
+FalseData.strategy = 6; % for MDP attack on pl and ql;
+FalseData = defaultFalseData(Config,FalseData);
+%%%%%%%%%%%%%put a false attack element into config structure
+Config.falseDataAttacks{2} = FalseData;
 
 % falseDataAttacks2 = Config.falseDataAttacks;
 
