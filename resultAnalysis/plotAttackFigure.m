@@ -1,33 +1,47 @@
 close all;
 TestCaseNumber = 46;   %需要针对不同的结果重新设定
 [m,n] = size(statTable);
+defaultParameters = struct('LoadShapeRatio',1, ...
+                            'errorRatio',2, ...
+                            'maxSEIter',20);
+fd = fieldnames(defaultParameters);
 ActionNum = length(statTable{2,5});
 for jj = 5
-    x = zeros(1,1:m-1);
-    y = zeros(ActionNum,1:m-1);
-    AA = [];
+    x = [];
+    y = [];
+    S = struct;
+    ss = regexp(statTable{2,1},'_','split');
+    for sid = 2:2:length(ss)
+        S.(ss{sid-1})=[];
+    end
     for ii = 2:m
-        if ~isempty(strfind(statTable{ii,1},'duplicate'))
-%         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
-%         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_duplicate_%d_.mat');
-        elseif ~isempty(strfind(statTable{ii,1},'toBus'))
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
-        elseif ~isempty(strfind(statTable{ii,1},'Branch'))
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
+        ss = regexp(statTable{ii,1},'_','split');
+        
+        for sid = 2:2:length(ss)
+            S.(ss{sid-1})=[S.(ss{sid-1}) str2num(ss{sid})];
         end
-        x(ii-1) = A(2);
-        y(:,ii-1) = statTable{ii,jj}';
-        AA = [AA A];
+        if ~isempty(strfind(statTable{ii,1},'toBus'))
+            x = [x S.toBus(end)];
+        else
+            x = [x S.Branch(end)];
+        end
+        y = [y statTable{ii,jj}'];
     end
     figure('Color',[1 1 1]);
     xx = 1:TestCaseNumber;
     MM = zeros(ActionNum,length(xx));
     if ~isempty(strfind(statTable{ii,1},'duplicate'))
-        for dps = 1:max(AA(end,:))
+        for dps = 1:max(S.duplicate)
             M = [];
             for x_value = xx
-                idx = find(x==x_value & AA(1,:)==1 & AA(3,:)==2 & AA(4,:)==dps);
+                cache = (x==x_value);
+                for fd_id = 1:length(fd)
+                    if isfield(S,fd{fd_id})
+                        cache = (cache & (S.(fd{fd_id})==defaultParameters.(fd{fd_id})));
+                    end
+                    cache = ( cache & (S.duplicate==dps) );
+                end
+                idx = find(cache);
                 M = [M y(:,idx)];
             end
             MM = MM + M;
@@ -35,7 +49,13 @@ for jj = 5
     else
         M = [];
         for x_value = xx
-            idx = find(x==x_value & AA(1,:)==1 & AA(3,:)==2);
+            cache = (x==x_value);
+            for fd_id = 1:length(fd)
+                if isfield(S,fd{fd_id})
+                    cache = (cache & (S.(fd{fd_id})==defaultParameters.(fd{fd_id})));
+                end
+            end
+            idx = find(cache);
             M = [M y(:,idx)];
         end
         MM = MM + M;

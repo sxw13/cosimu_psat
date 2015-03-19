@@ -1,22 +1,22 @@
 close all;
 [m,n] = size(statTable);
+conditionExp = 'S.maxSEIter~=20';
 for jj = 2:4
-    x = zeros(1,1:m-1);
-    y = zeros(1,1:m-1);
+    x = [];
+    y = [];
     for ii = 2:m
-        if ~isempty(strfind(statTable{ii,1},'maxSEIter'))
-            A = sscanf(statTable{ii,1},'Branch_%d_errorRatio_%f_maxSEIter_%d_.mat');
-        elseif ~isempty(strfind(statTable{ii,1},'duplicate'))
-%         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
-%         A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_duplicate_%d_.mat');
-        elseif ~isempty(strfind(statTable{ii,1},'toBus'))
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_toBus_%d_errorRatio_%f_.mat');
-        elseif ~isempty(strfind(statTable{ii,1},'Branch'))
-            A = sscanf(statTable{ii,1},'LoadShapeRatio_%f_Branch_%d_errorRatio_%f_.mat');
+        ss = regexp(statTable{ii,1},'_','split');
+        S = struct;
+        for sid = 2:2:length(ss)
+            S.(ss{sid-1})=str2num(ss{sid});
         end
-        x(ii-1) = A(2);
-        y(ii-1) = statTable{ii,jj};
+        if eval(conditionExp) continue; end
+        if ~isempty(strfind(statTable{ii,1},'toBus'))
+            x = [x S.toBus];
+        else
+            x = [x S.Branch];
+        end
+        y = [y statTable{ii,jj}];
     end
     figure('Color',[1 1 1]);
     xx = unique(x);
