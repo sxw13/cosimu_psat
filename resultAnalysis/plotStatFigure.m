@@ -27,7 +27,7 @@ for jj = 2:4
         hold on;
     end
     title(statTable{1,jj});xlabel('Bus Number');
-    set(gca,'XTick',[0 xx xx(end)+1]);
-    xlim(gca,[0 xx(end)+1]);
-    grid on;
+    axesX46;
+%     axesX39;
+%     axesDefault;
 end

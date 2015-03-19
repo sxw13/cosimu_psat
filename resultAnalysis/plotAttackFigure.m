@@ -65,4 +65,5 @@ for jj = 5
     ylabel({'Attacked Bus Number'});
     xlabel({'Time/s'});
     title(statTable{1,jj});
+    axesY46;
 end
