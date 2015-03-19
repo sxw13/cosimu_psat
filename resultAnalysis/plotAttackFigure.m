@@ -30,7 +30,7 @@ for jj = 5
     figure('Color',[1 1 1]);
     xx = 1:TestCaseNumber;
     MM = zeros(ActionNum,length(xx));
-    if ~isempty(strfind(statTable{ii,1},'duplicate'))
+    if isfield(S,'duplicate')
         for dps = 1:max(S.duplicate)
             M = [];
             for x_value = xx
