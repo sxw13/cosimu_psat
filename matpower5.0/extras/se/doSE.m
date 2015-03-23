@@ -72,6 +72,15 @@ z = [
     measure.QG
     measure.Vm
     ];
+falseDataSet = sparse(length(z),1);
+PFid = 1:length(measure.PF);
+PTid = PFid(end)+1:PFid(end)+length(measure.PT);
+PGid = PTid(end)+1:PTid(end)+length(measure.PG);
+Vaid = PGid(end)+1:PGid(end)+length(measure.Va);
+QFid = Vaid(end)+1:Vaid(end)+length(measure.QF);
+QTid = QFid(end)+1:QFid(end)+length(measure.QT);
+QGid = QTid(end)+1:QTid(end)+length(measure.QG);
+Vmid = QGid(end)+1:QGid(end)+length(measure.Vm);
 
 %% form measurement index vectors
 idx_zPF = idx.idx_zPF;
@@ -198,6 +207,7 @@ for seIter = 1:Config.maxSEIter
 	
     [~,fDidx] = max(abs(SG));
     sigma_vector(fDidx) = sigma_vector(fDidx)*100;
+    falseDataSet(fDidx) = 1;
     i = 1;
 	if Config.maxSEIter == 1   break; end
 	converged = 0;

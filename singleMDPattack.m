@@ -49,12 +49,12 @@ FalseData = defaultFalseData(Config,FalseData);
 Config.falseDataAttacks = {FalseData};
 
 
-%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 38;
-FalseData.strategy = 6; % for MDP attack on pl and ql;
-FalseData = defaultFalseData(Config,FalseData);
-%%%%%%%%%%%%%put a false attack element into config structure
-Config.falseDataAttacks{2} = FalseData;
+% %%%%%%%%%%%%define a false attack element
+% FalseData.toBus = 38;
+% FalseData.strategy = 6; % for MDP attack on pl and ql;
+% FalseData = defaultFalseData(Config,FalseData);
+% %%%%%%%%%%%%%put a false attack element into config structure
+% Config.falseDataAttacks{2} = FalseData;
 
 % falseDataAttacks2 = Config.falseDataAttacks;
 
