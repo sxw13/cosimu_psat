@@ -34,7 +34,7 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 20; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  36*3600;
+Config.simuEndTime =  360;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;

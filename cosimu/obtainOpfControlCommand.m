@@ -38,11 +38,16 @@ end
 if Config.seEnable == 1
     % deal with the possible exceptions during the state estimation
     try
-        [baseMVA, bus, gen, branch, se_success] = stateEstimate(ResultData, CurrentStatus2, Config);
+        [baseMVA, bus, gen, branch, se_success, fdSet] = stateEstimate(ResultData, CurrentStatus2, Config);
     catch e
         se_success = 0;
     end
     if se_success == 1
+        
+        for fdName = fieldnames(fdSet)
+            ResultData.falseDataDctSet.(fdName{1}) = [ResultData.falseDataDctSet.(fdName{1}) fdSet.(fdName{1})];
+        end
+        
         CurrentStatus2.bus = bus;
         CurrentStatus2.branch = branch;
         CurrentStatus2.gen = gen;
@@ -65,6 +70,10 @@ if Config.seEnable == 1
         end
         isConverged = optresult.success;
     else
+        for fdName = fieldnames(fdSet)
+            dataLen = size(CurrentStatus.(fdName{1}),1);
+            ResultData.falseDataDctSet.(fdName{1}) = [ResultData.falseDataDctSet.(fdName{1}) sparse(dataLen,1)];
+        end
         disp(['t = ', num2str(ResultData.t(end)),' >>>>>>>>>>>>>>>> se failed']);
         isConverged = 0;
     end

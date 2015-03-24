@@ -1,4 +1,4 @@
-function [V, converged, iterNum, z, z_est, error_sqrsum] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config)
+function [V, converged, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config)
 %DOSE  Do state estimation.
 %   created by Rui Bo on 2007/11/12
 
@@ -212,3 +212,12 @@ for seIter = 1:Config.maxSEIter
 	if Config.maxSEIter == 1   break; end
 	converged = 0;
 end
+
+fdSet.plineHeadMeas = falseDataSet(PFid);
+fdSet.plineTailMeas = falseDataSet(PTid);
+fdSet.genPMeas = falseDataSet(PGid);
+fdSet.qlineHeadMeas = falseDataSet(QFid);
+fdSet.qlineTailMeas = falseDataSet(QTid);
+fdSet.genQMeas = falseDataSet(QGid);
+fdSet.busVMeasPu = falseDataSet(Vmid);
+
