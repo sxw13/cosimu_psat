@@ -70,7 +70,7 @@ if Config.seEnable == 1
         end
         isConverged = optresult.success;
     else
-        for fdName = fieldnames(fdSet)
+        for fdName = fieldnames(ResultData.falseDataDctSet)
             dataLen = size(CurrentStatus.(fdName{1}),1);
             ResultData.falseDataDctSet.(fdName{1}) = [ResultData.falseDataDctSet.(fdName{1}) sparse(dataLen,1)];
         end
