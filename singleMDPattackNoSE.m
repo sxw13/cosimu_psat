@@ -80,48 +80,7 @@ delete *.mat
 createhourloadshape(Config);
 cd(pwdpath);
 
-% mps = 6;
-% matlabpool size;
-% if ans>0 matlabpool close;end
-% matlabpool(mps);
-% spmd
-%     for i = 1 : r
-%         %     fileName = dstFilePath;
-%         if mod(i-1,mps)+1~=labindex continue;end
-%         fileName='';
-%         for j = 1 : c
-%             value = allM(i,j);
-%             switch MultiRunConfig.ConfigName{j}
-%                 % user-defined edit of the Config structure
-%                 case 'toBus'
-%                     FalseData = Config.falseDataAttacks{1};
-%                     FalseData.toBus = value;
-%                     FalseData = defaultFalseData(Config,FalseData);
-%                     Config.falseDataAttacks = {FalseData};
-% %                 case 'toBus2'
-% %                     FalseData = Config.falseDataAttacks{1};
-% %                     FalseData.toBus = value;
-% %                     FalseData = defaultFalseData(Config,FalseData);
-% %                     Config.falseDataAttacks{2} = FalseData;
-%                 case 'errorRatio'
-%                     FalseData = Config.falseDataAttacks{1};
-%                     FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
-%                     Config.falseDataAttacks = {FalseData};
-% %                     FalseData = Config.falseDataAttacks{2};
-% %                     FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
-% %                     Config.falseDataAttacks = {FalseData};
-%                 otherwise
-%                     Config.(MultiRunConfig.ConfigName{j}) = value;
-%                     %                     eval(['Config.', MultiRunConfig.ConfigName{j}, '=',value]);
-%             end
-%             fileName = [fileName,MultiRunConfig.ConfigName{j},'_',num2str(value),'_'];
-%         end
-%         MDPattack(Config,fileName,[],startTime);
-%         disp(fileName);
-%     end
-% end
-% 
-% matlabpool close;
+
 ResultData = MDPattack(Config,['singleTest' startTime],[],'single');
 % save(['debug\' startTime '\MultiRunConfig.mat'],'MultiRunConfig');
 
