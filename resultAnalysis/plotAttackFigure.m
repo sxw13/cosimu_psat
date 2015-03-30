@@ -1,5 +1,5 @@
 close all;
-TestCaseNumber = 46;   %需要针对不同的结果重新设定
+TestCaseNumber = 19;   %需要针对不同的结果重新设定
 [m,n] = size(statTable);
 defaultParameters = struct('LoadShapeRatio',1, ...
                             'errorRatio',2, ...
@@ -28,7 +28,7 @@ for jj = 5
         y = [y statTable{ii,jj}'];
     end
     figure('Color',[1 1 1]);
-    xx = 1:TestCaseNumber;
+    xx = ResultData.allLoadIdx';
     MM = zeros(ActionNum,length(xx));
     if isfield(S,'duplicate')
         for dps = 1:max(S.duplicate)

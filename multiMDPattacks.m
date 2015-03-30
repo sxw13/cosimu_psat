@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39BusNoSE';
+startTime = 'IEEE39BusNoSEMaxLearn9';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
