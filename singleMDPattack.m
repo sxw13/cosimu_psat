@@ -30,8 +30,8 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
 Config.seEnable = 1;
-Config.maxSEIter = 1;  % the maximum number of se iteration to repair false data
-Config.fDthreshold = 100; % the threshold for false data detection
+Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
+Config.fDthreshold = 4; % the threshold for false data detection
 
 % Time
 Config.simuEndTime =  3600 * 36;
@@ -40,7 +40,7 @@ Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
 FalseData.toBus = 30;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
