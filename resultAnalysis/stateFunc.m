@@ -26,7 +26,7 @@ else
     areaExp = opt.areaExp;
 end
 if nargin<1 || ~isfield(opt,'cmdfilter')
-    cmdfilter = '~isempty(strfind(file.name,''Load''))';
+    cmdfilter = '~isempty(strfind(file.name,''_.mat''))';
 else
     cmdfilter = opt.cmdfilter;
 end

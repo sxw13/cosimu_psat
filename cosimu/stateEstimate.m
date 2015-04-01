@@ -1,4 +1,4 @@
-function [baseMVA, bus, gen, branch, success] = stateEstimate(ResultData, CurrentStatus, Config)
+function [baseMVA, bus, gen, branch, success, fdSet] = stateEstimate(ResultData, CurrentStatus, Config)
 if nargin<3
     Config = initialConfig;
 end
@@ -72,7 +72,7 @@ end
 
 %% run state estimation
 t0 = clock;
-[V, success, iterNum, z, z_est, error_sqrsum] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config);
+[V, success, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config);
 et = etime(clock, t0);
 
 %% update data matrices to match estimator solution ...

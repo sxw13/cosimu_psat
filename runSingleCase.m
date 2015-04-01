@@ -9,7 +9,11 @@ for j = 1 : c
         case 'toBus'
             FalseData = Config.falseDataAttacks{1};
             FalseData.toBus = value;
-            FalseData = defaultFalseData(Config,FalseData);
+            if Config.seEnable
+                FalseData = defaultFalseData(Config,FalseData);
+            else
+                FalseData = defaultFalseDataNoSE(Config,FalseData);
+            end
             Config.falseDataAttacks = {FalseData};
         case 'Branch'
             fd = cs.branch(value,1);
