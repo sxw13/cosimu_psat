@@ -13,6 +13,7 @@ Config.caseName = 'd_009ieee.m';
 Config.sampleRate  = 1;
 Config.controlPeriod = 60;
 Config.opfCaseName = 'case_ieee9';
+Config.hasOpf = 1;
 Config.limitControlled = 0;
 Config.loadShapeFile = 'loadshapeHour';
 Config.loadShapeCsvFile = 'LoadShapeSimple.csv';
