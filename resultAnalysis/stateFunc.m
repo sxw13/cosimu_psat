@@ -45,7 +45,10 @@ for k=1:length(lists)
             Config = S.Config;
             statTable{lineid,1} = file.name;
             for rowid = 1:length(areaExp)
-                statTable{lineid,rowid+1} = eval(areaExp{rowid});
+                try
+                    statTable{lineid,rowid+1} = eval(areaExp{rowid});
+                catch e
+                end
             end
             lineid = lineid + 1;
         end

@@ -1,4 +1,4 @@
-function [Config, MultiRunConfig, cs] = IEEE39BusAttack
+function [Config, MultiRunConfig, cs] = IEEE39BusNoAandC
 Config = initialConfig;
 
 Config.loadShapeCsvFile = 'LoadShape3.csv';
@@ -35,21 +35,16 @@ Config.lfTStep = 10;
 % added by LRF(to be checked)
 Config.enableOPFCtrl =  0;
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 5;
-FalseData.strategy = 6; % for MDP attack on pl and ql;
-% FalseData = defaultFalseData(Config,FalseData);
-%%%%%%%%%%%%%put a false attack element into config structure
-FalseData.maxLearnedAction = 30;
-Config.falseDataAttacks = {FalseData};
 
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {[0.5 0.75 1],1:39,[0.5 1 2]};
+MultiRunConfig.ConfigName = {'LoadShapeRatio'};
+MultiRunConfig.ConfigValue = {linspace(1,2,6)};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
