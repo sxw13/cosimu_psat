@@ -41,6 +41,7 @@ Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on 
 %%%%%%%%%%%%%define a false attack element
 
 
+
 cs = eval(Config.opfCaseName);
 
 MultiRunConfig.ConfigName = {'LoadShapeRatio'};
