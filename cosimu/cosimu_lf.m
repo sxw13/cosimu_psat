@@ -106,7 +106,7 @@ while (t < Settings.tf)
         %
         [ResultData, hasOptEvent, opts ] = hasOperationEvent(Config, ResultData, t);
         %
-        if hasOptEvent
+        if hasOptEvent && Config.hasOpf
             nOpt = length(opts);
             for i = 1 : nOpt
                 SW.con(:,4) = opts(i).vGen(ResultData.allGenIdx(1:SW.n));

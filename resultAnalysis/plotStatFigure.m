@@ -1,6 +1,6 @@
 close all;
 [m,n] = size(statTable);
-conditionExp = 'S.maxSEIter~=20';
+conditionExp = '0';
 for jj = 2:4
     x = [];
     y = [];
@@ -21,13 +21,14 @@ for jj = 2:4
     figure('Color',[1 1 1]);
     xx = unique(x);
     xx = sort(xx);
-    for x_value = xx
+    for xidx = 1:length(xx)
+        x_value = xx(xidx);
         idx = find(x==x_value);
-        plot(x(idx),y(idx),'MarkerSize',4,'Marker','square','MarkerSize',6,'LineWidth',2);
+        plot(ones(1,length(idx))*xidx,y(idx),'MarkerSize',4,'Marker','square','MarkerSize',6,'LineWidth',2);
         hold on;
     end
     title(statTable{1,jj});xlabel('Bus Number');
-    axesX46;
+%     axesX46;
 %     axesX39;
-%     axesDefault;
+    axesDefault;
 end

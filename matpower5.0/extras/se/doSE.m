@@ -77,7 +77,11 @@ PFid = 1:length(measure.PF);
 PTid = PFid(end)+1:PFid(end)+length(measure.PT);
 PGid = PTid(end)+1:PTid(end)+length(measure.PG);
 Vaid = PGid(end)+1:PGid(end)+length(measure.Va);
-QFid = Vaid(end)+1:Vaid(end)+length(measure.QF);
+if isempty(Vaid)
+    QFid = PGid(end)+1:PGid(end)+length(measure.QF);
+else
+    QFid = Vaid(end)+1:Vaid(end)+length(measure.QF);
+end
 QTid = QFid(end)+1:QFid(end)+length(measure.QT);
 QGid = QTid(end)+1:QTid(end)+length(measure.QG);
 Vmid = QGid(end)+1:QGid(end)+length(measure.Vm);
@@ -202,6 +206,8 @@ for seIter = 1:Config.maxSEIter
     error_sqrsum = sum((z - z_est).^2./sigma_square);
     if converged == 0  break; end 
 	
+     W = eye(length(z)) - H/(H'*R_inv*H)*H'*R_inv;
+%     e = W\(z-z_est);
     SG = (z-z_est)./sigma_vector;
     if norm(SG,inf)<Config.fDthreshold break; end
 	
