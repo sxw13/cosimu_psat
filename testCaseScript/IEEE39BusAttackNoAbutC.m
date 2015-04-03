@@ -45,7 +45,7 @@ Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on 
 cs = eval(Config.opfCaseName);
 
 MultiRunConfig.ConfigName = {'LoadShapeRatio'};
-MultiRunConfig.ConfigValue = {linspace(1,2,6)};
+MultiRunConfig.ConfigValue = {linspace(1.44,1.48,6)};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
