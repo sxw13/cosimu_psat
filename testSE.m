@@ -2,8 +2,8 @@ initialPath;
 load('TestSE/IEEE39.mat');
 CurrentStatus.plineHeadMeas(44) = CurrentStatus.plineHeadMeas(44)*2;
 CurrentStatus.qlineHeadMeas(44) = CurrentStatus.qlineHeadMeas(44)*2;
-CurrentStatus.genPMeas(2) = CurrentStatus.genPMeas(2)*2;
-CurrentStatus.genQMeas(2) = CurrentStatus.genQMeas(2)*2;
+CurrentStatus.genPMeas(2) = CurrentStatus.genPMeas(2)*4;
+CurrentStatus.genQMeas(2) = CurrentStatus.genQMeas(2)*4;
 
 Config.seEnable = 1;
 Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
