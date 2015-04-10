@@ -17,9 +17,9 @@ toBus = 1;
 % CurrentStatus.genPMeas(idx_gen) = CurrentStatus.genPMeas(idx_gen)*2.*rand(len,1);
 % CurrentStatus.genQMeas(idx_gen) = CurrentStatus.genQMeas(idx_gen)*4.*(rand(len,1)-0.5);
 
-idx_tail=1:2;
-CurrentStatus.plineTailMeas(idx_tail) = CurrentStatus.plineTailMeas(idx_tail).*[2;0];
-CurrentStatus.qlineTailMeas(idx_tail) = CurrentStatus.qlineTailMeas(idx_tail).*[0;-2];
+% idx_tail=1:2;
+% CurrentStatus.plineTailMeas(idx_tail) = CurrentStatus.plineTailMeas(idx_tail).*[2;0];
+% CurrentStatus.qlineTailMeas(idx_tail) = CurrentStatus.qlineTailMeas(idx_tail).*[0;-2];
 
 Config.seEnable = 1;
 Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data

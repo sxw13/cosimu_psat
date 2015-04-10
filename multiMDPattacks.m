@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39BusAttack;
+[Config, MultiRunConfig, cs] = IEEE39LineAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;

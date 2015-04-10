@@ -30,7 +30,7 @@ Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;

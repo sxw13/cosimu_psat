@@ -12,7 +12,7 @@ Config.loadShapeCsvFile = 'LoadShape3.csv';
 Config.LoadShapeRatio = 1;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
-Config.hasOpf = 0;
+Config.hasOpf = 1;
 Config.enableLoadShape = 1;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
@@ -32,10 +32,10 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 % enable state estimation
 Config.seEnable = 1;
 Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
-Config.fDthreshold = 4; % the threshold for false data detection
+Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  3600 * 36;
+Config.simuEndTime =  3600 * 24;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
