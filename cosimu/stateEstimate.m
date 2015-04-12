@@ -1,5 +1,4 @@
-function [baseMVA, bus, gen, branch, success, error_sqrsum, fdSet] = stateEstimate(ResultData, CurrentStatus)
-function [baseMVA, bus, gen, branch, success, fdSet] = stateEstimate(ResultData, CurrentStatus, Config)
+function [baseMVA, bus, gen, branch, success, error_sqrsum, fdSet] = stateEstimate(ResultData, CurrentStatus, Config)
 if nargin<3
     Config = initialConfig;
 end
