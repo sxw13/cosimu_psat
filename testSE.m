@@ -1,5 +1,5 @@
 initialPath;
-load('TestSE/IEEE39.mat');
+load('TestSE/IEEE39_2.mat');
 [baseMVA, bus, gen, branch, success] = stateEstimate(ResultData, CurrentStatus)
 
 dPl = bus(ResultData.allLoadIdx,3) - CurrentStatus.bus(ResultData.allLoadIdx,3);

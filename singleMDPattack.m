@@ -32,7 +32,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 Config.seEnable = 1;
 
 % Time
-Config.simuEndTime =  6*60;
+Config.simuEndTime =  24*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
