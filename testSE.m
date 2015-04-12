@@ -1,5 +1,5 @@
 initialPath;
-load('TestSE/IEEE39.mat');
+load('TestSE/IEEE39_2.mat');
 toBus = 1;
 
 % idx_head = find(CurrentStatus.branch(:,1)==toBus);
