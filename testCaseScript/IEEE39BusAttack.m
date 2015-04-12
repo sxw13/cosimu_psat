@@ -32,7 +32,7 @@ Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
@@ -45,7 +45,7 @@ Config.falseDataAttacks = {FalseData};
 cs = eval(Config.opfCaseName);
 
 MultiRunConfig.ConfigName = {'toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {1:39,[1 2]};
+MultiRunConfig.ConfigValue = {1:39, 1};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
