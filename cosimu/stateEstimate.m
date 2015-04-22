@@ -1,4 +1,4 @@
-function [baseMVA, bus, gen, branch, success, fdSet] = stateEstimate(ResultData, CurrentStatus, Config)
+function [baseMVA, bus, gen, branch, success, error_sqrsum, fdSet] = stateEstimate(ResultData, CurrentStatus, Config)
 if nargin<3
     Config = initialConfig;
 end
@@ -25,14 +25,14 @@ measure.QG = CurrentStatus.genQMeas;
 measure.Vm = CurrentStatus.busVMeasPu;
 
 %% specify measurement variances
-sigma.sigma_PF = 0.02;
-sigma.sigma_PT = 0.02;
-sigma.sigma_PG = 0.015;
+sigma.sigma_PF = 0.01;
+sigma.sigma_PT = 0.01;
+sigma.sigma_PG = 0.01;
 sigma.sigma_Va = 2;
-sigma.sigma_QF = 0.02;
-sigma.sigma_QT = 0.02;
-sigma.sigma_QG = 0.02;
-sigma.sigma_Vm = 0.1;
+sigma.sigma_QF = 0.01;
+sigma.sigma_QT = 0.01;
+sigma.sigma_QG = 0.01;
+sigma.sigma_Vm = 0.01;
 
 type_initialguess = 2; 
 
@@ -54,11 +54,12 @@ Yf = full(Yf);
 Yt = full(Yt);
 
 %% prepare initial guess
-if nargin < 6
-    V0 = getV0(bus, gen, type_initialguess);
-else
-    V0 = getV0(bus, gen, type_initialguess, V0);
-end
+% if nargin < 6
+%     V0 = getV0(bus, gen, type_initialguess);
+% else
+%     V0 = getV0(bus, gen, type_initialguess, V0);
+% end
+V0 = CurrentStatus.busVMeasPu;
 
 %% define named indices into bus, gen, branch matrices
 [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
