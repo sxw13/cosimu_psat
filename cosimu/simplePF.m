@@ -77,6 +77,11 @@ if optresult.success == 1
         PV.con(iPV, 4) = optresult.gen(idxPV, 2)/100;
     end
     
+    for iSW = 1 : length(SW.con(:,1))
+        idxSW = find(optresult.bus(:,1) == SW.con(iSW, 1));
+        SW.con(iSW, 4) = optresult.bus(idxSW, 8);
+    end
+    
 else
     disp([' >>>>>>>>>>>>>>>> opf failed for initialLoadRate as ' , num2str(initialLoadRate)]);
 end

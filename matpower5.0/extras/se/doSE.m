@@ -206,9 +206,10 @@ for seIter = 1:Config.maxSEIter
     error_sqrsum = sum((z - z_est).^2./sigma_square);
     if converged == 0  break; end 
 	
-     W = eye(length(z)) - H/(H'*R_inv*H)*H'*R_inv;
+    W = eye(length(z)) - H/(H'*R_inv*H)*H'*R_inv;
+    Omega = diag(sqrt(diag(W*diag(sigma_square))))\diag(~full(falseDataSet));
 %     e = W\(z-z_est);
-    SG = (z-z_est)./sigma_vector;
+    SG = Omega * (z-z_est);
     if norm(SG,inf)<Config.fDthreshold break; end
 	
     [~,fDidx] = max(abs(SG));

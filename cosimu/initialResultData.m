@@ -34,7 +34,7 @@ ResultData.ctrlQueue = [];
 ResultData.nSample = 0;
 ResultData.nOpf = 0;
 
-
+ResultData.loadRatioHis = [];
 
 
 ResultData.minEigValueHis = [];
@@ -85,6 +85,10 @@ end
 ResultData.allLineIdx = [];
 ResultData.allLineHeadBusIdx = [];
 ResultData.allLineTailBusIdx = [];
+
+if Config.seEnable
+    ResultData.seErrorHis = [];
+end
 
 for iLine = 1 : Line.n            
     fromBus = Line.con(iLine, 1);
