@@ -1,7 +1,7 @@
 close all;
 [m,n] = size(statTable);
 conditionExp = '0';
-for jj = 4
+for jj = 2
     x = [];
     y = [];
     for ii = 2:m

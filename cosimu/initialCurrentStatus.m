@@ -1,7 +1,7 @@
 function CurrentStatus = initialCurrentStatus(Config)
 
 CurrentStatus = eval(Config.opfCaseName);
-% CurrentStatus.gen(:,[4,5]) = 2*CurrentStatus.gen(:,[4,5]);
+CurrentStatus.gen(2,9) = Config.gen2;
 for i = 1 : length(CurrentStatus.gen(:, 1))    
     CurrentStatus.gen(i,[4,5]) = [9999, -9999];
 end

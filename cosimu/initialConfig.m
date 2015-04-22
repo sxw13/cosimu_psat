@@ -80,6 +80,9 @@ Config.vHigh4LoadBack = 1.5;
 Config.vShedSample = 4;
 Config.vRecoverSample = 4;
 
+%%for testing opf
+Config.gen2 = 1145.11;
+
 
 %% for performance evaluation
 
