@@ -34,7 +34,7 @@ ResultData.ctrlQueue = [];
 ResultData.nSample = 0;
 ResultData.nOpf = 0;
 
-
+ResultData.loadRatioHis = [];
 
 
 ResultData.minEigValueHis = [];

@@ -35,21 +35,27 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  3600 * 36;
+Config.simuEndTime =  3600 * 24;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 30;
+FalseData.toBus = 35;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData = defaultFalseData(Config,FalseData);
 %%%%%%%%%%%%%put a false attack element into config structure
+FalseData.maxLearnedAction = 300;
 Config.falseDataAttacks = {FalseData};
 
-
+value = 2;
+for k = 1:length(Config.falseDataAttacks)
+    FalseData = Config.falseDataAttacks{k};
+    FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
+    Config.falseDataAttacks{k} = FalseData;
+end
 % %%%%%%%%%%%%define a false attack element
 % FalseData.toBus = 38;
 % FalseData.strategy = 6; % for MDP attack on pl and ql;
@@ -82,6 +88,10 @@ createhourloadshape(Config);
 cd(pwdpath);
 
 % mps = 6;
+
+
+
+
 % matlabpool size;
 % if ans>0 matlabpool close;end
 % matlabpool(mps);
