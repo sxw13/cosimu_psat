@@ -24,8 +24,8 @@ fixed_times = [fixed_times; gettimes(Fault); ...
     gettimes(Breaker); gettimes(Ind)];
 fixed_times = sort(fixed_times);
 
-
-while (t < Settings.tf)
+pfConverged = 1;
+while (t < Settings.tf && pfConverged)
     
     %% one step integration
     % t==5280
@@ -94,6 +94,7 @@ while (t < Settings.tf)
                     eigValues = eig(full([DAE.Fx, DAE.Fy; DAE.Gx, DAE.Gy]));
                 end
                 minEigValue = min(abs(eigValues));
+                if minEigValue<0.001 pfConverged = 0; end
                 ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
             end
             %    ============cal eigenvalue
