@@ -24,10 +24,11 @@ fixed_times = [fixed_times; gettimes(Fault); ...
     gettimes(Breaker); gettimes(Ind)];
 fixed_times = sort(fixed_times);
 
-
-while (t < Settings.tf)
+pfConverged = 1;
+while (t < Settings.tf && pfConverged)
     
     %% one step integration
+    % t==5280
     if (t + h > Settings.tf), h = Settings.tf - t; end
     actual_time = t + h;
    
@@ -93,6 +94,7 @@ while (t < Settings.tf)
                     eigValues = eig(full([DAE.Fx, DAE.Fy; DAE.Gx, DAE.Gy]));
                 end
                 minEigValue = min(abs(eigValues));
+                if minEigValue<0.001 pfConverged = 0; end
                 ResultData.minEigValueHis = [ResultData.minEigValueHis minEigValue];
             end
             %    ============cal eigenvalue
@@ -112,7 +114,7 @@ while (t < Settings.tf)
         if hasOptEvent && Config.hasOpf
             nOpt = length(opts);
             for i = 1 : nOpt
-%                 SW.con(:,4) = opts(i).vGen(ResultData.allGenIdx(1:SW.n));
+                SW.con(:,4) = opts(i).vGen(ResultData.allGenIdx(1:SW.n));
 %                 SW.con(:,10) = opts(i).pGen(ResultData.allGenIdx(1:SW.n)) + 1e-5;
                 PV.con(:,5) = opts(i).vGen(ResultData.allGenIdx(SW.n + 1 : end));
                 PV.con(:,4) = opts(i).pGen(ResultData.allGenIdx(SW.n + 1 : end));

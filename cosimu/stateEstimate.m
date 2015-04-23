@@ -34,6 +34,9 @@ sigma.sigma_QT = 0.01;
 sigma.sigma_QG = 0.01;
 sigma.sigma_Vm = 0.01;
 
+sigma.sigma_Plink = 0.01; 
+sigma.sigma_Qlink = 0.01;
+
 type_initialguess = 2; 
 
 %% read data & convert to internal bus numbering
@@ -71,9 +74,18 @@ V0 = CurrentStatus.busVMeasPu;
     MU_PMAX, MU_PMIN, MU_QMAX, MU_QMIN, PC1, PC2, QC1MIN, QC1MAX, ...
     QC2MIN, QC2MAX, RAMP_AGC, RAMP_10, RAMP_30, RAMP_Q, APF] = idx_gen;
 
+%% get link bus id
+lbid = [];
+nnBus = size(bus,1);
+for kk = 1:nnBus
+    if isempty(find(gen(:,1)==kk,1)) && isempty(find(ResultData.allLoadIdx==kk,1))
+        lbid = [lbid kk];
+    end
+end
+
 %% run state estimation
 t0 = clock;
-[V, success, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config);
+[V, success, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config, lbid);
 et = etime(clock, t0);
 
 %% update data matrices to match estimator solution ...

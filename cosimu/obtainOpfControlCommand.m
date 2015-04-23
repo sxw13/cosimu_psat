@@ -51,6 +51,8 @@ if Config.seEnable == 1
         end
         
         CurrentStatus2.bus = bus;
+%         CurrentStatus2.bus(:,[3 4]) = 0;
+%         CurrentStatus2.bus(ResultData.allLoadIdx,[3 4]) = bus(ResultData.allLoadIdx, [3 4]);
         CurrentStatus2.branch = branch;
         CurrentStatus2.gen = gen;
         ResultData.bus = bus;
