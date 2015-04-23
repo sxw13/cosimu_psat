@@ -46,6 +46,8 @@ Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 30;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData = defaultFalseData(Config,FalseData);
+% load('ActionHistory.mat');
+% FalseData.fixedAction = ActionHistory;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
