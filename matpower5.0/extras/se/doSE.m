@@ -1,4 +1,4 @@
-function [V, converged, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config)
+function [V, converged, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, bus, gen, branch, Ybus, Yf, Yt, V0, ref, pv, pq, measure, idx, sigma, Config, lbid)
 %DOSE  Do state estimation.
 %   created by Rui Bo on 2007/11/12
 
@@ -32,6 +32,10 @@ function [V, converged, iterNum, z, z_est, error_sqrsum, fdSet] = doSE(baseMVA, 
 %   MATLAB(R) or comparable environment containing parts covered
 %   under other licensing terms, the licensors of MATPOWER grant
 %   you additional permission to convey the resulting work.
+
+if nargin<16
+    lbid=[];
+end
 
 %% define named indices into bus, gen, branch matrices
 [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
@@ -71,8 +75,12 @@ z = [
     measure.QT
     measure.QG
     measure.Vm
+    zeros(2*length(lbid),1)
     ];
-falseDataSet = sparse(length(z),1);
+nMeasure = length(z)-2*length(lbid);
+% zlink = zeros(2*length(lbid),1);  %联络节点注入功率向量
+
+falseDataSet = sparse(nMeasure,1);
 PFid = 1:length(measure.PF);
 PTid = PFid(end)+1:PFid(end)+length(measure.PT);
 PGid = PTid(end)+1:PTid(end)+length(measure.PG);
@@ -106,6 +114,8 @@ sigma_vector = [
     sigma.sigma_QT*ones(size(idx_zQT, 1), 1)
     sigma.sigma_QG*ones(size(idx_zQG, 1), 1)
     sigma.sigma_Vm*ones(size(idx_zVm, 1), 1)
+    sigma.sigma_Plink*ones(length(lbid), 1)
+    sigma.sigma_Qlink*ones(length(lbid), 1)
     ]; % NOTE: zero-valued elements of simga are skipped
 
 for seIter = 1:Config.maxSEIter
@@ -126,6 +136,9 @@ for seIter = 1:Config.maxSEIter
         Sgbus = V(gbus) .* conj(Ybus(gbus, :) * V);
         Sgen = Sgbus * baseMVA + (bus(gbus, PD) + j*bus(gbus, QD));   %% inj S + local Sd
         Sgen = Sgen/baseMVA;
+        Slinkbus = V(lbid) .* conj(Ybus(lbid, :) * V);
+        Slink = Slinkbus * baseMVA + (bus(lbid, PD) + j*bus(lbid, QD));   %% inj S + local Sd
+        Slink = Slink/baseMVA;
         z_est = [ % NOTE: all are p.u. values
             real(Sfe(idx_zPF));
             real(Ste(idx_zPT));
@@ -135,6 +148,8 @@ for seIter = 1:Config.maxSEIter
             imag(Ste(idx_zQT));
             imag(Sgen(idx_zQG));
             abs(V(idx_zVm));
+            real(Slink);
+            imag(Slink);
         ];
 
         %% --- get H matrix ---
@@ -163,6 +178,11 @@ for seIter = 1:Config.maxSEIter
         %% get sub-matrix of H relating to voltage magnitude
         dVm_dVa = zeros(nb, nb);
         dVm_dVm = eye(nb);
+       %% get sub-matrix of H relating to linkbus injection
+        dPlink_dVa = real(dSbus_dVa(lbid, :));
+        dQlink_dVa = imag(dSbus_dVa(lbid, :));
+        dPlink_dVm = real(dSbus_dVm(lbid, :));
+        dQlink_dVm = imag(dSbus_dVm(lbid, :));
         H = [
             dPF_dVa(idx_zPF, nonref)   dPF_dVm(idx_zPF, nonref);
             dPT_dVa(idx_zPT, nonref)   dPT_dVm(idx_zPT, nonref);
@@ -172,6 +192,8 @@ for seIter = 1:Config.maxSEIter
             dQT_dVa(idx_zQT, nonref)   dQT_dVm(idx_zQT, nonref);
             dQG_dVa(idx_zQG, nonref)   dQG_dVm(idx_zQG, nonref);
             dVm_dVa(idx_zVm, nonref)   dVm_dVm(idx_zVm, nonref);
+            dPlink_dVa(:,nonref)       dPlink_dVm(:,nonref);
+            dQlink_dVa(:,nonref)       dQlink_dVm(:,nonref);
             ];
 
         %% compute update step
@@ -206,10 +228,12 @@ for seIter = 1:Config.maxSEIter
     error_sqrsum = sum((z - z_est).^2./sigma_square);
     if converged == 0  break; end 
 	
-    W = eye(length(z)) - H/(H'*R_inv*H)*H'*R_inv;
-    Omega = diag(sqrt(diag(W*diag(sigma_square))))\diag(~full(falseDataSet));
+    
+    HH = H(1:nMeasure,:);
+    W = eye(nMeasure) - HH/(HH'*R_inv(1:nMeasure,1:nMeasure)*HH)*HH'*R_inv(1:nMeasure,1:nMeasure);
+    Omega = diag(sqrt(diag(W*diag(sigma_square(1:nMeasure)))))\diag(~full(falseDataSet));
 %     e = W\(z-z_est);
-    SG = Omega * (z-z_est);
+    SG = Omega * (z(1:nMeasure)-z_est(1:nMeasure));
     if norm(SG,inf)<Config.fDthreshold break; end
 	
     [~,fDidx] = max(abs(SG));
