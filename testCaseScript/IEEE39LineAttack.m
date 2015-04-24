@@ -23,10 +23,10 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 % enable state estimation
 Config.seEnable = 1;
 Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
-Config.fDthreshold = 20; % the threshold for false data detection
+Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  12 * 3600;
+Config.simuEndTime =  24 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -37,7 +37,7 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 30;
+FalseData.maxLearnedAction = 50;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
@@ -45,15 +45,15 @@ Config.falseDataAttacks = {FalseData};
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 30;
+FalseData.maxLearnedAction = 50;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks{2} = FalseData;
 
 cs = eval(Config.opfCaseName);
 
 
-MultiRunConfig.ConfigName = {'Branch','errorRatio','fDthreshold'};
-MultiRunConfig.ConfigValue = {31,[0.5 1 2 4],[0.5 1 2 4 40 100]};
+MultiRunConfig.ConfigName = {'Branch','errorRatio','maxSEIter'};
+MultiRunConfig.ConfigValue = {1:46,2,[1 10]};
 % MultiRunConfig.ConfigName = {'Branch','errorRatio','maxSEIter'};
 % MultiRunConfig.ConfigValue = {1:size(cs.branch,1),[0.5 1 2],[5 10 15 20]};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
