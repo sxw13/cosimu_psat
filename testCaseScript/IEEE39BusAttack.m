@@ -26,7 +26,7 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  36 * 3600;
+Config.simuEndTime =  24 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -38,14 +38,14 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
 %%%%%%%%%%%%%put a false attack element into config structure
-FalseData.maxLearnedAction = 30;
+FalseData.maxLearnedAction = 50;
 Config.falseDataAttacks = {FalseData};
 
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio','duplicate'};
-MultiRunConfig.ConfigValue = {1,31,2,1:6};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio','maxSEIter'};
+MultiRunConfig.ConfigValue = {1,[35 36 37 38],2,[1 10]};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 

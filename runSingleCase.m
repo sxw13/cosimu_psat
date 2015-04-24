@@ -29,7 +29,9 @@ for j = 1 : c
         case 'errorRatio'
             for k = 1:length(Config.falseDataAttacks)
                 FalseData = Config.falseDataAttacks{k};
-                FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
+                opt.length = value*4;
+                opt.N = 5;
+                FalseData = defaultFalseData(Config,FalseData,opt);
                 Config.falseDataAttacks{k} = FalseData;
             end
         case 'duplicate'
