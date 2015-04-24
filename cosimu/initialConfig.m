@@ -81,7 +81,7 @@ Config.vShedSample = 4;
 Config.vRecoverSample = 4;
 
 %%for testing opf
-Config.gen2 = 1145.11;
+Config.gen2 = 750;
 
 
 %% for performance evaluation

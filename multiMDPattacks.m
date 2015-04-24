@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39BusAttackPositionTest';
+startTime = 'IEEE39BusAttackSENewNoAttack';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39BusAttackHaveAandCandSE;
+[Config, MultiRunConfig, cs] = IEEE39BusAttackSENewNoAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
@@ -53,6 +53,12 @@ end
 
 %% deal result and save
 opt.path = ['debug\' startTime];
+opt.areaExp = {
+        'min(min(ResultData.allBusVHis))' ...
+        'minIndex(min(ResultData.allBusVHis''))' ...
+        'min(ResultData.minEigValueHis)' ...
+        'giveoutActionState(ResultData.MDPData{1}.ActionHistory)' ...
+        };
 stateFunc(opt);
 save(['debug\' startTime '\MultiRunConfig.mat'],'MultiRunConfig');
 
