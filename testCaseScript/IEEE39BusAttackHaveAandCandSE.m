@@ -48,8 +48,8 @@ Config.falseDataAttacks = {FalseData};
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus'};
-MultiRunConfig.ConfigValue = {linspace(1.4,1.5,10),1:39};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
+MultiRunConfig.ConfigValue = {[0.3 0.4],1:39,2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
