@@ -6,6 +6,21 @@ for j = 1 : c
     value = allM(i,j);
     switch MultiRunConfig.ConfigName{j}
         % user-defined edit of the Config structure
+        case 'attackNumber'
+            FalseData = Config.falseDataAttacks{1};
+            Config.falseDataAttacks = cell(0);
+            for k = 1:value
+                Config.falseDataAttacks{k} = FalseData;
+            end
+        case 'rand'
+            NAttack = length(Config.falseDataAttacks);
+            busNumbers = selectBus(cs,NAttack);
+            for k = 1:NAttack
+                FalseData = Config.falseDataAttacks{k};
+                FalseData.toBus = busNumbers(k);
+                FalseData = defaultFalseData(Config,FalseData);
+                Config.falseDataAttacks{k} = FalseData;
+            end
         case 'toBus'
             FalseData = Config.falseDataAttacks{1};
             FalseData.toBus = value;

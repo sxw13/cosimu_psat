@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39LineFDD';
+startTime = 'IEEE39RandomAttack';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39LineAttack;
+[Config, MultiRunConfig, cs] = IEEE39RandomAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
