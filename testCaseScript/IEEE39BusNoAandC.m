@@ -17,7 +17,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 1;
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -33,7 +33,7 @@ Config.lfTStep = 10;
 
 % enable OPF
 % added by LRF(to be checked)
-Config.enableOPFCtrl =  0;
+Config.hasOpf =  0;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
@@ -45,7 +45,7 @@ Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on 
 cs = eval(Config.opfCaseName);
 
 MultiRunConfig.ConfigName = {'LoadShapeRatio'};
-MultiRunConfig.ConfigValue = {linspace(1,2,6)};
+MultiRunConfig.ConfigValue = {linspace(2,2.7,8)};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 

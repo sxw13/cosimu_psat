@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39LineFDDNew';
+startTime = 'IEEE39BusNoAttackNew';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39LineAttack;
+[Config, MultiRunConfig, cs] = IEEE39BusNoAandC;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
@@ -19,7 +19,7 @@ allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
 
 
 %% creat load shape file
-if Config.simuType == 1
+if Config.simuType == 0
     cd([pwd, '\loadshape\lf']);
 else
     cd([pwd, '\loadshape\dyn']);
