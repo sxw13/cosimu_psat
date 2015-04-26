@@ -9,7 +9,7 @@ Config = initialConfig;
 
 % Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 0.3;
+Config.LoadShapeRatio = 2.4;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.hasOpf = 0;
@@ -26,7 +26,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -43,15 +43,21 @@ Config.lfTStep = 10;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 30;
+FalseData.toBus = 31;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
-FalseData = defaultFalseData(Config,FalseData);
+opt = struct('N',5,'length',8);
+FalseData = defaultFalseData(Config,FalseData,opt);
 % load('ActionHistory.mat');
 % FalseData.fixedAction = ActionHistory;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
-
+% value = 2;
+% for k = 1:length(Config.falseDataAttacks)
+%     FalseData = Config.falseDataAttacks{k};
+%     FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
+%     Config.falseDataAttacks{k} = FalseData;
+% end
 % %%%%%%%%%%%%define a false attack element
 % FalseData.toBus = 38;
 % FalseData.strategy = 6; % for MDP attack on pl and ql;
