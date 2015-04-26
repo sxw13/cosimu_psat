@@ -37,7 +37,7 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 50;
+FalseData.maxLearnedAction = 100;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
 
@@ -45,15 +45,15 @@ Config.falseDataAttacks = {FalseData};
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 50;
+FalseData.maxLearnedAction = 100;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks{2} = FalseData;
 
 cs = eval(Config.opfCaseName);
 
 
-MultiRunConfig.ConfigName = {'Branch','errorRatio','maxSEIter'};
-MultiRunConfig.ConfigValue = {1:46,2,[1 10]};
+MultiRunConfig.ConfigName = {'distrsw','Branch','errorRatio','maxSEIter'};
+MultiRunConfig.ConfigValue = {1,1:46,2,[1 10]};
 % MultiRunConfig.ConfigName = {'Branch','errorRatio','maxSEIter'};
 % MultiRunConfig.ConfigValue = {1:size(cs.branch,1),[0.5 1 2],[5 10 15 20]};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
