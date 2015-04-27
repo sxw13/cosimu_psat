@@ -80,6 +80,8 @@ if optresult.success == 1
     for iSW = 1 : length(SW.con(:,1))
         idxSW = find(optresult.bus(:,1) == SW.con(iSW, 1));
         SW.con(iSW, 4) = optresult.bus(idxSW, 8);
+        idxSW = find(optresult.gen(:,1) == SW.con(iSW, 1));
+        SW.con(iSW, 10) = optresult.gen(idxSW, 2)/100;
     end
     
 else

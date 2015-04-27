@@ -25,6 +25,7 @@ Config.calEigs = 0;
 
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;
+Config.useBaseResult = 0;
 
 % Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
 Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
@@ -79,6 +80,9 @@ Config.vLow4LoadBack = 0.9;
 Config.vHigh4LoadBack = 1.5;
 Config.vShedSample = 4;
 Config.vRecoverSample = 4;
+
+%%for testing opf
+Config.gen2 = 750;
 
 
 %% for performance evaluation

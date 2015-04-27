@@ -38,9 +38,9 @@ Config.enableOPFCtrl =  1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 5;
+FalseData.toBus = 33;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
-% FalseData = defaultFalseData(Config,FalseData);
+FalseData = defaultFalseData(Config,FalseData); %你把这句话注释掉了，FalseData没有初始化
 %%%%%%%%%%%%%put a false attack element into config structure
 FalseData.maxLearnedAction = 30;
 Config.falseDataAttacks = {FalseData};
@@ -48,8 +48,8 @@ Config.falseDataAttacks = {FalseData};
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {[0.3 0.4],1:39,2};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','tobus','errorRatio'};
+MultiRunConfig.ConfigValue = {linspace(0.8,1.1,4),[33 35 37 38],2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 

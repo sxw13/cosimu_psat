@@ -46,15 +46,12 @@ spmd
     [Result, success] = opf(mpc,opt);
 end
 %%
-pfr = runpf(mpc);
-mpc.bus(:,8) = pfr.bus(:,8);
-mpc.bus(:,9) = pfr.bus(:,9);
-Result = opf(mpc);
-
-
-% mpc = case_ieee39;
-% % mpc.bus(:,12) = mpc.bus(:,12)/1.06*1.1;
-% % mpc.bus(:,13) = mpc.bus(:,13)/0.94*0.9;
-% mpc.bus(:,3) = mpc.bus(:,3)*0.6094;  % Pload
-% mpc.bus(:,4) = mpc.bus(:,4)*0.6094;  % Qload
-% [ResultData, success] = opf(mpc);
+mpc = case_ieee39;
+mpc.bus(:,12) = 1.1;
+mpc.bus(:,13) = 0.9;
+mpc.gen(:,9) = mpc.gen(:,9)*10;
+opt = mpoption('VERBOSE',0, 'OUT_ALL', 0, 'OPF_ALG', 580);
+loadRatio = 2.5;
+mpc.bus(:,3) = mpc.bus(:,3)*loadRatio;  % Pload
+mpc.bus(:,4) = mpc.bus(:,4)*loadRatio;  % Qload
+[ResultData, success] = opf(mpc,opt)

@@ -115,7 +115,7 @@ while (t < Settings.tf && pfConverged)
             nOpt = length(opts);
             for i = 1 : nOpt
                 SW.con(:,4) = opts(i).vGen(ResultData.allGenIdx(1:SW.n));
-%                 SW.con(:,10) = opts(i).pGen(ResultData.allGenIdx(1:SW.n)) + 1e-5;
+                SW.con(:,10) = opts(i).pGen(ResultData.allGenIdx(1:SW.n));
                 PV.con(:,5) = opts(i).vGen(ResultData.allGenIdx(SW.n + 1 : end));
                 PV.con(:,4) = opts(i).pGen(ResultData.allGenIdx(SW.n + 1 : end));
             end

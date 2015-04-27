@@ -9,11 +9,11 @@ Config = initialConfig;
 
 % Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 1;
+Config.LoadShapeRatio = 2.4;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.hasOpf = 1;
-Config.enableLoadShape = 1;
+Config.enableLoadShape = 0;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -26,7 +26,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -35,29 +35,29 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  3600 * 24;
+Config.simuEndTime =  360;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 35;
+FalseData.toBus = 31;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
-FalseData = defaultFalseData(Config,FalseData);
+opt = struct('N',5,'length',8);
+FalseData = defaultFalseData(Config,FalseData,opt);
 % load('ActionHistory.mat');
 % FalseData.fixedAction = ActionHistory;
 %%%%%%%%%%%%%put a false attack element into config structure
-FalseData.maxLearnedAction = 300;
 Config.falseDataAttacks = {FalseData};
 
-value = 2;
-for k = 1:length(Config.falseDataAttacks)
-    FalseData = Config.falseDataAttacks{k};
-    FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
-    Config.falseDataAttacks{k} = FalseData;
-end
+% value = 2;
+% for k = 1:length(Config.falseDataAttacks)
+%     FalseData = Config.falseDataAttacks{k};
+%     FalseData.MDPBusFalseDataRatioStep = FalseData.MDPBusFalseDataRatioStep * value;
+%     Config.falseDataAttacks{k} = FalseData;
+% end
 % %%%%%%%%%%%%define a false attack element
 % FalseData.toBus = 38;
 % FalseData.strategy = 6; % for MDP attack on pl and ql;
@@ -78,22 +78,20 @@ end
 % allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
 % [r, c] = size(allM);
 
-
-if Config.simuType == 0
-    cd([pwd, '\loadshape\lf']);
-else
-    cd([pwd, '\loadshape\dyn']);
+if Config.enableLoadShape
+    if Config.simuType == 0
+        cd([pwd, '\loadshape\lf']);
+    else
+        cd([pwd, '\loadshape\dyn']);
+    end
+    
+    % Config.loadShapeFile = [pwd, '\loadshapeHour'];
+    delete *.mat
+    createhourloadshape(Config);
+    cd(pwdpath);
 end
-% Config.loadShapeFile = [pwd, '\loadshapeHour'];
-delete *.mat
-createhourloadshape(Config);
-cd(pwdpath);
 
 % mps = 6;
-
-
-
-
 % matlabpool size;
 % if ans>0 matlabpool close;end
 % matlabpool(mps);
