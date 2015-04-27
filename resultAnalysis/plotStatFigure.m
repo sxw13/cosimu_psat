@@ -1,6 +1,6 @@
 close all;
 [m,n] = size(statTable);
-conditionExp = '0';
+conditionExp = 'S.maxSEIter~=10';
 for jj = 2:4
     x = [];
     y = [];
