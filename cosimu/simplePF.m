@@ -61,6 +61,9 @@ end
 
 if Config.enableLoadShape
     CurrentStatus.bus(:,[3,4]) = initialLoadRate * CurrentStatus.bus(:,[3,4]);
+    if isfield(Config,'LoadShapeRatio')
+        CurrentStatus.bus(:,[3,4]) = Config.LoadShapeRatio * CurrentStatus.bus(:,[3,4]);
+    end
 end
 optresult = runopf(CurrentStatus, Config.opt);
 
