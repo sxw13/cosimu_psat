@@ -63,36 +63,42 @@ for idx = 1:stateNum
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genPMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allPGenHis(mId,:)) max(baseResult.allPGenHis(mId,:))];
         end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genQMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allQGenHis(mId,:)) max(baseResult.allQGenHis(mId,:))];
         end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'plineTailMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineTailPHis(mId,:)) max(baseResult.allLineTailPHis(mId,:))];
         end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'qlineTailMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineTailQHis(mId,:)) max(baseResult.allLineTailQHis(mId,:))];
         end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'plineHeadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineHeadPHis(mId,:)) max(baseResult.allLineHeadPHis(mId,:))];
         end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'qlineHeadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
         if useBaseResult
             FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineHeadQHis(mId,:)) max(baseResult.allLineHeadQHis(mId,:))];
         end
@@ -180,7 +186,7 @@ fd = FalseData;
         id1 = strfind(injc,'(');
         id2 = strfind(injc,')');
 %         injcName = injc(1:id1-1);
-        id = str2int(injc(id1+1:id2-1));
+        id = str2num(injc(id1+1:id2-1));
     end
 
 end

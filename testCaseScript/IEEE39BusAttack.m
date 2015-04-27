@@ -31,6 +31,7 @@ Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
+Config.useBaseResult = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
