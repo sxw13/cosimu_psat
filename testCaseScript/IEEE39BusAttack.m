@@ -17,7 +17,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 1;
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -44,8 +44,8 @@ Config.falseDataAttacks = {FalseData};
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'distrsw','toBus','errorRatio','maxSEIter'};
-MultiRunConfig.ConfigValue = {1,1:39,2,[1 10]};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
+MultiRunConfig.ConfigValue = {[2.4 2.5],1:39,2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 

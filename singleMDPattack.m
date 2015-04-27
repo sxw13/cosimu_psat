@@ -12,8 +12,8 @@ Config.loadShapeCsvFile = 'LoadShape3.csv';
 Config.LoadShapeRatio = 2.4;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
-Config.hasOpf = 0;
-Config.enableLoadShape = 1;
+Config.hasOpf = 1;
+Config.enableLoadShape = 0;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -31,11 +31,11 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
 Config.seEnable = 1;
-Config.maxSEIter = 1;  % the maximum number of se iteration to repair false data
-Config.fDthreshold = 4; % the threshold for false data detection
+Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
+Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  3600 * 1;
+Config.simuEndTime =  360;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -78,16 +78,18 @@ Config.falseDataAttacks = {FalseData};
 % allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
 % [r, c] = size(allM);
 
-
-if Config.simuType == 0
-    cd([pwd, '\loadshape\lf']);
-else
-    cd([pwd, '\loadshape\dyn']);
+if Config.enableLoadShape
+    if Config.simuType == 0
+        cd([pwd, '\loadshape\lf']);
+    else
+        cd([pwd, '\loadshape\dyn']);
+    end
+    
+    % Config.loadShapeFile = [pwd, '\loadshapeHour'];
+    delete *.mat
+    createhourloadshape(Config);
+    cd(pwdpath);
 end
-% Config.loadShapeFile = [pwd, '\loadshapeHour'];
-delete *.mat
-createhourloadshape(Config);
-cd(pwdpath);
 
 % mps = 6;
 % matlabpool size;
