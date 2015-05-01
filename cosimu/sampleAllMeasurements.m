@@ -120,10 +120,12 @@ elseif Config.falseDataSchema == 2
     % this is a special bad data injection attack 
     nAttacks = length(Config.falseDataAttacks);
     
-    for injCell = fieldnames(ResultData.falseDataInjSet)'
-        injc = injCell{1};
-        dataLen = size(CurrentStatus.(injc),1);
-        ResultData.falseDataInjSet.(injc) = [ResultData.falseDataInjSet.(injc) sparse(dataLen,1)];
+    if Config.seEnable
+        for injCell = fieldnames(ResultData.falseDataInjSet)'
+            injc = injCell{1};
+            dataLen = size(CurrentStatus.(injc),1);
+            ResultData.falseDataInjSet.(injc) = [ResultData.falseDataInjSet.(injc) sparse(dataLen,1)];
+        end
     end
     for iAttack = 1 : nAttacks
         fa = Config.falseDataAttacks{iAttack};
@@ -457,7 +459,7 @@ elseif Config.falseDataSchema == 2
                         for k = 1:length(Ratios)
                             eval(['CurrentStatus.' fa.InjectionName{k}  ...
                                 ' = CurrentStatus2.' fa.InjectionName{k} ' * Ratios(k);']);
-                            if Ratios(k)~=1
+                            if Config.seEnable && Ratios(k)~=1
                                 injc = fa.InjectionName{k};
                                 id1 = strfind(injc,'(');
                                 id2 = strfind(injc,')');

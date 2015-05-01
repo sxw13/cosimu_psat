@@ -1,4 +1,4 @@
-function fd = defaultFalseDataNoSE(Config,FalseData)
+function fd = defaultFalseDataNoSE(Config,FalseData,opt)
 measureNamePattern = {'busVMeasPu','ploadMeas','genPMeas','genQMeas','plineTailMeas','qlineTailMeas','plineHeadMeas','qlineHeadMeas'};
 FalseData.MDPStateName = cell(0);
 cellid=0;
@@ -24,6 +24,15 @@ if ~isfield(FalseData,'LearningEndTime')
     FalseData.LearningEndTime = Config.simuEndTime;
 end
 
+if nargin<3
+    opt = struct('length',4,'N',3);
+elseif ~isfield(opt,'length')
+    opt.length = 4;
+elseif ~isfield(opt,'N')
+    opt.N = 3;
+end
+
+
 
 
 stateNum = length(FalseData.MDPStateName);
@@ -31,30 +40,68 @@ actionNum = length(FalseData.InjectionName);
 FalseData.MDPBusVStateStep = 0.01;
 FalseData.MDPStateLimits = zeros(stateNum,2);
 FalseData.Nstate = zeros(1,stateNum);
+useBaseResult = Config.useBaseResult;
+if Config.useBaseResult
+    try
+        baseResult = load(['baseResult\LoadShapeRatio_' num2str(Config.LoadShapeRatio) '_.mat']);
+        baseResult = baseResult.ResultData;
+    catch
+        useBaseResult = 0;
+    end
+end
+
 for idx = 1:stateNum
     if ~isempty(strfind(FalseData.MDPStateName{idx},'busVMeasPu'))
         FalseData.MDPStateLimits(idx,:)=[0.8 1.2];
         FalseData.Nstate(idx)=23;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'ploadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0.7 1.3];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allPLoadHis(mId,:)) max(baseResult.allPLoadHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genPMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allPGenHis(mId,:)) max(baseResult.allPGenHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'genQMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allQGenHis(mId,:)) max(baseResult.allQGenHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'plineTailMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineTailPHis(mId,:)) max(baseResult.allLineTailPHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'qlineTailMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineTailQHis(mId,:)) max(baseResult.allLineTailQHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'plineHeadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineHeadPHis(mId,:)) max(baseResult.allLineHeadPHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     elseif ~isempty(strfind(FalseData.MDPStateName{idx},'qlineHeadMeas'))
         FalseData.MDPStateLimits(idx,:)=[0 0.6];
+        mId = getId(FalseData.MDPStateName{idx});
+        if useBaseResult
+            FalseData.MDPStateLimits(idx,:)=[min(baseResult.allLineHeadQHis(mId,:)) max(baseResult.allLineHeadQHis(mId,:))];
+        end
         FalseData.Nstate(idx)=5;
     end
 end
@@ -70,36 +117,36 @@ for idx = 1:actionNum
         FalseData.MDPBusFalseDataRatioStep(idx) = 0.1;
         FalseData.RatioOffset(idx) = 1;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'ploadMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
-        FalseData.RatioOffset(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
+        FalseData.RatioOffset(idx) = opt.length/2;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'qloadMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
-        FalseData.RatioOffset(idx) = 2;
+        FalseData.Naction(idx) = 2*opt.N - 1;
+        FalseData.MDPBusFalseDataRatioStep(idx) = 2*opt.length/(opt.N-1);
+        FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'genPMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
-        FalseData.RatioOffset(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
+        FalseData.RatioOffset(idx) = opt.length/2;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'genQMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
         FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'plineTailMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
-        FalseData.RatioOffset(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
+        FalseData.RatioOffset(idx) = opt.length/2;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'qlineTailMeas'))
-       FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
         FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'plineHeadMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
-        FalseData.RatioOffset(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
+        FalseData.RatioOffset(idx) = opt.length/2;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'qlineHeadMeas'))
-        FalseData.Naction(idx) = 3;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2;
+        FalseData.Naction(idx) = opt.N;
+        FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
         FalseData.RatioOffset(idx) = 0;
     end
 end
@@ -131,8 +178,19 @@ end
 if ~isfield(FalseData,'autoOffset')
     FalseData.autoOffset = 1;
 end
+if useBaseResult
+    FalseData.autoOffset = 0;
+end
 
 
 FalseData.calWARD = 0;
 fd = FalseData;
+
+    function id = getId(injc)
+        id1 = strfind(injc,'(');
+        id2 = strfind(injc,')');
+%         injcName = injc(1:id1-1);
+        id = str2num(injc(id1+1:id2-1));
+    end
+
 end

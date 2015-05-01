@@ -46,7 +46,11 @@ for j = 1 : c
                 FalseData = Config.falseDataAttacks{k};
                 opt.length = value*4;
                 opt.N = 5;
-                FalseData = defaultFalseData(Config,FalseData,opt);
+                if Config.seEnable
+                    FalseData = defaultFalseData(Config,FalseData,opt);
+                else
+                    FalseData = defaultFalseDataNoSE(Config,FalseData,opt);
+                end
                 Config.falseDataAttacks{k} = FalseData;
             end
         case 'duplicate'

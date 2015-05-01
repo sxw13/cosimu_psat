@@ -1,6 +1,6 @@
 close all;
 [m,n] = size(statTable);
-conditionExp = 'S.maxSEIter~=10';
+conditionExp = 'S.LoadShapeRatio~=2.5';
 for jj = 2:4
     x = [];
     y = [];
@@ -29,6 +29,6 @@ for jj = 2:4
     end
     title(statTable{1,jj});xlabel('Bus Number');
 %     axesX46;
-%     axesX39;
-    axesDefault;
+    axesX39;
+%     axesDefault;
 end
