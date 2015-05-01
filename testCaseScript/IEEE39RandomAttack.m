@@ -31,6 +31,7 @@ Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
+Config.useBaseResult = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%%define a false attack element
@@ -44,8 +45,8 @@ Config.falseDataAttacks = {FalseData};
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'attackNumber','rand','errorRatio','duplicate'};
-MultiRunConfig.ConfigValue = {3:5,1,2,1:40};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','attackNumber','rand','errorRatio','duplicate'};
+MultiRunConfig.ConfigValue = {[1 2],3:5,2,2,1:20};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
