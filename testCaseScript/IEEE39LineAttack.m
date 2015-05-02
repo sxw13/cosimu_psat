@@ -17,7 +17,7 @@ Config.subAttackSchema = 1; % 1 for no substation attack ; % 2 for substation lo
 Config.attackedBus = []; % bus list been attacked
 Config.attackTime = [];  % attacked time in seconds
 Config.enableLoadShape = 1;
-Config.distrsw = 0; % 0 for single slack bus model, 1 for distributed slack bus model.
+Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus model.
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
@@ -26,7 +26,7 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  24 * 3600;
+Config.simuEndTime =  1.5 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -37,23 +37,23 @@ Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on 
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 100;
 %%%%%%%%%%%%%put a false attack element into config structure
+FalseData.maxLearnedAction = 50;
 Config.falseDataAttacks = {FalseData};
 
 %%%%%%%%%%%%%define a false attack element
 FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
-FalseData.maxLearnedAction = 100;
+FalseData.maxLearnedAction = 50;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks{2} = FalseData;
 
 cs = eval(Config.opfCaseName);
 
 
-MultiRunConfig.ConfigName = {'distrsw','Branch','errorRatio','maxSEIter'};
-MultiRunConfig.ConfigValue = {1,1:46,2,[1 10]};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','Branch','errorRatio'};
+MultiRunConfig.ConfigValue = {[2.3 2.6],1:46,2};
 % MultiRunConfig.ConfigName = {'Branch','errorRatio','maxSEIter'};
 % MultiRunConfig.ConfigValue = {1:size(cs.branch,1),[0.5 1 2],[5 10 15 20]};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
