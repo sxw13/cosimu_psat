@@ -75,7 +75,7 @@ mpc.gen = [
 	38	830	22.65884	999900	-99990	1.0265	100	1	930	0	0	0	0	0	0	0	0	0	0	0	0;
 	39	1000	87.8826	999900	-99990	1.03	100	1	1100	0	0	0	0	0	0	0	0	0	0	0	0;
 ];
-mpc.gen(:,9) = mpc.gen(:,9)*10;
+% mpc.gen(:,9) = mpc.gen(:,9)*10;
 %% branch data
 %	fbus	tbus	r	x	b	rateA	rateB	rateC	ratio	angle	status	angmin	angmax
 mpc.branch = [

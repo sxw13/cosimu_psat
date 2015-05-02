@@ -26,7 +26,7 @@ Config.maxSEIter = 10;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  24 * 3600;
+Config.simuEndTime =  1.5 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -46,7 +46,7 @@ Config.falseDataAttacks = {FalseData};
 cs = eval(Config.opfCaseName);
 
 MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {[1 2],1:39,2};
+MultiRunConfig.ConfigValue = {[2.3 2.6],1:39,2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
