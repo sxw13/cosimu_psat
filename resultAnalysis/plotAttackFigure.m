@@ -1,11 +1,11 @@
 close all;
-TestCaseNumber = 19;   %需要针对不同的结果重新设定
+TestCaseNumber = 39;   %需要针对不同的结果重新设定
 [m,n] = size(statTable);
-defaultParameters = struct('LoadShapeRatio',1, ...
-                            'errorRatio',2, ...
-                            'maxSEIter',20);
+defaultParameters = struct('LoadShapeRatio',2.5, ...
+                            'errorRatio',2);
 fd = fieldnames(defaultParameters);
-ActionNum = length(statTable{2,5});
+
+ActionNum = Config.simuEndTime/Config.controlPeriod;
 for jj = 5
     x = [];
     y = [];
@@ -25,10 +25,13 @@ for jj = 5
         else
             x = [x S.Branch(end)];
         end
-        y = [y statTable{ii,jj}'];
+        tempy = ones(ActionNum,1)*(-1);
+        tempy(1:length(statTable{ii,jj})) =  statTable{ii,jj}';
+        y = [y tempy];
     end
     figure('Color',[1 1 1]);
-    xx = ResultData.allLoadIdx';
+%     xx = ResultData.allLoadIdx';
+    xx = 1:39;
     MM = zeros(ActionNum,length(xx));
     if isfield(S,'duplicate')
         for dps = 1:max(S.duplicate)
@@ -62,8 +65,8 @@ for jj = 5
     end
     yy = (1:ActionNum)/ActionNum*Config.simuEndTime;
     plotTimeFigure(yy,xx,MM');
-    ylabel({'Attacked Bus Number'});
-    xlabel({'Time/s'});
-    title(statTable{1,jj});
-    axesY46;
+    ylabel('攻击的变电站的位置');
+    xlabel('时间/s');
+    title('攻击者的行动状态');
+    axesY39;
 end
