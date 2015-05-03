@@ -12,6 +12,7 @@ if nargin<1 || ~isfield(opt,'areaNames')
         'minEigValue' ...
         'ActionState' ...
         '电压越限节点数' ...
+        '漏检数' ...
         };
 else
     areaNames = opt.areaNames;
@@ -23,6 +24,7 @@ if nargin<1 || ~isfield(opt,'areaExp')
         'min(ResultData.minEigValueHis)' ...
         'giveoutActionState(ResultData.MDPData{1}.ActionHistory(1:legalActionID(ResultData,Config)))' ...
         'max(sum(ResultData.allBusVHis<0.9 | ResultData.allBusVHis>1.2))' ...
+        'stealMeasNum(ResultData)' ...
         };
 else
     areaExp = opt.areaExp;
@@ -69,4 +71,16 @@ save([path '\statTable.mat'],'statTable');
             y = y-1;
         end
     end
+    function y = stealMeasNum(ResultData)
+        inj = [];
+        dct = [];
+        fd = fieldnames(ResultData.falseDataDctSet);
+        for fid = 1:length(fd)
+            inj = [inj;ResultData.falseDataInjSet.(fd{fid})];
+            dct = [dct;ResultData.falseDataDctSet.(fd{fid})];
+        end
+        steals = full(sum(inj & (~dct))).*ResultData.isOpfConverged;
+        y = max(steals);
+    end
+    
 end
