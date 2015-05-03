@@ -119,10 +119,10 @@ for idx = 1:actionNum
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'ploadMeas'))
         FalseData.Naction(idx) = opt.N;
         FalseData.MDPBusFalseDataRatioStep(idx) = opt.length/(opt.N-1);
-        FalseData.RatioOffset(idx) = opt.length/2;
+        FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'qloadMeas'))
-        FalseData.Naction(idx) = 2*opt.N - 1;
-        FalseData.MDPBusFalseDataRatioStep(idx) = 2*opt.length/(opt.N-1);
+        FalseData.Naction(idx) = opt.N - 1;
+        FalseData.MDPBusFalseDataRatioStep(idx) = 4*5 * opt.length/(opt.N-1);
         FalseData.RatioOffset(idx) = 0;
     elseif ~isempty(strfind(FalseData.InjectionName{idx},'genPMeas'))
         FalseData.Naction(idx) = opt.N;

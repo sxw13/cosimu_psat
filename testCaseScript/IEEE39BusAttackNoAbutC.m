@@ -21,7 +21,7 @@ Config.distrsw = 1; % 0 for single slack bus model, 1 for distributed slack bus 
 Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
-Config.seEnable = 1;
+Config.seEnable = 0;
 Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
@@ -44,8 +44,8 @@ Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on 
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio'};
-MultiRunConfig.ConfigValue = {[2.6]};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','hasOpf'};
+MultiRunConfig.ConfigValue = {[1 2 2.2 2.3 2.5 2.6],[0 1]};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
