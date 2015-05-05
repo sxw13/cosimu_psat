@@ -21,4 +21,4 @@ end
 Config.falseDataAttacks{1,1}.fixedAction = ResultData.MDPData{1,1}.ActionHistory;
 steals = full(sum(inj & (~dct))).*ResultData.isOpfConverged;
 (find(steals>0)-1)*Config.controlPeriod
-simplePSAT(Config);
+Re = simplePSAT(Config);
