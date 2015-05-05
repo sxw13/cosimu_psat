@@ -9,7 +9,7 @@ Config = initialConfig;
 
 % Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 2.4;
+Config.LoadShapeRatio = 2;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.hasOpf = 1;
@@ -31,19 +31,19 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
 Config.seEnable = 1;
-Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
+Config.maxSEIter = 30;  % the maximum number of se iteration to repair false data
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  360;
+Config.simuEndTime =  3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
-Config.falseDataSchema = 0; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
+Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 31;
+FalseData.toBus = 3;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 opt = struct('N',5,'length',8);
 FalseData = defaultFalseData(Config,FalseData,opt);
@@ -51,6 +51,18 @@ FalseData = defaultFalseData(Config,FalseData,opt);
 % FalseData.fixedAction = ActionHistory;
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};
+
+
+%%%%%%%%%%%%define a false attack element
+FalseData.toBus = 18;
+FalseData.strategy = 6; % for MDP attack on pl and ql;
+opt = struct('N',5,'length',8);
+FalseData = defaultFalseData(Config,FalseData,opt);
+% load('ActionHistory.mat');
+% FalseData.fixedAction = ActionHistory;
+%%%%%%%%%%%%%put a false attack element into config structure
+Config.falseDataAttacks{2} = FalseData;
+
 
 % value = 2;
 % for k = 1:length(Config.falseDataAttacks)
