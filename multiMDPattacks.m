@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39BusNoAandC(dynamicPowerLimitation)';
+startTime = 'IEEE39TwoBusAttack(dynamicPowerLimitation)';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,14 +9,19 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39BusNoAandC;
+[Config, MultiRunConfig, cs] = IEEE39TwoBusAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
 [allM{1:n}] = ndgrid(MultiRunConfig.ConfigValue{:});
 allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
-[r, c] = size(allM);
 
+
+
+%% test scenarios reduction
+idd = find(allM(:,2)>allM(:,3));
+allM = allM(idd,:);
+[r, c] = size(allM);
 
 %% creat load shape file
 if Config.simuType == 0
