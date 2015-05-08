@@ -169,7 +169,7 @@ if ~isfield(FalseData,'maxLearnedAction')
     FalseData.maxLearnedAction = 300;
 end
 if ~isfield(FalseData,'minAttackValue')
-    FalseData.minAttackValue = 2.2;
+    FalseData.minAttackValue = 1.2;
 end
 if ~isfield(FalseData,'autoOffset')
     FalseData.autoOffset = 1;
