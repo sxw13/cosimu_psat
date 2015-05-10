@@ -9,11 +9,11 @@ Config = initialConfig;
 
 % Config.loadShapeCsvFile = 'LoadShapeSimple0.csv';
 Config.loadShapeCsvFile = 'LoadShape3.csv';
-Config.LoadShapeRatio = 2;
+Config.LoadShapeRatio = 2.3;
 Config.caseName = 'd_039ieee_edit.m';
 Config.opfCaseName = 'case_ieee39';
 Config.hasOpf = 1;
-Config.enableLoadShape = 0;
+Config.enableLoadShape = 1;
 Config.measLagSchema = 1; %1 for perfect comm with no latency; 2 for same latency for all tunnels; 3 for dif. latency for dif. tunnels;
 Config.measAllLatency = 1; % for latency of Config.measAllLatency*Config.DSSStepsize
 Config.measLatencyChagePeriod = [0, Config.simuEndTime];
@@ -35,15 +35,18 @@ Config.maxSEIter = 30;  % the maximum number of se iteration to repair false dat
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  3600;
+Config.simuEndTime =  2*3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
+Config.autoSELimit = 1;
+Config.useBaseResult = 1;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%for bad data injection%%%%%%%%%%%%%%%%%%%
 Config.falseDataSchema = 2; % 0 for no false data  ; 1 for random erro based on white noise ; 2 for special false data strategy
 %%%%%%%%%%%%define a false attack element
-FalseData.toBus = 3;
+FalseData.toBus = 38;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 opt = struct('N',5,'length',8);
 FalseData = defaultFalseData(Config,FalseData,opt);
@@ -53,15 +56,15 @@ FalseData = defaultFalseData(Config,FalseData,opt);
 Config.falseDataAttacks = {FalseData};
 
 
-%%%%%%%%%%%%define a false attack element
-FalseData.toBus = 18;
-FalseData.strategy = 6; % for MDP attack on pl and ql;
-opt = struct('N',5,'length',8);
-FalseData = defaultFalseData(Config,FalseData,opt);
-% load('ActionHistory.mat');
-% FalseData.fixedAction = ActionHistory;
-%%%%%%%%%%%%%put a false attack element into config structure
-Config.falseDataAttacks{2} = FalseData;
+% %%%%%%%%%%%%define a false attack element
+% FalseData.toBus = 18;
+% FalseData.strategy = 6; % for MDP attack on pl and ql;
+% opt = struct('N',5,'length',8);
+% FalseData = defaultFalseData(Config,FalseData,opt);
+% % load('ActionHistory.mat');
+% % FalseData.fixedAction = ActionHistory;
+% %%%%%%%%%%%%%put a false attack element into config structure
+% Config.falseDataAttacks{2} = FalseData;
 
 
 % value = 2;

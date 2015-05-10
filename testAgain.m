@@ -1,4 +1,4 @@
-load('C:\Users\sxw13\Documents\cosimu_psat\debug\IEEE39BusAttack(dynamicPowerLimitation)\LoadShapeRatio_2.3_toBus_38_errorRatio_2_.mat');
+load('C:\Users\sxw13\Documents\cosimu_psat\debug\IEEE39LineAttack(dynamicPowerLimitation)\LoadShapeRatio_2.3_Branch_16_errorRatio_2_.mat');
 pwdpath = pwd;
 initialPath;
 if Config.simuType == 0

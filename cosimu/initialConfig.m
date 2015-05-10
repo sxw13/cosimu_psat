@@ -91,6 +91,17 @@ Config.normalEPrice = 0.5;
 Config.badQosPenaltyPrice = 0.8;
 Config.loadShedPenaltyPrice = 2.5;
 
+%% for auto SE limit justify
+Config.autoSELimit = 0;
+Config.seSafetyMargin = [0.8 1.2];
+Config.pLoadLimit = [];
+Config.qLoadLimit = [];
+
+%% for auto OPF limit justify
+Config.autoOPFLimit = 0;
+Config.opfSafetyMargin = [0.8 1.2];
+Config.pGenLimit = [];
+
 %% for MDP studies
 Config.MDPData = [];
 
