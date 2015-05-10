@@ -55,3 +55,6 @@ loadRatio = 2.5;
 mpc.bus(:,3) = mpc.bus(:,3)*loadRatio;  % Pload
 mpc.bus(:,4) = mpc.bus(:,4)*loadRatio;  % Qload
 [ResultData, success] = opf(mpc,opt)
+%%
+mpc = case_ieee9;
+[ResultData, success] = opf(mpc)

@@ -50,6 +50,9 @@ if Config.seEnable == 1
             ResultData.falseDataDctSet.(fdName{1}) = [ResultData.falseDataDctSet.(fdName{1}) fdSet.(fdName{1})];
         end
         
+        if Config.autoSELimit
+            bus = addLoadLimits(Config,bus,ResultData.allLoadIdx);
+        end
         CurrentStatus2.bus = bus;
 %         CurrentStatus2.bus(:,[3 4]) = 0;
 %         CurrentStatus2.bus(ResultData.allLoadIdx,[3 4]) = bus(ResultData.allLoadIdx, [3 4]);

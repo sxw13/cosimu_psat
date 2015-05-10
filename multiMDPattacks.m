@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE39TwoBusAttack(dynamicPowerLimitation)';
+startTime = 'IEEE9BusAttack(dynamicPowerLimitation)';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
@@ -9,19 +9,14 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE39TwoBusAttack;
+[Config, MultiRunConfig, cs] = IEEE9BusAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
 [allM{1:n}] = ndgrid(MultiRunConfig.ConfigValue{:});
 allM = cell2mat(cellfun(@(a)a(:),allM,'un',0));
-
-
-
-%% test scenarios reduction
-idd = find(allM(:,2)>allM(:,3));
-allM = allM(idd,:);
 [r, c] = size(allM);
+
 
 %% creat load shape file
 if Config.simuType == 0
@@ -36,7 +31,7 @@ cd(pwdpath);
 
 
 %% Run Test
-isParalell = 1;
+isParalell = 0;
 if isParalell
     mps = 6;
     matlabpool size;

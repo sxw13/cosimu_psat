@@ -23,6 +23,34 @@ end
 
 % cd(pwdpath);
 
+if Config.useBaseResult && Config.autoOPFLimit
+    try
+        baseResult = load(['baseResult\LoadShapeRatio_' num2str(Config.LoadShapeRatio) '_.mat']);
+        baseResult = baseResult.ResultData;
+        n = size(baseResult.allPGenHis,1);
+        Config.pGenLimit = zeros(n,2);
+        Config.pGenLimit(baseResult.allGenIdx,:) = [min(baseResult.allPGenHis,[],2) max(baseResult.allPGenHis,[],2)];
+    catch
+        Config.autoOPFLimit = 0;
+    end
+else
+    Config.autoOPFLimit = 0;
+end
+
+if Config.useBaseResult && Config.autoSELimit
+    try
+        baseResult = load(['baseResult\LoadShapeRatio_' num2str(Config.LoadShapeRatio) '_.mat']);
+        baseResult = baseResult.ResultData;
+        n = size(baseResult.allPLoadHis,1);
+        Config.pLoadLimit = [min(baseResult.allPLoadHis,[],2) max(baseResult.allPLoadHis,[],2)];
+        Config.qLoadLimit = [min(baseResult.allQLoadHis,[],2) max(baseResult.allQLoadHis,[],2)];
+    catch
+        Config.autoSELimit = 0;
+    end
+else
+    Config.autoSELimit = 0;
+end
+
 caseName = [Config.opfCaseName '_MDPattack_genPMeas_', num2str(Config.simuEndTime)];
 startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
 disp([caseName, 'started at ', startTime]);
