@@ -27,9 +27,11 @@ if Config.useBaseResult && Config.autoOPFLimit
     try
         baseResult = load(['baseResult\LoadShapeRatio_' num2str(Config.LoadShapeRatio) '_.mat']);
         baseResult = baseResult.ResultData;
-        n = size(baseResult.allPGenHis,1);
-        Config.pGenLimit = zeros(n,2);
-        Config.pGenLimit(baseResult.allGenIdx,:) = [min(baseResult.allPGenHis,[],2) max(baseResult.allPGenHis,[],2)];
+        n = length(baseResult.allGenIdx);
+        temp = [baseResult.allGenIdx, (1:n)'];
+        temp = sort(temp);
+        idx = temp(:,2);
+        [Config.pGenMLE, Config.pGenLimit] = ksEstimation(baseResult.allPGenHis(idx,:),Config.opfAlpha);
     catch
         Config.autoOPFLimit = 0;
     end
