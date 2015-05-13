@@ -112,6 +112,7 @@ if Config.simuType == 0
 else
     Config.loadShapeFile = [pwd, '\loadshape\dyn\loadshapeHour'];
 end
-
+%% For multiCaseSimulation
+Config.overwrite = 0;
 
 

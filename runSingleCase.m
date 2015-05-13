@@ -60,7 +60,7 @@ for j = 1 : c
     end
     fileName = [fileName,MultiRunConfig.ConfigName{j},'_',num2str(value),'_'];
 end
-if exist(['debug\' startTime '\' fileName '.mat'],'file') return;end
+if Config.overwrite==0 && exist(['debug\' startTime '\' fileName '.mat'],'file') return;end
 MDPattack(Config,fileName,[],startTime);
 disp(fileName);
 end
