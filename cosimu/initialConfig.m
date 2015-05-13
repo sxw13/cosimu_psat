@@ -99,8 +99,9 @@ Config.qLoadLimit = [];
 
 %% for auto OPF limit justify
 Config.autoOPFLimit = 0;
-Config.opfSafetyMargin = [0.8 1.2];
+Config.opfAlpha = 0.01;
 Config.pGenLimit = [];
+Config.pGenMLE = [];
 
 %% for MDP studies
 Config.MDPData = [];
