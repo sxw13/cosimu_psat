@@ -1,7 +1,7 @@
 close all;
 TestCaseNumber = 39;   %需要针对不同的结果重新设定
 [m,n] = size(statTable);
-defaultParameters = struct('LoadShapeRatio',2.5, ...
+defaultParameters = struct('LoadShapeRatio',1, ...
                             'errorRatio',2);
 fd = fieldnames(defaultParameters);
 
@@ -63,7 +63,7 @@ for jj = 5
         end
         MM = MM + M;
     end
-    yy = (1:ActionNum)/ActionNum*Config.simuEndTime;
+    yy = (1:ActionNum)/ActionNum*86400;%Config.simuEndTime;
     plotTimeFigure(yy,xx,MM');
     ylabel('攻击的变电站的位置');
     xlabel('时间/s');
