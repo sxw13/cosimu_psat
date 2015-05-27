@@ -29,7 +29,7 @@ legends0 = {'LoadShapeRatio=2', ...
     'LoadShapeRatio=2.6' ...
     };
 conditionExp = 'S.LoadShapeRatio~=2.5';
-for jj = [2:4 6 7]
+for jj = [2:4 6:10]
     figure('Color',[1 1 1]);
     for cidx = 1:length(conditionExpVars)
         conditionExp = conditionExpVars{cidx};
@@ -48,6 +48,9 @@ for jj = [2:4 6 7]
                 x = [x S.Branch];
             end
             y = [y statTable{ii,jj}];
+            if isempty(statTable{ii,jj})
+                y = [y 0];
+            end
         end
         
         xx = unique(x);
@@ -64,9 +67,12 @@ for jj = [2:4 6 7]
         plot(xData,yData,'MarkerSize',4,'Marker','square','MarkerSize',6,'LineWidth',2,'Color',lines(cidx,:));
         hold on;
     end
-    title(statTable{1,jj});xlabel('受到攻击的支路编号');
+    title(statTable{1,jj});xlabel('受到攻击的节点编号');
     legend(legends0);
 %     axesX46;
     axesX39;
 %     axesDefault;
+    saveas(statTable{1,jj},'fig');
+    sdf(gcf);
+    saveas(statTable{1,jj},'tif');
 end
