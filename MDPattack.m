@@ -29,7 +29,7 @@ if Config.useBaseResult && Config.autoOPFLimit
         baseResult = baseResult.ResultData;
         n = length(baseResult.allGenIdx);
         temp = [baseResult.allGenIdx, (1:n)'];
-        temp = sort(temp);
+        temp = sortrows(temp);
         idx = temp(:,2);
         [Config.pGenMLE, Config.pGenLimit] = ksEstimation(baseResult.allPGenHis(idx,:),Config.opfAlpha);
     catch
