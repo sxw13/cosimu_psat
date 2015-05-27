@@ -36,7 +36,7 @@ FalseData.toBus = 5;
 FalseData.strategy = 6; % for MDP attack on pl and ql;
 % FalseData = defaultFalseData(Config,FalseData);
 FalseData.maxLearnedAction = 9;
-FalseData.minAttackValue = 2;
+FalseData.minAttackValue = 1;
 
 %%%%%%%%%%%%%put a false attack element into config structure
 Config.falseDataAttacks = {FalseData};

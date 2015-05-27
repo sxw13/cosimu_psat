@@ -9,7 +9,7 @@ initialPath;
 pwdpath = pwd;
 
 %% Import Test case
-[Config, MultiRunConfig, cs] = IEEE9BusAttack;
+[Config, MultiRunConfig, cs] = IEEE39BusAttack;
 
 %% Generate test scenarios
 n = length(MultiRunConfig.ConfigValue) ;
@@ -31,7 +31,7 @@ cd(pwdpath);
 
 
 %% Run Test
-isParalell = 0;
+isParalell = 1;
 if isParalell
     mps = 6;
     matlabpool size;

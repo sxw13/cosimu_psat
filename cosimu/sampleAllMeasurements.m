@@ -389,7 +389,7 @@ elseif Config.falseDataSchema == 2
                                 MDPData_k.r = -5;
                             end
                         case 'discrate'
-                            MDPData_k.r = MDPData_k.ds(1)-MDPData_k.ds_new(1)+fa.Nstate(1);
+                            MDPData_k.r = -MDPData_k.ds_new(1)+0.5*fa.Nstate(1)+0.5;
                             % penal for OPF not converged
                             if fa.PenalForNotConvergence && ~CurrentStatus.isOpfConverged
                                 MDPData_k.r = 0;
