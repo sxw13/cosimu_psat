@@ -6,8 +6,8 @@ function [x_est, x_range] = ksEstimation(x,alpha)
     x_est = zeros(n,1);
     x_range = zeros(n,2);
     for i=1:n
-        x_range(i,:) = ksdensity(x,[alpha,1-alpha],'function','icdf');
-        [f xi] = ksdensity(x);
+        x_range(i,:) = ksdensity(x(i,:),[alpha,1-alpha],'function','icdf');
+        [f,xi] = ksdensity(x(i,:));
         x_est(i) = xi(find(f==max(f),1));
     end
 end
