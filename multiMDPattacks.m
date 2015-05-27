@@ -1,7 +1,7 @@
 clear all;
 %% initial path
 % startTime =  strrep(strrep(datestr(now), ':', '-'), ' ', '-');
-startTime = 'IEEE9BusAttack(dynamicPowerLimitation)';
+startTime = 'IEEE39BusAttackComplete';
 if ~exist(['debug\' startTime],'dir')
     mkdir(['debug\' startTime]);
 end
