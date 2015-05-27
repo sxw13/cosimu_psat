@@ -64,7 +64,9 @@ if Config.seEnable == 1
 
        %% set opf result back to PSAT as control set point
         if optresult.success == 1
-            optresult.gen = addGenLimits(Config,optresult.gen);
+            if Config.autoOPFLimit
+                optresult.gen = addGenLimits(Config,optresult.gen);
+            end
             
             ResultData.pLForCtrlHis = [ResultData.pLForCtrlHis, CurrentStatus.ploadMeas];
             ResultData.qLForCtrlHis = [ResultData.qLForCtrlHis, CurrentStatus.qloadMeas];

@@ -22,11 +22,11 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
 Config.seEnable = 1;
-Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
+Config.maxSEIter = 15;  % the maximum number of se iteration to repair false data
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time
-Config.simuEndTime =  24 * 3600;
+Config.simuEndTime =  1 * 3600;
 Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
@@ -42,11 +42,17 @@ FalseData.strategy = 6; % for MDP attack on pl and ql;
 FalseData.maxLearnedAction = 50;
 Config.falseDataAttacks = {FalseData};
 
+%SE 结果检验开启
+Config.autoSELimit = 1;
+%OPF 结果检验开启
+Config.autoOPFLimit = 1;
+
+Config.overwrite = 1;
 
 cs = eval(Config.opfCaseName);
 
-MultiRunConfig.ConfigName = {'LoadShapeRatio','seEnable','toBus','errorRatio'};
-MultiRunConfig.ConfigValue = {2,0,29,2};
+MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus','errorRatio'};
+MultiRunConfig.ConfigValue = {[2.6],[19 29],2};
 % MultiRunConfig.ConfigName = {'LoadShapeRatio','toBus1','toBus2','errorRatio'};
 % MultiRunConfig.ConfigValue = {[0.3 0.45 0.6],1:39,1:39,linspace(0.5,2,6)};
 
