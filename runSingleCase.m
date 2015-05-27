@@ -21,7 +21,7 @@ for j = 1 : c
                 FalseData = defaultFalseData(Config,FalseData);
                 Config.falseDataAttacks{k} = FalseData;
             end
-        case 'toBus'
+        case {'toBus','toBus1'}
             FalseData = Config.falseDataAttacks{1};
             FalseData.toBus = value;
             if Config.seEnable
@@ -29,7 +29,16 @@ for j = 1 : c
             else
                 FalseData = defaultFalseDataNoSE(Config,FalseData);
             end
-            Config.falseDataAttacks = {FalseData};
+            Config.falseDataAttacks{1} = FalseData;
+        case 'toBus2'
+            FalseData = Config.falseDataAttacks{2};
+            FalseData.toBus = value;
+            if Config.seEnable
+                FalseData = defaultFalseData(Config,FalseData);
+            else
+                FalseData = defaultFalseDataNoSE(Config,FalseData);
+            end
+            Config.falseDataAttacks{2} = FalseData;
         case 'Branch'
             fd = cs.branch(value,1);
             td = cs.branch(value,2);
