@@ -11,7 +11,7 @@ end
 
 % get all data into sampled data pool
 % get all load data from psat
-if Config.simuType == 0
+if Config.simuType == 0 || Config.simuType == 2
     ResultData.allPLoadHis = [ResultData.allPLoadHis, Bus.Pl(PQ.bus)];
     ResultData.allQLoadHis = [ResultData.allQLoadHis, Bus.Ql(PQ.bus)];
 else
@@ -29,7 +29,7 @@ ResultData.allLineHeadQHis = [ResultData.allLineHeadQHis, qlineHead];
 ResultData.allLineTailPHis = [ResultData.allLineTailPHis, plineTail];
 ResultData.allLineTailQHis = [ResultData.allLineTailQHis, qlineTail];
 
-if Config.simuType == 0
+if Config.simuType == 0 || Config.simuType == 2
     % record all p q of gens
     ResultData.allPGenHis = [ResultData.allPGenHis, Bus.Pg([SW.bus;PV.bus])];
     ResultData.allQGenHis = [ResultData.allQGenHis, Bus.Qg([SW.bus;PV.bus])];    

@@ -28,10 +28,13 @@ clearvars filename delimiter formatSpec fileID dataArray ans;
 
 nPoint = 0;
 tStep = 0;
-if Config.simuType == 0
-    tStep = Config.lfTStep;
-else
-    tStep = Config.dynTStep;
+switch Config.simuType
+    case 0
+        Settings.tstep = Config.lfTStep;
+    case 1
+        Settings.tstep = Config.dynTStep;
+    case 2
+        Settings.tstep = Config.PFTStep;
 end
 nHour = Config.simuEndTime/3600;
 allData = interp1(linspace(0,Config.simuEndTime,length(allDay)),allDay,0:tStep:Config.simuEndTime-tStep,'spline');

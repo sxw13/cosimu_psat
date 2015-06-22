@@ -2,7 +2,7 @@ function Config = initialConfig
 
 Config.verbose = 0;
 
-Config.simuType = 0; % 0 for pf based , 1 for transient based
+Config.simuType = 0; % 0 for pf based , 1 for transient based ,2 for Power Factory
 
 % Config.simuTime = 60*60/0.05;
 Config.simuEndTime = 6*3600;
@@ -25,6 +25,7 @@ Config.calEigs = 0;
 
 Config.lfTStep = 1;
 Config.dynTStep = 0.05;
+Config.PFTStep = 10;
 Config.useBaseResult = 0;
 
 % Config.opt = mpoption('VERBOSE',0, 'OUT_ALL', 0);
@@ -107,10 +108,13 @@ Config.pGenMLE = [];
 Config.MDPData = [];
 
 %% for the load shape data location
-if Config.simuType == 0
-    Config.loadShapeFile = [pwd, '\loadshape\lf\loadshapeHour'];    
-else
-    Config.loadShapeFile = [pwd, '\loadshape\dyn\loadshapeHour'];
+switch Config.simuType
+    case 0
+        Config.loadShapeFile = [pwd, '\loadshape\lf\loadshapeHour'];    
+    case 1
+        Config.loadShapeFile = [pwd, '\loadshape\dyn\loadshapeHour'];
+    case 2
+        Config.loadShapeFile = [pwd, '\loadshape\PowerFactory\loadshapeHour'];
 end
 %% For multiCaseSimulation
 Config.overwrite = 0;

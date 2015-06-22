@@ -88,11 +88,13 @@ Config.controlPeriod = 60;
 Config.sampleRate  = 10;
 Config.lfTStep = 10;
 
-
-if Config.simuType == 0
-    cd([pwd, '\loadshape\lf']);    
-else
-    cd([pwd, '\loadshape\dyn']);    
+switch Config.simuType
+    case 0
+        cd([pwd, '\loadshape\lf']);    
+    case 1
+        cd([pwd, '\loadshape\dyn']);
+    case 2
+        cd([pwd, '\loadshape\PowerFactory']);
 end
 Config.loadShapeFile = [pwd, '\loadshapeHour'];
 delete *.mat

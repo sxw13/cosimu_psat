@@ -73,10 +73,11 @@ ResultData.allBusIdx = Bus.int;
 
 ResultData.allGenIdx = [];
 synIdx = [];
-if Config.simuType == 0
-    synIdx = [SW.bus; PV.bus];
-else
-    synIdx = Syn.bus;
+switch Config.simuType
+    case {0, 2}
+        synIdx = [SW.bus; PV.bus];
+    case 1
+        synIdx = Syn.bus;
 end
 for iGen = 1 : length(synIdx)
     idx = find(CurrentStatus.gen(:,1) == synIdx(iGen));

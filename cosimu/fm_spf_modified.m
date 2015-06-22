@@ -374,7 +374,7 @@ end
 adjgen(PQ)
 
 
-if Config.simuType == 0
+if Config.simuType ~= 1
     return;
 end
 
