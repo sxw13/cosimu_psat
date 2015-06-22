@@ -412,6 +412,8 @@ elseif Config.falseDataSchema == 2
                     MDPData_k.StatesHistory = [MDPData_k.StatesHistory MDPData_k.s];
                     MDPData_k.rHistory = [MDPData_k.rHistory MDPData_k.r];
                     MDPData_k.VHistory = [MDPData_k.VHistory CurrentStatus.busVMeasPu(fa.toBus)];
+                    MDPData_k.maxQValueHis = [MDPData_k.maxQValueHis max(MDPData_k.Q,[],2)]; 
+                    MDPData_k.learnedActionHis = [MDPData_k.learnedActionHis sum(MDPData_k.Q~=0,2)];
                     
                     % record S_B
                     if fa.calWARD
@@ -432,7 +434,7 @@ elseif Config.falseDataSchema == 2
                     % Action choice : greedy with increasing probability
                     % probability 1-(1/log(Iter+2)) can be changed
                     % pn = rand(1); %(pn < (1-(1/log(Iter+2))))
-                    if  fa.Qlearning == 0 || ResultData.t(end)>fa.LearningEndTime || nnz(MDPData_k.Q(MDPData_k.s,:))>=fa.maxLearnedAction
+                    if  fa.Qlearning == 0 || nnz(MDPData_k.Q(MDPData_k.s,:))>=fa.maxLearnedAction
                       [Value,MDPData_k.a] = max(MDPData_k.Q(MDPData_k.s,:));
                       if isfield(fa,'minAttackValue') && Value<fa.minAttackValue
                         MDPData_k.a = -1;

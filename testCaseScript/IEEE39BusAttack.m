@@ -22,7 +22,7 @@ Config.calEigs = 1; % 1 for calculate the eigent values of the Jaccobi matrix
 
 % enable state estimation
 Config.seEnable = 1;
-Config.maxSEIter = 10;  % the maximum number of se iteration to repair false data
+Config.maxSEIter = 20;  % the maximum number of se iteration to repair false data
 Config.fDthreshold = 0.5; % the threshold for false data detection
 
 % Time

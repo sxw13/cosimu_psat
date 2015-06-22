@@ -128,7 +128,7 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
 %             injcID = str2num(injc(id1+1:id2-1));
 %             ResultData.falseDataInjSet.(injcName) = [ResultData.falseDataInjSet.(injcName) injcID];
 %         end
-            
+           
         MDPData_k.r = 0;
         MDPData_k.Q = sparse(prod(fa.Nstate),prod(fa.Naction));
         switch fa.reward
@@ -146,7 +146,8 @@ elseif ~isempty(Config.falseDataAttacks) && Config.falseDataAttacks{1}.strategy=
         MDPData_k.StatesHistory = [];
         MDPData_k.rHistory = [];
         MDPData_k.VHistory = [];
-        
+        MDPData_k.maxQValueHis = []; 
+        MDPData_k.learnedActionHis = [];
         
         % WARD caculation
         if fa.calWARD
